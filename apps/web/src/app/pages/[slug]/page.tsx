@@ -16,11 +16,17 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 
+import cmsManifest from '@/data/cms-manifest.json';
+
 export default function DynamicCustomPage() {
   const params = useParams();
   const slug = (params?.slug as string) || '';
 
-  const [page, setPage] = useState<any>(null);
+  const initialPage = cmsManifest.pageControls.find(
+    (p) => p.pageRoute === `/pages/${slug}` || p.pageRoute === slug,
+  );
+
+  const [page, setPage] = useState<any>(initialPage || null);
   const [products, setProducts] = useState<ProductDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sortBy, setSortBy] = useState<'FEATURED' | 'PRICE_LOW_HIGH' | 'PRICE_HIGH_LOW'>('FEATURED');
@@ -31,10 +37,36 @@ export default function DynamicCustomPage() {
     const fetchCustomPage = async () => {
       setIsLoading(true);
       try {
-        const res = await apiRequest<any>(`/cms/custom-pages/${encodeURIComponent(slug)}`);
-        const data = res?.data || res;
-        setPage(data?.page || null);
-        setProducts(data?.products || []);
+        let loadedPage = null;
+        let loadedProducts: ProductDto[] = [];
+
+        try {
+          const res = await apiRequest<any>(`/cms/custom-pages/${encodeURIComponent(slug)}`);
+          const data = res?.data || res;
+          if (data && data.page) {
+            loadedPage = data.page;
+            loadedProducts = data.products || [];
+          }
+        } catch (err) {
+          // Fallback to manifest
+        }
+
+        if (!loadedPage) {
+          loadedPage = cmsManifest.pageControls.find(
+            (p) => p.pageRoute === `/pages/${slug}` || p.pageRoute === slug,
+          );
+        }
+
+        // If products empty, fetch catalog products
+        if (loadedProducts.length === 0) {
+          try {
+            const prodRes = await apiRequest<any>('/catalog/products?limit=12');
+            loadedProducts = Array.isArray(prodRes) ? prodRes : prodRes?.data || [];
+          } catch {}
+        }
+
+        setPage(loadedPage || null);
+        setProducts(loadedProducts);
       } catch (e) {
         console.error('Failed to load custom page:', e);
       } finally {

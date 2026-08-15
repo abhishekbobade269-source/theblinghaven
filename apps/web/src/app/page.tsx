@@ -31,14 +31,16 @@ import {
   ExternalLink,
 } from 'lucide-react';
 
+import cmsManifest from '@/data/cms-manifest.json';
+
 export default function HomePage() {
-  const [banners, setBanners] = useState<HeroBannerDto[]>([]);
+  const [banners, setBanners] = useState<HeroBannerDto[]>((cmsManifest.heroBanners as any[]) || []);
   const [activeBannerIdx, setActiveBannerIdx] = useState(0);
   const [featuredProducts, setFeaturedProducts] = useState<ProductDto[]>([]);
   const [collections, setCollections] = useState<CollectionDto[]>([]);
   const [metalRates, setMetalRates] = useState<MetalPriceRateDto[]>([]);
-  const [instagramPosts, setInstagramPosts] = useState<any[]>([]);
-  const [instagramConfig, setInstagramConfig] = useState<any>(null);
+  const [instagramPosts, setInstagramPosts] = useState<any[]>((cmsManifest.instagramPosts as any[]) || []);
+  const [instagramConfig, setInstagramConfig] = useState<any>(cmsManifest.instagramConfig || null);
   const { currentCurrency, rates, setCurrency } = useCurrency();
 
   const [selectedMetalCurrency, setSelectedMetalCurrency] = useState(currentCurrency || 'CAD');
@@ -55,17 +57,18 @@ export default function HomePage() {
     const fetchData = async () => {
       try {
         const [bannersRes, productsRes, collectionsRes, metalsRes, igRes, confRes] = await Promise.all([
-          apiRequest<any>('/cms/banners'),
-          apiRequest<any>('/catalog/products?limit=8'),
-          apiRequest<any>('/catalog/collections'),
-          apiRequest<any>('/metals/rates'),
-          apiRequest<any>('/cms/instagram-feed'),
+          apiRequest<any>('/cms/banners').catch(() => null),
+          apiRequest<any>('/catalog/products?limit=8').catch(() => []),
+          apiRequest<any>('/catalog/collections').catch(() => []),
+          apiRequest<any>('/metals/rates').catch(() => []),
+          apiRequest<any>('/cms/instagram-feed').catch(() => []),
           apiRequest<any>('/admin/cms/instagram-config').catch(() => null),
         ]);
 
         if (!isMounted) return;
         const bannerList = Array.isArray(bannersRes) ? bannersRes : bannersRes?.data || [];
-        setBanners(bannerList.filter((b: HeroBannerDto) => b.isActive));
+        const activeBanners = bannerList.filter((b: HeroBannerDto) => b.isActive);
+        setBanners(activeBanners.length > 0 ? activeBanners : (cmsManifest.heroBanners as any[]));
 
         const prodList = Array.isArray(productsRes) ? productsRes : productsRes?.data || [];
         setFeaturedProducts(prodList);
@@ -77,7 +80,7 @@ export default function HomePage() {
         setMetalRates(ratesList);
 
         const igList = Array.isArray(igRes) ? igRes : igRes?.data || [];
-        setInstagramPosts(igList);
+        setInstagramPosts(igList.length > 0 ? igList : (cmsManifest.instagramPosts as any[]));
 
         if (confRes) {
           setInstagramConfig(confRes.data || confRes);
