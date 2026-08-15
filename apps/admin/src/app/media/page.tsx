@@ -23,6 +23,8 @@ import {
   ChevronRight,
 } from 'lucide-react';
 
+import mediaManifest from '@/data/media-manifest.json';
+
 const CATEGORIES: { key: string; label: string }[] = [
   { key: 'ALL', label: 'All Photography (240)' },
   { key: 'SETS', label: 'Necklace Sets (72)' },
@@ -37,7 +39,7 @@ const CATEGORIES: { key: string; label: string }[] = [
 
 export default function MediaLibraryPage() {
   const [assets, setAssets] = useState<MediaAssetDto[]>([]);
-  const [meta, setMeta] = useState({ total: 0, page: 1, limit: 24, totalPages: 1 });
+  const [meta, setMeta] = useState({ total: 240, page: 1, limit: 24, totalPages: 10 });
   const [isLoading, setIsLoading] = useState(true);
   const [category, setCategory] = useState<string>('ALL');
   const [search, setSearch] = useState('');
@@ -56,13 +58,53 @@ export default function MediaLibraryPage() {
       q.set('page', targetPage.toString());
       q.set('limit', '24');
 
-      const res = await apiRequest<any>(`/admin/media?${q.toString()}`);
-      if (res && res.data) {
-        setAssets(res.data);
-        if (res.meta) setMeta(res.meta);
-      } else if (Array.isArray(res)) {
-        setAssets(res);
+      let loadedAssets: MediaAssetDto[] = [];
+      let loadedTotal = 0;
+
+      try {
+        const res = await apiRequest<any>(`/admin/media?${q.toString()}`);
+        if (res && Array.isArray(res.data) && res.data.length > 0) {
+          loadedAssets = res.data;
+          loadedTotal = res.meta?.total || res.data.length;
+        } else if (res && res.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
+          loadedAssets = res.data.data;
+          loadedTotal = res.data.meta?.total || res.data.data.length;
+        } else if (Array.isArray(res) && res.length > 0) {
+          loadedAssets = res;
+          loadedTotal = res.length;
+        }
+      } catch (err) {
+        // Fallback to local manifest
       }
+
+      // If backend was empty or failed, use static media manifest
+      if (loadedAssets.length === 0) {
+        let filtered = (mediaManifest as any[]) || [];
+        if (category !== 'ALL') {
+          filtered = filtered.filter((m) => m.category === category);
+        }
+        if (search) {
+          const s = search.toLowerCase();
+          filtered = filtered.filter(
+            (m) =>
+              m.filename.toLowerCase().includes(s) ||
+              m.originalName.toLowerCase().includes(s) ||
+              (m.tags && m.tags.some((t: string) => t.toLowerCase().includes(s))),
+          );
+        }
+        loadedTotal = filtered.length;
+        const limit = 24;
+        const start = (targetPage - 1) * limit;
+        loadedAssets = filtered.slice(start, start + limit);
+      }
+
+      setAssets(loadedAssets);
+      setMeta({
+        total: loadedTotal,
+        page: targetPage,
+        limit: 24,
+        totalPages: Math.max(1, Math.ceil(loadedTotal / 24)),
+      });
     } catch (e) {
       console.error('Failed to load media:', e);
     } finally {

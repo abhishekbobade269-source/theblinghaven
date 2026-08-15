@@ -173,47 +173,6 @@ export default function LoginPage() {
               )}
             </button>
           </form>
-
-          {/* Quick Demo Switcher */}
-          <div className="mt-8 border-t border-ivory-300 dark:border-obsidian-800 pt-5">
-            <p className="text-center text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-3">
-              Quick Test Seed Roles
-            </p>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <button
-                type="button"
-                onClick={() => { setEmail('admin@theblinghaven.shop'); setPassword('Admin@BlingHaven2026!'); }}
-                className="rounded-lg border border-ivory-400 dark:border-obsidian-750 bg-ivory-100 dark:bg-obsidian-850 p-2 text-left hover:border-gold-500 transition"
-              >
-                <p className="font-semibold text-gold-700 dark:text-gold-300">Super Admin</p>
-                <p className="text-[10px] text-slate-500 truncate">admin@theblinghaven...</p>
-              </button>
-              <button
-                type="button"
-                onClick={() => { setEmail('catalog@theblinghaven.shop'); setPassword('Manager@BlingHaven2026!'); }}
-                className="rounded-lg border border-ivory-400 dark:border-obsidian-750 bg-ivory-100 dark:bg-obsidian-850 p-2 text-left hover:border-gold-500 transition"
-              >
-                <p className="font-semibold text-slate-700 dark:text-slate-300">Catalog Manager</p>
-                <p className="text-[10px] text-slate-500 truncate">catalog@theblinghaven...</p>
-              </button>
-              <button
-                type="button"
-                onClick={() => { setEmail('orders@theblinghaven.shop'); setPassword('Manager@BlingHaven2026!'); }}
-                className="rounded-lg border border-ivory-400 dark:border-obsidian-750 bg-ivory-100 dark:bg-obsidian-850 p-2 text-left hover:border-gold-500 transition"
-              >
-                <p className="font-semibold text-slate-700 dark:text-slate-300">Order Manager</p>
-                <p className="text-[10px] text-slate-500 truncate">orders@theblinghaven...</p>
-              </button>
-              <button
-                type="button"
-                onClick={() => { setEmail('security@theblinghaven.shop'); setPassword('Manager@BlingHaven2026!'); }}
-                className="rounded-lg border border-ivory-400 dark:border-obsidian-750 bg-ivory-100 dark:bg-obsidian-850 p-2 text-left hover:border-gold-500 transition"
-              >
-                <p className="font-semibold text-slate-700 dark:text-slate-300">Security Admin</p>
-                <p className="text-[10px] text-slate-500 truncate">security@theblinghaven...</p>
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
