@@ -716,14 +716,16 @@ const ImportRealPostModal = memo(function ImportRealPostModal({
   );
 });
 
+import cmsManifest from '@/data/cms-manifest.json';
+
 // ---------------- MAIN CMS MANAGEMENT PAGE ----------------
 export default function CmsManagementPage() {
-  const [activeTab, setActiveTab] = useState<'CORE_PAGES' | 'CUSTOM_PAGES' | 'HERO_BANNERS' | 'INSTAGRAM_FEED'>('INSTAGRAM_FEED');
-  const [pageControls, setPageControls] = useState<PageControlRecord[]>([]);
+  const [activeTab, setActiveTab] = useState<'CORE_PAGES' | 'CUSTOM_PAGES' | 'HERO_BANNERS' | 'INSTAGRAM_FEED'>('CORE_PAGES');
+  const [pageControls, setPageControls] = useState<PageControlRecord[]>((cmsManifest.pageControls as any[]) || []);
   const [products, setProducts] = useState<any[]>([]);
-  const [banners, setBanners] = useState<any[]>([]);
-  const [instagramPosts, setInstagramPosts] = useState<InstagramPostRecord[]>([]);
-  const [instagramConfig, setInstagramConfig] = useState<InstagramConfigRecord | null>(null);
+  const [banners, setBanners] = useState<any[]>((cmsManifest.heroBanners as any[]) || []);
+  const [instagramPosts, setInstagramPosts] = useState<InstagramPostRecord[]>((cmsManifest.instagramPosts as any[]) || []);
+  const [instagramConfig, setInstagramConfig] = useState<InstagramConfigRecord | null>((cmsManifest.instagramConfig as any) || null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Modals
@@ -736,11 +738,11 @@ export default function CmsManagementPage() {
     setIsLoading(true);
     try {
       const [pcRes, prodRes, banRes, igRes, igConfRes] = await Promise.all([
-        apiRequest<any>('/cms/page-controls'),
-        apiRequest<any>('/catalog/products?limit=100'),
-        apiRequest<any>('/admin/cms/banners'),
-        apiRequest<any>('/admin/cms/instagram-feed'),
-        apiRequest<any>('/admin/cms/instagram-config'),
+        apiRequest<any>('/cms/page-controls').catch(() => null),
+        apiRequest<any>('/catalog/products?limit=100').catch(() => []),
+        apiRequest<any>('/admin/cms/banners').catch(() => []),
+        apiRequest<any>('/admin/cms/instagram-feed').catch(() => []),
+        apiRequest<any>('/admin/cms/instagram-config').catch(() => null),
       ]);
 
       const pcList = Array.isArray(pcRes) ? pcRes : pcRes?.data || [];
@@ -749,11 +751,11 @@ export default function CmsManagementPage() {
       const igList = Array.isArray(igRes) ? igRes : igRes?.data || [];
       const igConf = igConfRes?.data || igConfRes;
 
-      setPageControls(pcList);
+      setPageControls(pcList.length > 0 ? pcList : (cmsManifest.pageControls as any[]));
       setProducts(prodList);
-      setBanners(banList);
-      setInstagramPosts(igList);
-      setInstagramConfig(igConf);
+      setBanners(banList.length > 0 ? banList : (cmsManifest.heroBanners as any[]));
+      setInstagramPosts(igList.length > 0 ? igList : (cmsManifest.instagramPosts as any[]));
+      setInstagramConfig(igConf || (cmsManifest.instagramConfig as any));
     } catch (e) {
       console.error('Failed to load CMS data:', e);
     } finally {
