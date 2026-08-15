@@ -20,6 +20,8 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 
+import productsManifest from '@/data/products-manifest.json';
+
 interface CategoryShowcaseProps {
   categorySlug: string;
   categoryTitle: string;
@@ -39,7 +41,13 @@ export function CategoryShowcase({
   badgeText,
   highlights,
 }: CategoryShowcaseProps) {
-  const [products, setProducts] = useState<ProductDto[]>([]);
+  const initialCatProducts = (productsManifest as any[]).filter(
+    (p) => p.categorySlug?.toLowerCase() === categorySlug.toLowerCase(),
+  );
+
+  const [products, setProducts] = useState<ProductDto[]>(
+    initialCatProducts.length > 0 ? initialCatProducts : (productsManifest as any[]).slice(0, 12),
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [sortBy, setSortBy] = useState<'FEATURED' | 'PRICE_LOW_HIGH' | 'PRICE_HIGH_LOW'>('FEATURED');
   const [selectedMetal, setSelectedMetal] = useState<string>('ALL');
@@ -49,21 +57,37 @@ export function CategoryShowcase({
     const fetchCategoryProducts = async () => {
       setIsLoading(true);
       try {
-        const catRes = await apiRequest<any>('/catalog/categories');
-        const categories = Array.isArray(catRes) ? catRes : catRes?.data || [];
-        const matchedCat = categories.find(
-          (c: any) => c.slug?.toLowerCase() === categorySlug.toLowerCase()
-        );
+        let loaded: ProductDto[] = [];
+        try {
+          const catRes = await apiRequest<any>('/catalog/categories');
+          const categories = Array.isArray(catRes) ? catRes : catRes?.data || [];
+          const matchedCat = categories.find(
+            (c: any) => c.slug?.toLowerCase() === categorySlug.toLowerCase(),
+          );
 
-        let url = '/catalog/products?limit=50';
-        if (matchedCat) {
-          url += `&categoryId=${matchedCat.id}`;
+          let url = '/catalog/products?limit=50';
+          if (matchedCat) {
+            url += `&categoryId=${matchedCat.id}`;
+          }
+
+          const res = await apiRequest<any>(url);
+          const prodList = Array.isArray(res) ? res : res?.data || [];
+          if (prodList.length > 0) {
+            loaded = prodList;
+          }
+        } catch (err) {
+          // Fallback to manifest
         }
 
-        const res = await apiRequest<any>(url);
+        if (loaded.length === 0) {
+          const filteredFromManifest = (productsManifest as any[]).filter(
+            (p) => p.categorySlug?.toLowerCase() === categorySlug.toLowerCase(),
+          );
+          loaded = filteredFromManifest.length > 0 ? filteredFromManifest : (productsManifest as any[]).slice(0, 12);
+        }
+
         if (!isMounted) return;
-        const prodList = Array.isArray(res) ? res : res?.data || [];
-        setProducts(prodList);
+        setProducts(loaded);
       } catch (e) {
         console.error('Failed to load category products:', e);
       } finally {

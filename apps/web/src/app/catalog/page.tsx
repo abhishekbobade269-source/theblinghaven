@@ -15,13 +15,21 @@ import {
   X,
 } from 'lucide-react';
 
+import productsManifest from '@/data/products-manifest.json';
+
 function CatalogContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get('category') || 'ALL';
   const initialCollection = searchParams.get('collection') || 'ALL';
 
-  const [products, setProducts] = useState<ProductDto[]>([]);
-  const [categories, setCategories] = useState<CategoryDto[]>([]);
+  const [products, setProducts] = useState<ProductDto[]>((productsManifest as any[]) || []);
+  const [categories, setCategories] = useState<CategoryDto[]>([
+    { id: 'rings', name: 'Rings', slug: 'rings', description: 'Solitaires & Bands', displayOrder: 1, isActive: true, productCount: 14, createdAt: '2026-08-15T12:00:00.000Z' },
+    { id: 'bridal-sets', name: 'Bridal Sets', slug: 'bridal-sets', description: 'Polki & Kundan', displayOrder: 2, isActive: true, productCount: 72, createdAt: '2026-08-15T12:00:00.000Z' },
+    { id: 'earrings', name: 'Earrings', slug: 'earrings', description: 'Chandbali & Jhumkas', displayOrder: 3, isActive: true, productCount: 31, createdAt: '2026-08-15T12:00:00.000Z' },
+    { id: 'bangles', name: 'Bangles', slug: 'bangles', description: 'Kadas & Bracelets', displayOrder: 4, isActive: true, productCount: 16, createdAt: '2026-08-15T12:00:00.000Z' },
+    { id: 'artisan-silver', name: 'Artisan Silver', slug: 'artisan-silver', description: '925 Sterling Silver', displayOrder: 5, isActive: true, productCount: 17, createdAt: '2026-08-15T12:00:00.000Z' },
+  ]);
   const [collections, setCollections] = useState<CollectionDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -36,11 +44,17 @@ function CatalogContent() {
     const fetchMetadata = async () => {
       try {
         const [catRes, colRes] = await Promise.all([
-          apiRequest<any>('/catalog/categories'),
-          apiRequest<any>('/catalog/collections'),
+          apiRequest<any>('/catalog/categories').catch(() => null),
+          apiRequest<any>('/catalog/collections').catch(() => null),
         ]);
-        setCategories(Array.isArray(catRes) ? catRes : catRes?.data || []);
-        setCollections(Array.isArray(colRes) ? colRes : colRes?.data || []);
+        if (catRes) {
+          const list = Array.isArray(catRes) ? catRes : catRes?.data || [];
+          if (list.length > 0) setCategories(list);
+        }
+        if (colRes) {
+          const list = Array.isArray(colRes) ? colRes : colRes?.data || [];
+          if (list.length > 0) setCollections(list);
+        }
       } catch (e) {
         console.error('Failed to load categories/collections:', e);
       }
@@ -51,21 +65,50 @@ function CatalogContent() {
   const fetchProducts = async () => {
     setIsLoading(true);
     try {
-      const q = new URLSearchParams();
-      if (selectedCategory !== 'ALL') {
-        const matched = categories.find(
-          (c) =>
-            c.slug?.toLowerCase() === selectedCategory.toLowerCase() ||
-            c.name.toLowerCase().includes(selectedCategory.toLowerCase()) ||
-            c.id === selectedCategory
-        );
-        if (matched) q.set('categoryId', matched.id);
-      }
-      if (selectedCollection !== 'ALL') q.set('collectionId', selectedCollection);
-      if (search) q.set('search', search);
+      let loaded: ProductDto[] = [];
+      try {
+        const q = new URLSearchParams();
+        if (selectedCategory !== 'ALL') {
+          const matched = categories.find(
+            (c) =>
+              c.slug?.toLowerCase() === selectedCategory.toLowerCase() ||
+              c.name.toLowerCase().includes(selectedCategory.toLowerCase()) ||
+              c.id === selectedCategory
+          );
+          if (matched) q.set('categoryId', matched.id);
+        }
+        if (selectedCollection !== 'ALL') q.set('collectionId', selectedCollection);
+        if (search) q.set('search', search);
 
-      const res = await apiRequest<any>(`/catalog/products?${q.toString()}`);
-      setProducts(Array.isArray(res) ? res : res?.data || []);
+        const res = await apiRequest<any>(`/catalog/products?${q.toString()}`);
+        const list = Array.isArray(res) ? res : res?.data || [];
+        if (list.length > 0) loaded = list;
+      } catch (err) {
+        // Fallback
+      }
+
+      if (loaded.length === 0) {
+        let manifestList = (productsManifest as any[]) || [];
+        if (selectedCategory !== 'ALL') {
+          manifestList = manifestList.filter(
+            (p) =>
+              p.categorySlug?.toLowerCase() === selectedCategory.toLowerCase() ||
+              p.categoryId?.toLowerCase() === selectedCategory.toLowerCase(),
+          );
+        }
+        if (search) {
+          const s = search.toLowerCase();
+          manifestList = manifestList.filter(
+            (p) =>
+              p.title.toLowerCase().includes(s) ||
+              p.description?.toLowerCase().includes(s) ||
+              p.sku.toLowerCase().includes(s),
+          );
+        }
+        loaded = manifestList;
+      }
+
+      setProducts(loaded);
     } catch (e) {
       console.error('Failed to load products:', e);
     } finally {
