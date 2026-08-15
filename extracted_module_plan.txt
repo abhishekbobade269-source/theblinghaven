@@ -1,0 +1,684 @@
+THE BLING HAVEN
+MODULE-WISE DEVELOPMENT PLAN
+International Jewellery & Ornaments E-Commerce Platform
+Admin Platform → Catalog → Storefront → Commerce → Security → Scale → Production
+Reference storefront: theblinghaven.shop
+Version 1.0 | 15 August 2026
+1. Purpose of This Development Plan
+This document breaks the large The Bling Haven international jewellery e-commerce project into controlled modules that can be designed, developed, secured, tested and accepted independently. Each module includes UI/UX, frontend, backend, database/API, security, testing and acceptance considerations.
+The recommended approach is to build the security and admin foundation first, then progressively add catalog, storefront and commerce capabilities. No later module should bypass the common authentication, authorization, audit, validation, logging and monitoring foundations.
+2. Core Development Principles
+Build backend security together with the UI; do not treat security as a post-development activity.
+Use server-authoritative pricing, inventory, permissions and payment state.
+Every module must have explicit ownership, API contracts, database changes, tests and acceptance criteria.
+Use least privilege and defense-in-depth for all administrative functionality.
+Keep production databases, Redis and internal services on private networks.
+Use CDN/WAF/DDoS/bot controls before exposing production traffic.
+Design for internationalization from the beginning rather than adding locales later.
+Treat high-value jewellery commerce as a fraud-sensitive environment.
+3. Overall Module Roadmap
+Phase
+Module
+Priority
+Primary Outcome
+1
+Admin Authentication & Security Foundation
+CRITICAL
+Secure admin access, MFA, sessions, password lifecycle
+2
+Admin Portal Shell & Dashboard
+CRITICAL
+Navigation shell, KPIs, notifications, global layout
+3
+Admin Users / Roles / Permissions
+CRITICAL
+RBAC and privileged-access controls
+4
+CMS / Pages Management
+CRITICAL
+Admin-controlled website pages and content publishing
+5
+Media / Image / Video Management
+CRITICAL
+Secure asset upload and CDN delivery
+6
+Categories & Jewellery Attributes
+CRITICAL
+Flexible jewellery taxonomy and specifications
+7
+Products & Variants
+CRITICAL
+Product catalog and SKU/variant system
+8
+Pricing / Currency / Promotions
+CRITICAL
+International price books, promotions and server-side pricing
+9
+Inventory Management
+CRITICAL
+Stock, reservation and concurrency controls
+10
+Customer Management
+HIGH
+Customer support and controlled customer records
+11
+Storefront Foundation
+CRITICAL
+Header, navigation, localization and global UI
+12
+Home / Category / Search
+CRITICAL
+Product discovery experience
+13
+Product Detail / Wishlist / Compare
+CRITICAL
+Conversion-focused jewellery experience
+14
+Cart
+CRITICAL
+Secure, persistent, server-authoritative cart
+15
+Checkout / Shipping / Tax
+CRITICAL
+International checkout workflow
+16
+Payment / Fraud Protection
+CRITICAL
+Secure payment orchestration
+17
+Orders / Fulfillment / Tracking
+CRITICAL
+Order state machine and shipping
+18
+Returns / Refunds / Support
+HIGH
+Returns, refunds and support workflows
+19
+Internationalization / Country Rules
+CRITICAL
+Language, currency, tax, shipping, market rules
+20
+Notifications / Email
+HIGH
+Transactional communication
+21
+Reports / Analytics
+MEDIUM
+Business and operational reporting
+22
+Audit / Security Monitoring
+CRITICAL
+Forensics, alerts and privileged activity
+23
+CDN / WAF / DDoS / Performance
+CRITICAL
+Traffic protection and scalability
+24
+QA / Security / Penetration Test
+CRITICAL
+Release assurance
+25
+Production / DR / Launch
+CRITICAL
+Go-live, backup, recovery and operating runbooks
+4. Module 01 - Admin Login & Security Foundation
+This is the first implementation module. The admin portal is the highest-impact part of the platform because compromise can expose products, customers, pricing, orders, promotions, refunds and operational controls.
+4.1 Admin Login UI
+UI Area
+Requirement
+Security Requirement
+Branding
+The Bling Haven logo/brand, admin-only hostname
+Do not use customer storefront authentication page
+Credentials
+Email/username + password
+Rate-limit authentication attempts
+Password control
+Show/hide password
+Never persist password in client storage
+MFA
+TOTP and/or WebAuthn/passkey
+Mandatory for privileged administrators
+Recovery
+Forgot password / reset
+Single-use, expiring tokens
+Session
+Device/session awareness
+Secure cookies, revocation, idle/absolute timeout
+Error handling
+Generic authentication failure message
+Prevent account enumeration
+Risk challenge
+Adaptive challenge on suspicious behavior
+Do not challenge every customer/admin unnecessarily
+4.2 Authentication Flow
+Admin → WAF/CDN → Rate Limiter → Authentication Service → Credential Verification → Risk Evaluation → MFA/Step-up → Secure Session → Admin Portal
+4.3 Password & Session Controls
+Store passwords only as strong Argon2id hashes with unique salts and appropriate work factors.
+Never store passwords, reset tokens or MFA secrets in application logs.
+Reset tokens must be random, single-use and expire quickly.
+Use Secure + HttpOnly + SameSite cookies when cookie sessions are used.
+Use short-lived access credentials and controlled refresh/session rotation where token-based sessions are used.
+Support session listing and revocation for administrators.
+Require re-authentication for high-risk operations such as changing MFA, resetting credentials and high-value financial actions.
+4.4 Threats Covered
+Threat
+Control
+Brute force
+Endpoint rate limiting, progressive delays, adaptive challenge
+Credential stuffing
+Bot detection, MFA, anomaly detection, breached-password controls where appropriate
+Session hijacking
+Secure session cookies, rotation, revocation, HTTPS
+Account enumeration
+Uniform errors and response behavior
+Password reset abuse
+Rate limits, token expiry, single-use tokens
+Admin takeover
+Mandatory MFA, least privilege, privileged monitoring
+4.5 Module Acceptance Criteria
+Valid authorized admin can sign in and reach only permitted admin areas.
+Invalid credentials do not reveal whether an account exists.
+MFA is enforced for privileged roles.
+Admin session can be revoked.
+Password-reset link expires and cannot be reused.
+Repeated authentication abuse is throttled/blocked according to policy.
+All authentication security events are logged without secrets.
+5. Module 02 - Admin Portal Shell & Dashboard
+5.1 UI
+Area
+Components
+Header
+Logo, global search, notifications, profile, security state, logout
+Sidebar
+Dashboard, Catalog, Media, CMS, Inventory, Orders, Customers, Marketing, Reports, Security, Settings
+Dashboard
+Sales KPIs, orders, inventory alerts, failed payments, returns, security events
+Responsive behavior
+Desktop sidebar; tablet/mobile drawer; keyboard navigation
+5.2 Dashboard Data
+Revenue, orders, average order value, refunds, low stock, out-of-stock, failed payments, returns, new customers, suspicious logins, blocked requests and pending operational actions.
+5.3 Security
+Dashboard widgets must only show data allowed by the admin role. Sensitive metrics must not leak to low-privilege users.
+6. Module 03 - Admin User, Role & Permission Management
+Do not implement a single generic “Admin” role. Use role-based permissions and enforce them at the API, not only in the UI.
+Role
+Typical Access
+High-Risk Control
+Super Admin
+System-wide configuration
+MFA + break-glass/audit controls
+Security Admin
+Security, users, audit
+No default financial authority
+Catalog Manager
+Products, categories, media
+Publishing/bulk delete controls
+Media Manager
+Media library
+Upload/delete audit
+Inventory Manager
+Stock and reservations
+Large adjustment approval
+Order Manager
+Orders/fulfillment
+Refund thresholds
+Finance
+Refunds/reconciliation
+Dual approval for large refunds
+Marketing
+Promotions/content
+Coupon limits
+Support
+Customer/order support
+Masked PII and restricted export
+Analyst
+Read-only reporting
+Export scope and audit
+6.1 Permission Model
+User → Role → Permission → Resource → Action. A hidden UI button is not an authorization control; every sensitive API operation must independently verify the user’s permission.
+7. Module 04 - CMS / Website Pages Management
+Feature
+Admin Capability
+Security
+Page list
+Search/filter/status/sort
+RBAC
+Editor
+Rich content, sections, CTA, metadata
+Sanitize HTML; prevent stored XSS
+SEO
+Title, meta description, OG image, canonical URL
+Validate URLs and fields
+Workflow
+Draft → Review → Approved → Published
+Approval permissions
+Scheduling
+Publish/unpublish at a future date
+Server-side schedule
+Versioning
+View/recover previous versions
+Audit changes
+Delete
+Archive/soft delete where appropriate
+Confirmation + audit
+8. Module 05 - Media / Image / Video Management
+This module is responsible for secure handling of product photography, banners, certificates, videos and other assets.
+Capability
+Requirement
+Upload
+Single and multi-file upload
+Types
+Strict allowlist such as JPEG, PNG, WebP, AVIF; SVG only if safely sanitized and required
+Validation
+Extension, MIME, content and size validation
+Scanning
+Malware/content scanning and quarantine for untrusted files
+Storage
+Private object storage; controlled CDN delivery
+Processing
+Generate thumbnails, responsive sizes and optimized formats asynchronously
+Metadata
+Alt text, caption, focal point, usage reference
+Usage
+Show which products/pages reference an asset
+Deletion
+Prevent deletion if required by published content or warn with dependency list
+8.1 Secure Media Pipeline
+Admin → Upload API → Authentication → Permission Check → Size/Type Validation → Content Scan → Quarantine → Transformation → Object Storage → CDN → Published URL
+8.2 Media Threats
+Malicious SVG, web shell upload, MIME spoofing, polyglot files, path traversal, image bombs, oversized payloads, metadata leakage, parser vulnerabilities and SSRF through unsafe image-processing URLs.
+9. Module 06 - Jewellery Categories & Attribute Management
+Domain
+Examples
+Category
+Rings, necklaces, earrings, bracelets, bangles, pendants, ornaments
+Material
+Gold, silver, platinum, alloy, vermeil
+Purity
+9K/14K/18K/22K/24K or market-specific values
+Gemstone
+Type, carat, cut, clarity, color, treatment
+Dimensions
+Length, width, height, weight, ring size
+Compliance
+Certification, disclosure, country restrictions
+Attributes should be configurable so new jewellery categories can be introduced without redesigning the entire product database.
+10. Module 07 - Product & Variant Management
+Area
+Required Fields
+General
+Product ID, SKU, name, slug, brand, collection, short/long description, status
+Jewellery
+Material, purity, weight, gemstone, carat, size, finish, certification
+Media
+Primary image, gallery, video, certificate documents
+Commerce
+Price, compare-at price, currency, tax category, stock policy
+SEO
+SEO title, description, canonical, structured data inputs
+Availability
+Countries, warehouses, stock status, preorder rules
+10.1 Variant Rule
+Each sellable combination must have its own unique variant/SKU identity. Example: 18K White Gold + Size 7 + 1ct stone = one variant with a dedicated SKU and stock state.
+11. Module 08 - Pricing, Currency, Tax & Promotions
+Pricing must be calculated server-side. The frontend must never be trusted to submit the authoritative price.
+Suggested calculation chain: Base Price → Market/Currency Price Book → Promotion → Tax → Shipping → Duties Disclosure → Final Total.
+Area
+Controls
+Currency
+Supported currencies, currency source of truth, rounding policy
+Price books
+Country/region-specific prices where required
+Promotion
+Date ranges, customer eligibility, product/category rules
+Coupons
+Usage limits, per-customer/device limits, velocity controls
+Tax
+Tax engine/provider or configured rules
+Audit
+All privileged price/promotion changes logged
+12. Module 09 - Inventory & Stock Management
+Capability
+Requirement
+On hand
+Current physical/available stock
+Reserved
+Short-lived reservation during checkout
+Available
+On hand minus reservations and other committed stock
+Adjustments
+Reason, actor, timestamp, before/after quantity
+Concurrency
+Transactional controls to avoid overselling
+Alerts
+Low stock, stockout, negative stock attempt, reservation expiry
+12.1 Concurrency Control
+Use database transactions, appropriate row locking or optimistic concurrency, and short-lived reservations. Two simultaneous buyers must not both succeed in purchasing the final unit unless the business intentionally supports backorders.
+13. Module 10 - Customer Management
+Customer search, profile, account status, order history, addresses, support notes and security-related information where lawful and necessary.
+Use role-based PII masking and strictly control exports. Support users should see only the data required to solve customer issues.
+14. Module 11 - Storefront Foundation
+Foundation
+Requirements
+Header
+Logo, navigation, search, account, wishlist, cart, country/language/currency
+Footer
+Policies, support, newsletter, social links if approved
+Global UX
+Loading, error, empty, confirmation states
+Consent
+Cookie/analytics consent where required
+Accessibility
+Semantic HTML, focus management, keyboard navigation, WCAG 2.2 AA baseline
+Performance
+SSR/streaming/caching, image optimization, critical CSS strategy
+15. Module 12 - Home, Category & Search
+Home: hero, featured collections, new arrivals, best sellers, categories, brand story, craftsmanship, editorial, testimonials and newsletter.
+Category/listing: filters, sort, grid, pagination, no-result recovery.
+Search: autocomplete, synonyms, facets, safe query lengths and pagination.
+15.1 Search Security
+Rate limit expensive searches, cap pagination, cache safe public requests, prevent unbounded wildcard queries, monitor abusive search patterns and move to a dedicated search engine when catalog size/complexity requires it.
+16. Module 13 - Product Detail, Wishlist & Compare
+Section
+Requirements
+Gallery
+Zoom, responsive images, keyboard/touch controls, alt text
+Product info
+Name, rating, price, selected variant, stock, shipping/returns
+Jewellery detail
+Material, purity, gemstone, dimensions, care, certification
+Purchase
+Add to cart, Buy Now, quantity, wishlist
+Trust
+Authentication/certification, secure payment indicators, policies
+Wishlist
+Guest/auth handling, sync, remove, move to cart
+Compare
+Comparable attributes only; prevent data explosion
+17. Module 14 - Cart
+Server-authoritative price/discount/tax data, stock revalidation, quantity limits, cart expiry, safe guest cart identifiers, persistent authenticated cart, promotion validation and recoverable errors.
+Never accept a browser-submitted “trusted” price. The backend must recalculate all monetary values from product/variant, price book, promotion and market rules.
+18. Module 15 - Checkout, Shipping & Tax
+18.1 Checkout Steps
+Identity / guest or account
+Shipping address
+Shipping method
+Tax/duties display
+Final order review
+Payment
+Confirmation
+18.2 Security
+Server-side total recalculation, idempotency keys, address validation, payment session binding, anti-bot controls, step-up/risk checks where appropriate, request size limits and timeouts.
+19. Module 16 - Payment & Fraud Protection
+Use a PCI-aligned hosted/tokenized payment architecture so the application does not unnecessarily handle raw payment-card data.
+Flow: Storefront → Checkout API → Payment Service → PSP → Verified Webhook → Payment State → Order State.
+Risk
+Controls
+Payment replay
+Idempotency + provider reference uniqueness
+Forged success
+Never trust client-side success; verify PSP server-side/webhook
+Webhook replay
+Signature + timestamp/replay + event ID
+Fraud
+PSP risk tools, velocity, device/IP signals, market mismatch, review queue
+Refund abuse
+Approval thresholds, dual approval for large refunds, audit
+Reconciliation
+Scheduled order-vs-PSP reconciliation
+20. Module 17 - Orders, Fulfillment & Tracking
+Suggested order lifecycle: Pending Payment → Paid → Processing → Packed → Shipped → Delivered, with controlled branches for Cancelled, Return Requested, Returned and Refunded.
+Use an explicit state machine; reject invalid transitions; snapshot commercial values at order time; protect shipment webhooks; record operator actions.
+21. Module 18 - Returns, Refunds & Support
+Return flow: Request → Eligibility → Approval/Reject → Return Shipment → Inspection → Refund Approval → PSP Refund → Completed.
+Separate customer-visible notes from internal notes.
+Use role-based refund permission and financial approval thresholds.
+Audit every refund and manual adjustment.
+22. Module 19 - Internationalization & Market Rules
+Capability
+Requirement
+Language
+Translation-ready UI and content
+Currency
+Locale-aware pricing and formatting
+Address
+Country-specific address schemas and validation
+Tax
+Country/region tax rules or provider
+Duties
+DDP/DAP policy and clear customer disclosure
+Shipping
+Country/service restrictions and estimated delivery
+Compliance
+Market-specific jewellery/product restrictions
+23. Module 20 - Email & Notifications
+Welcome, verification, password reset, order confirmation, payment, shipping, delivery, return, refund, security alert and internal operations notifications.
+Use authenticated sending domains (SPF/DKIM/DMARC), secure template handling and strict separation between transactional and marketing messages.
+24. Module 21 - Reports & Analytics
+Report Area
+Examples
+Sales
+Revenue, orders, AOV, conversion, refunds
+Products
+Top sellers, slow movers, views, stockouts
+Customers
+New/returning, LTV where appropriately modeled
+Inventory
+On hand, reserved, adjustment history
+Operations
+Payment failures, shipment failures, pending actions
+Security
+Failed logins, blocked traffic, suspicious activity
+25. Module 22 - Audit Logging & Security Monitoring
+Every privileged and financially significant action should produce a structured audit record with actor, action, target object, timestamp, request/correlation ID and relevant before/after data (without exposing secrets).
+Event Type
+Examples
+Authentication
+Login, logout, MFA setup/change, password reset
+Authorization
+Role/permission changes, access denials
+Catalog
+Price/product/media changes
+Commerce
+Order changes, refunds, inventory adjustments
+Data
+Exports, bulk downloads, customer record access
+Security
+WAF blocks, suspicious logins, incident actions
+26. Module 23 - CDN, WAF, DDoS & Traffic Protection
+Production traffic should follow: Internet → DNS → CDN/DDoS Protection → WAF → Bot Management → Rate Limiter → Load Balancer → Application → Private Data Network.
+Keep origin IP addresses private and accessible only from approved edge/network paths.
+Use endpoint-specific rate limits for login, password reset, search, cart, coupons, checkout, payments and webhooks.
+Cache public catalog/content responses but never cache personalized account/order/payment responses.
+Apply request body, URL, header and query complexity limits.
+Use adaptive bot challenges rather than forcing challenges on every visitor.
+Use circuit breakers, queue backpressure and graceful degradation for non-critical dependencies.
+Maintain a DDoS incident runbook with emergency rules and escalation contacts.
+27. Module 24 - QA, Security Testing & Penetration Testing
+Test Type
+Required Scope
+Functional
+All modules, positive and negative paths
+Responsive UI
+Desktop, tablet, mobile, touch and orientation
+Accessibility
+Keyboard, screen reader, contrast, zoom/reflow
+API security
+Authentication, authorization, BOLA/IDOR, validation, rate limits
+App security
+XSS, injection, CSRF, SSRF, file upload, session security
+Commerce abuse
+Coupon, cart, stock, payment, refund and order replay
+Load
+Normal, peak, spike, soak, recovery
+Resilience
+Database/PSP/cache/email/queue failures
+Penetration
+External, API-authenticated and admin-authenticated testing
+DR
+Backup restore, failover and rollback
+28. Module 25 - Production Deployment, Backup & Disaster Recovery
+Deployment pipeline: Developer → Pull Request → Code Review → Tests → Security Scans → Build Artifact → Staging → E2E/DAST → Approval → Production → Smoke Test → Monitoring.
+Separate development, staging and production environments.
+Use managed secrets and KMS-backed encryption where available.
+Use encrypted automated backups with isolated credentials and point-in-time recovery.
+Perform scheduled restore drills, not only backup jobs.
+Define target RPO/RTO for the business and validate them under realistic recovery tests.
+Maintain rollback and incident-response runbooks.
+29. Cross-Module Security Requirements
+Security Layer
+Mandatory Requirement
+Identity
+Strong password hashing, MFA for admins, secure session lifecycle
+Authorization
+RBAC + object-level authorization on every protected resource
+Input
+Strict schema validation, size/length limits, allowlists
+Output
+Encoding/sanitization, CSP, safe error messages
+Network
+Private DB/Redis, restricted ingress/egress, TLS everywhere
+Edge
+CDN, WAF, DDoS controls, bot management, rate limiting
+Secrets
+Managed secret storage, rotation, secret scanning
+Payment
+Hosted/tokenized, idempotency, webhook verification, reconciliation
+Logging
+Centralized, structured, no secrets/payment credentials
+Monitoring
+Business + security alerts, metrics, logs, traces
+Resilience
+Timeouts, retries, circuit breakers, queues, graceful degradation
+Supply Chain
+SCA, SBOM, lockfiles, protected CI/CD, signed/provenance-aware builds
+Recovery
+Encrypted backups, isolated backup access, tested restore
+Testing
+SAST, SCA, DAST, penetration testing, load testing, UAT
+30. Recommended Backend Domain Structure
+Maintain explicit domain boundaries even if the first release is a modular monolith. This creates a clean path to independently scalable services later.
+backend/
+├── auth/
+├── users/
+├── roles/
+├── permissions/
+├── security/
+├── audit/
+├── cms/
+├── media/
+├── categories/
+├── attributes/
+├── products/
+├── variants/
+├── pricing/
+├── promotions/
+├── inventory/
+├── customers/
+├── search/
+├── cart/
+├── checkout/
+├── payments/
+├── fraud/
+├── orders/
+├── shipping/
+├── returns/
+├── notifications/
+├── reports/
+└── integrations/
+31. Recommended Frontend Structure
+frontend/
+├── admin/
+│   ├── auth/
+│   ├── dashboard/
+│   ├── users/
+│   ├── roles/
+│   ├── pages/
+│   ├── media/
+│   ├── categories/
+│   ├── products/
+│   ├── inventory/
+│   ├── orders/
+│   ├── customers/
+│   ├── promotions/
+│   ├── reports/
+│   ├── audit/
+│   └── security/
+└── storefront/
+    ├── home/
+    ├── categories/
+    ├── search/
+    ├── products/
+    ├── wishlist/
+    ├── cart/
+    ├── checkout/
+    ├── account/
+    ├── orders/
+    ├── returns/
+    └── support/
+32. Module Definition of Done
+Dimension
+Definition of Done
+UI/UX
+Approved design implemented, responsive states, empty/loading/error states complete
+Frontend
+Type-safe code, component tests, accessibility checks, error boundaries
+Backend
+API implemented, validation, authorization, error contract, observability
+Database
+Migration reviewed, indexes added, rollback/forward path understood
+Security
+Threats identified, controls implemented, abuse cases tested
+Testing
+Unit + integration + E2E coverage for critical behavior
+Operations
+Metrics/logs/alerts and runbook where applicable
+Documentation
+API, admin usage and support notes updated
+Acceptance
+Business owner / technical owner sign-off
+33. Recommended First Development Sprint
+Set up the repositories and environments for frontend, backend and infrastructure.
+Configure CI/CD with linting, type checks, unit tests, secret scanning and dependency scanning.
+Create the admin application shell and protected admin route.
+Implement admin login, password reset and MFA foundation.
+Create role and permission data model.
+Implement authorization guards in the backend.
+Create audit-event framework.
+Create secure file/media service foundation.
+Create the initial admin dashboard with security and operational placeholders.
+Add baseline WAF/rate-limiting/security-header configuration in the non-production environment.
+34. Final Recommended Development Order
+The project should be executed in vertical slices rather than building the entire frontend first and the backend later. For each module, build the UI, API, data model, authorization, logging and tests together.
+Development Block
+Modules
+Main Milestone
+Admin Foundation
+01–05
+Secure admin portal + CMS + media management
+Catalog Foundation
+06–10
+Complete jewellery catalog + inventory + customers
+Storefront
+11–14
+Browse → product → wishlist → cart
+Commerce
+15–18
+Checkout → payment → order → returns/refunds
+International
+19–20
+Country/language/currency + notifications
+Operations
+21–22
+Reports + audit + security monitoring
+Scale & Security
+23–24
+DDoS/WAF + performance + penetration testing
+Launch
+25
+Production + DR + UAT + go-live
+35. Key Principle for The Bling Haven
+The project should not be treated as a collection of web pages. It is a secure international commerce platform. The admin portal, CMS, media pipeline, product system, inventory, checkout, payment, order and security monitoring are interconnected domains. The safest implementation strategy is to establish the security and administration foundation first, then build every subsequent module on top of that foundation.
+36. Reference Architecture
+The Bling Haven - International Jewellery E-Commerce Reference Architecture

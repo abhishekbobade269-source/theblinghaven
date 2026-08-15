@@ -1,0 +1,810 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model AdminUser {
+  id                  String               @id @default(uuid())
+  email               String               @unique
+  passwordHash        String
+  firstName           String
+  lastName            String
+  role                String               @default("CATALOG_MANAGER") // AdminRole enum string
+  mfaEnabled          Boolean              @default(false)
+  mfaSecret           String?
+  isActive            Boolean              @default(true)
+  lastLoginAt         DateTime?
+  failedLoginAttempts Int                  @default(0)
+  lockoutUntil        DateTime?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  sessions            AdminSession[]
+  resetTokens         PasswordResetToken[]
+  auditLogs           AuditLog[]
+
+  @@map("admin_users")
+}
+
+model AdminSession {
+  id           String    @id @default(uuid())
+  userId       String
+  tokenHash    String    @unique
+  ipAddress    String?
+  userAgent    String?
+  deviceType   String?
+  lastActiveAt DateTime  @default(now())
+  expiresAt    DateTime
+  isRevoked    Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+
+  user         AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("admin_sessions")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  isUsed    Boolean   @default(false)
+  createdAt DateTime  @default(now())
+
+  user      AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+model AuditLog {
+  id           String     @id @default(uuid())
+  eventType    String     // AuditEventType enum string
+  userId       String?
+  userEmail    String?
+  userRole     String?
+  ipAddress    String?
+  userAgent    String?
+  resourceType String?
+  resourceId   String?
+  metadata     String?    // JSON string for SQLite/Postgres compatibility
+  createdAt    DateTime   @default(now())
+
+  user         AdminUser? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([eventType])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model RolePermissionOverride {
+  id          String   @id @default(uuid())
+  role        String   @unique
+  permissions String   // JSON array of Permission enum strings
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+
+  @@map("role_permission_overrides")
+}
+
+model MediaAsset {
+  id           String   @id @default(uuid())
+  filename     String   @unique
+  originalName String
+  url          String
+  thumbnailUrl String?
+  mimeType     String
+  sizeBytes    Int
+  width        Int?
+  height       Int?
+  category     String   @default("GENERAL") // MediaCategory enum string
+  altText      String?
+  tags         String   @default("[]")      // JSON array of string tags
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([category])
+  @@map("media_assets")
+}
+
+model CmsPage {
+  id             String    @id @default(uuid())
+  slug           String    @unique
+  title          String
+  subtitle       String?
+  content        String    // Rich text / Markdown / HTML
+  seoTitle       String?
+  seoDescription String?
+  status         String    @default("PUBLISHED") // DRAFT, PUBLISHED, ARCHIVED
+  publishedAt    DateTime? @default(now())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([status])
+  @@map("cms_pages")
+}
+
+model HeroBanner {
+  id             String   @id @default(uuid())
+  title          String
+  subtitle       String?
+  badgeText      String?
+  ctaText        String?  @default("Explore Collection")
+  ctaLink        String?  @default("/catalog")
+  imageUrl       String
+  mobileImageUrl String?
+  displayOrder   Int      @default(0)
+  isActive       Boolean  @default(true)
+  alignment      String   @default("LEFT") // LEFT, CENTER, RIGHT
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([displayOrder])
+  @@index([isActive])
+  @@map("hero_banners")
+}
+
+model PageControl {
+  id                 String    @id @default(uuid())
+  pageRoute          String    @unique // e.g. "/", "/rings", "/bridal-sets", "/earrings", "/bangles", "/artisan-silver", "/try-on", "/bespoke", "/vip-lounge", "/pages/bestsellers"
+  pageTitle          String
+  pageType           String    @default("CORE_SYSTEM") // CORE_SYSTEM, CUSTOM_PAGE
+  status             String    @default("ACTIVE") // ACTIVE, COMING_SOON, UNDER_MAINTENANCE, ON_HOLD, DISABLED
+  customHeadline     String?
+  customSubtext      String?
+  heroBannerUrl      String?
+  badgeText          String?
+  productIds         String    @default("[]") // JSON array of assigned product IDs
+  estimatedReturnAt  String?
+  hideFromNavigation Boolean   @default(false)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@index([pageRoute])
+  @@index([status])
+  @@map("page_controls")
+}
+
+model Category {
+  id           String    @id @default(uuid())
+  name         String
+  slug         String    @unique
+  description  String?
+  imageUrl     String?
+  parentId     String?
+  displayOrder Int       @default(0)
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  products     Product[]
+
+  @@index([slug])
+  @@index([isActive])
+  @@map("categories")
+}
+
+model Collection {
+  id            String    @id @default(uuid())
+  name          String
+  slug          String    @unique
+  tagline       String?
+  description   String?
+  heroBannerUrl String?
+  isFeatured    Boolean   @default(false)
+  displayOrder  Int       @default(0)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  products      Product[]
+
+  @@index([slug])
+  @@index([isFeatured])
+  @@map("collections")
+}
+
+model Product {
+  id                 String      @id @default(uuid())
+  sku                String      @unique
+  title              String
+  slug               String      @unique
+  subtitle           String?
+  description        String
+  basePriceUsd       Float
+  comparePriceUsd    Float?
+  costPriceUsd       Float?
+  categoryId         String
+  collectionId       String?
+  specs              String      // JSON string of JewelrySpecsDto
+  primaryImageUrl    String
+  galleryImages      String      @default("[]") // JSON array of string URLs
+  stockQuantity      Int         @default(1)
+  reservedQuantity   Int         @default(0)
+  lowStockThreshold  Int         @default(1)
+  vaultLocation      String      @default("Vault A - Main Atelier")
+  status             String      @default("ACTIVE") // DRAFT, ACTIVE, OUT_OF_STOCK, ARCHIVED
+  isFeatured         Boolean     @default(false)
+  isBestseller       Boolean     @default(false)
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  category           Category    @relation(fields: [categoryId], references: [id])
+  collection         Collection? @relation(fields: [collectionId], references: [id])
+  inventoryLogs      InventoryLog[]
+  priceOverrides     PriceOverride[]
+
+  @@index([sku])
+  @@index([slug])
+  @@index([categoryId])
+  @@index([collectionId])
+  @@index([status])
+  @@map("products")
+}
+
+model InventoryLog {
+  id               String   @id @default(uuid())
+  productId        String
+  sku              String
+  productTitle     String
+  changeType       String   // StockChangeType string
+  quantityChange   Int
+  previousQuantity Int
+  newQuantity      Int
+  reason           String
+  actorId          String?
+  actorEmail       String?
+  createdAt        DateTime @default(now())
+
+  product          Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([sku])
+  @@index([changeType])
+  @@index([createdAt])
+  @@map("inventory_logs")
+}
+
+model CurrencyRate {
+  id              String   @id @default(uuid())
+  currencyCode    String   @unique // USD, EUR, GBP, AED, INR, CAD, AUD, SGD
+  currencyName    String
+  symbol          String
+  rateToUsd       Float
+  fxBufferPercent Float    @default(2.5) // 2.5% default buffer
+  roundingRule    String   @default("ROUND_WHOLE_LUXURY") // NO_ROUND, ROUND_99, ROUND_WHOLE_LUXURY
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("currency_rates")
+}
+
+model PriceOverride {
+  id           String   @id @default(uuid())
+  productId    String
+  sku          String
+  productTitle String
+  currencyCode String
+  manualPrice  Float
+  reason       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, currencyCode])
+  @@index([productId])
+  @@index([currencyCode])
+  @@map("price_overrides")
+}
+
+model Customer {
+  id               String   @id @default(uuid())
+  firstName        String
+  lastName         String
+  email            String   @unique
+  phone            String?
+  country          String   @default("United States")
+  city             String?
+  vipTier          String   @default("STANDARD") // STANDARD, SILVER, GOLD_PATRON, ROYAL_CONCIERGE
+  totalSpendUsd    Float    @default(0.0)
+  totalOrdersCount Int      @default(0)
+  preferences      String   @default("{}")      // JSON of CustomerPreferencesDto
+  conciergeNotes   String?
+  assignedAdvisor  String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  orders           Order[]
+
+  @@index([email])
+  @@index([vipTier])
+  @@index([totalSpendUsd])
+  @@map("customers")
+}
+
+model Order {
+  id                    String          @id @default(uuid())
+  orderNumber           String          @unique // e.g. TBH-2026-8801
+  customerId            String
+  customerName          String
+  customerEmail         String
+  customerPhone         String?
+  customerVipTier       String          @default("STANDARD")
+  status                String          @default("PENDING_VERIFICATION") // OrderStatus
+  paymentStatus         String          @default("PENDING")              // PaymentStatus
+  paymentMethod         String          @default("CREDIT_CARD_VAULT")
+  currencyCode          String          @default("USD")
+  currencySymbol        String          @default("$")
+  totalAmountUsd        Float
+  totalAmountLocal      Float
+  subtotalUsd           Float
+  taxAmountUsd          Float           @default(0.0)
+  shippingAmountUsd     Float           @default(0.0)
+  shippingAddress       String          // JSON of ShippingAddress
+  shippingCarrier       String?         // ShippingCarrier
+  trackingNumber        String?
+  insuredValueUsd       Float?
+  deliverySignatureName String?
+  customerNotes         String?
+  conciergeNotes        String?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  customer              Customer        @relation(fields: [customerId], references: [id])
+  items                 OrderItem[]
+  timeline              OrderTimeline[]
+
+  @@index([orderNumber])
+  @@index([customerId])
+  @@index([status])
+  @@index([paymentStatus])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id                  String   @id @default(uuid())
+  orderId             String
+  productId           String
+  sku                 String
+  title               String
+  primaryImageUrl     String
+  quantity            Int      @default(1)
+  unitPriceUsd        Float
+  totalPriceUsd       Float
+  selectedRingSize    String?
+  selectedBangleSize  String?
+  customEngraving     String?
+  hallmarkCertificate String?
+
+  order               Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+model OrderTimeline {
+  id         String   @id @default(uuid())
+  orderId    String
+  status     String   // OrderStatus
+  notes      String
+  actorEmail String?
+  createdAt  DateTime @default(now())
+
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([createdAt])
+  @@map("order_timeline")
+}
+
+model Promotion {
+  id                   String    @id @default(uuid())
+  code                 String    @unique // e.g. ROYAL2026
+  name                 String
+  description          String?
+  type                 String    // PromotionType
+  value                Float
+  minPurchaseAmountUsd Float?
+  maxDiscountAmountUsd Float?
+  vipTierRequired      String?   // ROYAL_CONCIERGE, etc.
+  categoryId           String?
+  collectionId         String?
+  usageLimit           Int?
+  usageCount           Int       @default(0)
+  startDate            DateTime?
+  endDate              DateTime?
+  isActive             Boolean   @default(true)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@index([code])
+  @@index([isActive])
+  @@map("promotions")
+}
+
+model TaxRule {
+  id                   String   @id @default(uuid())
+  countryCode          String   // US, GB, AE, IN, FR, DE, CA, AU
+  countryName          String
+  regionCode           String?  // State / Province (NY, CA, ON)
+  taxName              String   // VAT, Sales Tax, GST
+  taxRatePercent       Float
+  customsDutyPercent   Float    @default(0.0)
+  isTaxIncludedInPrice Boolean  @default(false)
+  isActive             Boolean  @default(true)
+  notes                String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@unique([countryCode, regionCode])
+  @@index([countryCode])
+  @@index([isActive])
+  @@map("tax_rules")
+}
+
+model ConciergeInquiry {
+  id                       String   @id @default(uuid())
+  fullName                 String
+  email                    String
+  phone                    String?
+  country                  String
+  vipTier                  String?
+  type                     String   // InquiryType
+  status                   String   @default("NEW") // InquiryStatus
+  subject                  String
+  message                  String
+  preferredSalonLocation   String?  // London Mayfair, Dubai Flagship, Virtual
+  preferredAppointmentDate DateTime?
+  assignedAdvisor          String?
+  internalNotes            String?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@index([type])
+  @@map("concierge_inquiries")
+}
+
+model BespokeRequest {
+  id                       String   @id @default(uuid())
+  referenceNumber          String   @unique // e.g. BESPOKE-2026-001
+  clientName               String
+  clientEmail              String
+  clientPhone              String?
+  clientCountry            String
+  vipTier                  String?
+  category                 String   // Ring, Choker, Kada, Earrings, Pendant
+  metalPreference          String   // 18K Yellow Gold, 22K Solid Gold, Platinum Pt950
+  gemstonePreference       String?  // D-Flawless Diamond, Zambian Emerald
+  estimatedCaratWeight     Float?
+  diamondShape             String?  // Cushion, Emerald, Round Brilliant
+  ringOrWristSize          String?
+  engravingText            String?
+  budgetRangeUsd           String
+  inspirationPhotoUrl      String?
+  designBrief              String
+  status                   String   @default("SUBMITTED") // BespokeStatus
+  assignedGoldsmith        String?
+  quotedAmountUsd          Float?
+  cadRenderUrl             String?
+  estimatedCompletionWeeks Int?
+  atelierNotes             String?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  @@index([clientEmail])
+  @@index([status])
+  @@index([category])
+  @@map("bespoke_requests")
+}
+
+model MetalPriceRate {
+  id                             String   @id @default(uuid())
+  metalType                      String   // GOLD, PLATINUM, SILVER
+  purityCode                     String   @unique // 24K_999, 22K_916, 18K_750, PT_950, AG_925
+  purityName                     String
+  spotPriceUsdPerGram            Float
+  marketSource                   String   @default("LBMA_LONDON")
+  dailyChangePercent             Float    @default(0.0)
+  isMarketOpen                   Boolean  @default(true)
+  makingChargesDefaultUsdPerGram Float    @default(12.0)
+  createdAt                      DateTime @default(now())
+  updatedAt                      DateTime @updatedAt
+
+  @@index([metalType])
+  @@index([purityCode])
+  @@map("metal_price_rates")
+}
+
+model CertificateOfAuthenticity {
+  id                   String   @id @default(uuid())
+  certificateNumber    String   @unique // e.g. TBH-CERT-2026-9042
+  productId            String?
+  orderId              String?
+  sku                  String
+  productTitle         String
+  gemstoneReportNumber String   // GIA dossier number
+  gemstoneLaboratory   String   // GIA, IGI, HRD_ANTWERP, AGS, BIS_GOVERNMENT_OF_INDIA
+  caratWeight          Float
+  colorGrade           String
+  clarityGrade         String
+  cutGrade             String
+  polishGrade          String   @default("EXCELLENT")
+  symmetryGrade        String   @default("EXCELLENT")
+  fluorescence         String   @default("NONE")
+  metalType            String
+  metalPurity          String
+  grossWeightGrams     Float
+  netGoldWeightGrams   Float
+  bisHallmarkStamp     String   // BIS-916-HUID-882910
+  cryptographicHash    String   @unique // SHA-256 tamper-proof fingerprint
+  qrVerificationUrl    String
+  ownerName            String   @default("The Bling Haven Vault Reserve")
+  transferHistory      String   @default("[]") // JSON string of OwnershipTransferRecord[]
+  isRevoked            Boolean  @default(false)
+  notes                String?
+  issuedAt             DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@index([certificateNumber])
+  @@index([sku])
+  @@index([gemstoneReportNumber])
+  @@index([gemstoneLaboratory])
+  @@index([ownerName])
+  @@map("certificates_of_authenticity")
+}
+
+model TryOnOverlay {
+  id                       String   @id @default(uuid())
+  productId                String?
+  sku                      String   @unique
+  title                    String
+  category                 String   // RING, EARRINGS, NECKLACE, BANGLE
+  overlayImageUrl          String
+  defaultScale             Float    @default(1.0)
+  defaultRotation          Float    @default(0.0)
+  anchorType               String   @default("HAND_RING_FINGER") // HAND_RING_FINGER, EAR_LOBE, NECK_COLLAR, WRIST
+  sparkleRefractionEnabled Boolean  @default(true)
+  basePriceCad             Float    @default(25000.0)
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  @@index([sku])
+  @@index([category])
+  @@map("try_on_overlays")
+}
+
+model TryOnConsultation {
+  id                   String   @id @default(uuid())
+  clientName           String
+  clientEmail          String
+  clientPhone          String?
+  productSku           String
+  productTitle         String
+  category             String
+  scaleApplied         Float    @default(1.0)
+  rotationApplied      Float    @default(0.0)
+  skinToneSelected     String   @default("WARM_OLIVE")
+  capturedLookImageUrl String?
+  preferredSalon       String   @default("Toronto Yorkville Haute Salon")
+  notes                String?
+  status               String   @default("PENDING_ADVISOR_REVIEW") // PENDING_ADVISOR_REVIEW, CONTACTED, APPOINTMENT_SCHEDULED, ARCHIVED
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@index([clientEmail])
+  @@index([productSku])
+  @@index([status])
+  @@map("try_on_consultations")
+}
+
+model VipMember {
+  id              String   @id @default(uuid())
+  name            String
+  email           String   @unique
+  phone           String?
+  invitationKey   String   @unique
+  tier            String   @default("ROYAL_TIER") // MAISON_PATRON, ROYAL_TIER, BLACK_TIER_INNER_CIRCLE
+  assignedAdvisor String   @default("Lord Alistair Sterling (Senior Director)")
+  preferredSalon  String   @default("Toronto Yorkville Haute Salon")
+  totalSpendCad   Float    @default(125000.0)
+  isActive        Boolean  @default(true)
+  joinedAt        DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([invitationKey])
+  @@index([email])
+  @@map("vip_members")
+}
+
+model SecretVaultDrop {
+  id                 String   @id @default(uuid())
+  sku                String   @unique
+  title              String
+  tagline            String
+  description        String
+  gemstoneDetails    String
+  metalDetails       String
+  priceCad           Float
+  vaultLocation      String   @default("Toronto Reserve Vault")
+  allocationStatus   String   @default("AVAILABLE") // AVAILABLE, RESERVED_ON_HOLD, ALLOCATED_ACQUIRED
+  accessTierRequired String   @default("ROYAL_TIER")
+  dropEndTimestamp   DateTime
+  primaryImageUrl    String
+  galleryImages      String   @default("[]") // JSON string
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([sku])
+  @@index([allocationStatus])
+  @@map("secret_vault_drops")
+}
+
+model VipChatMessage {
+  id            String   @id @default(uuid())
+  clientEmail   String
+  clientName    String
+  senderRole    String   // CLIENT, ADVISOR
+  senderName    String
+  message       String
+  salonLocation String   @default("Toronto Yorkville Haute Salon")
+  isRead        Boolean  @default(false)
+  timestamp     DateTime @default(now())
+
+  @@index([clientEmail])
+  @@index([timestamp])
+  @@map("vip_chat_messages")
+}
+
+model LuxuryVault {
+  id                  String            @id @default(uuid())
+  name                String
+  code                String            @unique // TORONTO_YORKVILLE, VANCOUVER_PACIFIC, LONDON_MAYFAIR, DUBAI_DIFC, ZURICH_FREEPORT
+  city                String
+  country             String
+  currencyCode        String            @default("CAD")
+  totalAssetValueCad  Float             @default(5000000.0)
+  goldBullionKg       Float             @default(150.0)
+  looseDiamondCarats  Float             @default(850.0)
+  securityLevel       String            @default("TIER_5_MILITARY_GRADE")
+  isMasterVault       Boolean           @default(false)
+  address             String
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  outgoingTransfers   ArmoredTransfer[] @relation("OriginVault")
+  incomingTransfers   ArmoredTransfer[] @relation("DestinationVault")
+
+  @@index([code])
+  @@map("luxury_vaults")
+}
+
+model ArmoredTransfer {
+  id                    String      @id @default(uuid())
+  manifestNumber        String      @unique // TBH-ARM-2026-8801
+  originVaultId         String
+  originVault           LuxuryVault @relation("OriginVault", fields: [originVaultId], references: [id])
+  destinationVaultId    String
+  destinationVault      LuxuryVault @relation("DestinationVault", fields: [destinationVaultId], references: [id])
+  carrierName           String      @default("BRINKS_GLOBAL_SERVICES") // BRINKS_GLOBAL_SERVICES, MALCA_AMIT_SECURITY, FERRARI_GROUP_ARMORED
+  courierBadgeId        String      @default("BRINKS-SEC-99201")
+  insuredValueCad       Float
+  insurancePolicyNumber String      @default("LLOYDS-LONDON-VAL-882901")
+  transferStatus        String      @default("DISPATCH_SCHEDULED") // DISPATCH_SCHEDULED, ARMORED_TRANSIT, CUSTOMS_PORT_INSPECTION, ARRIVED_SECURE, CANCELLED
+  itemsCount            Int         @default(1)
+  itemsSummary          String
+  currentWaypoint       String      @default("Origin Vault Security Staging Bay")
+  dispatchedAt          DateTime    @default(now())
+  estimatedArrivalAt    DateTime
+  completedAt           DateTime?
+  notes                 String?
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  @@index([manifestNumber])
+  @@index([transferStatus])
+  @@map("armored_transfers")
+}
+
+model AiConsultationLog {
+  id               String   @id @default(uuid())
+  clientQuery      String
+  aiResponse       String
+  topicCategory    String   @default("4CS_DIAMONDS") // 4CS_DIAMONDS, SIZING, BRIDAL, SPOT_RATES, SALON_BOOKING
+  actionTriggered  String   @default("GENERAL_CONSULTATION")
+  recommendedSku   String?
+  timestamp        DateTime @default(now())
+
+  @@index([topicCategory])
+  @@index([timestamp])
+  @@map("ai_consultation_logs")
+}
+
+model FiscalCloseRecord {
+  id                         String   @id @default(uuid())
+  fiscalDate                 String   @unique // YYYY-MM-DD
+  status                     String   @default("DRAFT_PENDING_AUDIT") // DRAFT_PENDING_AUDIT, RECONCILED, EXECUTIVE_CERTIFIED, DISCREPANCY_FLAGGED
+  grossSalesCad              Float    @default(0.0)
+  netRevenueCad              Float    @default(0.0)
+  ordersCount                Int      @default(0)
+  taxesCollectedCad          Float    @default(0.0)
+  ontarioHstCad              Float    @default(0.0)
+  internationalTaxCad        Float    @default(0.0)
+  vaultInventoryValuationCad Float    @default(141900000.0)
+  goldBullionKgStock         Float    @default(1950.0)
+  diamondCaratsStock         Float    @default(12850.0)
+  armoredTransitValueCad     Float    @default(6300000.0)
+  discrepancyAmountCad       Float    @default(0.0)
+  certifiedByAuditor         String?
+  certifiedAt                DateTime?
+  auditNotes                 String?
+  cryptoLedgerHash           String   // SHA-256 integrity seal
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+
+  @@index([fiscalDate])
+  @@index([status])
+  @@map("fiscal_close_records")
+}
+
+model SupportTicket {
+  id                 String           @id @default(uuid())
+  ticketNumber       String           @unique // TBH-TKT-2026-8801
+  customerName       String
+  customerEmail      String
+  customerPhone      String?
+  category           String           @default("PRODUCT_INQUIRY") // PRODUCT_INQUIRY, ORDER_SHIPMENT, GEMOLOGY_CERTIFICATE, BESPOKE_CUSTOM, SALON_APPOINTMENT, VAULT_STORAGE, OTHER
+  priority           String           @default("STANDARD") // STANDARD, PRIORITY, URGENT_VIP
+  status             String           @default("OPEN") // OPEN, IN_REVIEW, WAITING_CLIENT, RESOLVED, CLOSED
+  subject            String
+  description        String
+  relatedOrderNumber String?
+  relatedProductSku  String?
+  assignedAgent      String?
+  staffNotes         String?
+  responses          TicketResponse[]
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([ticketNumber])
+  @@index([customerEmail])
+  @@index([status])
+  @@map("support_tickets")
+}
+
+model TicketResponse {
+  id             String        @id @default(uuid())
+  ticketId       String
+  ticket         SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  senderRole     String        @default("SUPPORT_AGENT") // CLIENT, SUPPORT_AGENT
+  senderName     String
+  message        String
+  isInternalNote Boolean       @default(false)
+  timestamp      DateTime      @default(now())
+
+  @@index([ticketId])
+  @@map("ticket_responses")
+}
+
+
+
+
+
+
+
+
+
+
+
+

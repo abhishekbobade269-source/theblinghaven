@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-[#FAF9F5] text-slate-900 dark:bg-[#09090C] dark:text-slate-100 antialiased selection:bg-gold-500 selection:text-obsidian-950;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+}
+
+/* ---------------- HOVER-ONLY HARDWARE ACCELERATED EFFECTS ---------------- */
+
+/* Shimmer Light Reflection Sweep (Only on :hover) */
+.shine-sweep-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-sweep-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.22) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg) translate3d(0, 0, 0);
+  pointer-events: none;
+  transition: transform 0.4s ease;
+}
+
+.group:hover .shine-sweep-container::after {
+  transform: translateX(400%) skewX(-20deg) translate3d(0, 0, 0);
+}
+
+/* Smooth Card Hover Lift (Only on :hover) */
+.card-luxury-hover {
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out, border-color 0.15s ease-out;
+}
+
+.card-luxury-hover:hover {
+  transform: translate3d(0, -5px, 0);
+}
+
+/* Luxury Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #09090C;
+}
+::-webkit-scrollbar-thumb {
+  background: #5A420A;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #D4AF37;
+}

@@ -1,0 +1,1650 @@
+BUSINESS REQUIREMENTS DOCUMENT
+The Bling Haven - International Jewellery & Ornaments E-Commerce Platform
+Enterprise Web Storefront • Customer Account • Admin Portal • Secure Commerce API
+Prepared for: International Client
+Document version: 1.0 | Date: 15 August 2026 | Status: Baseline / Development-Ready
+1. Executive Summary
+This BRD defines the business, functional, UI/UX, technical, security, operational and non-functional requirements for a premium international e-commerce platform specializing in jewellery, ornaments and related luxury products. The platform is designed for global customers and must support multi-currency commerce, international shipping, localized content, secure payments, high traffic, fraud resistance, strong privacy controls and an administrator portal.
+The solution should be treated as a security-sensitive commerce platform. It should not promise to be 'unhackable'; the objective is defense-in-depth: minimize attack surface, prevent common and advanced attacks, detect abnormal activity, contain incidents, recover quickly and maintain auditable evidence.
+2. Product Vision & Objectives
+Deliver a premium, fast, mobile-first jewellery shopping experience for international customers.
+Provide high-quality product discovery through categories, filters, search, collections and editorial content.
+Support secure product purchase, payment, order tracking, returns/refunds and customer self-service.
+Provide a controlled admin portal for catalog, inventory, orders, customers, promotions, content and reporting.
+Protect customer PII, account credentials, payment flows, order data and business data using defense-in-depth controls.
+Absorb legitimate traffic spikes and resist bot abuse, credential stuffing, scraping, inventory hoarding and DDoS attempts.
+Support future expansion into multiple countries, currencies, languages, tax regimes and logistics providers.
+3. Scope
+3.1 In Scope
+Public storefront and responsive customer experience.
+Customer registration, login, password reset, MFA/step-up authentication and account management.
+Product catalog, categories, collections, variants, materials, gemstones, dimensions, certification metadata and media.
+Search, filtering, sorting, recommendations, recently viewed and wishlist.
+Cart, coupon/promotion engine, shipping calculation, tax calculation and checkout.
+Payment provider integration using hosted/tokenized payment components; no unnecessary storage of raw card data.
+Order creation, payment status, fulfillment status, shipment tracking, cancellation, return/refund workflows.
+International currency, locale, country, address and shipping support.
+Admin portal with role-based access control and audit logging.
+Inventory and stock reservation with concurrency controls.
+CMS-like content for banners, collections, policies, FAQs and editorial pages.
+Security controls: CDN/WAF, DDoS mitigation, rate limiting, bot management, fraud controls, secrets management, SIEM/logging.
+Monitoring, backups, disaster recovery, incident response and security testing.
+3.2 Out of Scope for Phase 1
+Native mobile applications unless separately approved.
+Marketplace / multi-vendor seller onboarding.
+Cryptocurrency payments unless legally and operationally approved.
+AI-generated product descriptions published automatically without human review.
+Physical retail POS integration unless separately specified.
+Storing full payment-card numbers or CVV in the application database.
+4. Stakeholders & Roles
+Role
+Primary Responsibilities
+Access Level
+Customer
+Browse, search, wishlist, cart, checkout, orders, returns, profile
+Own account/data only
+Guest Customer
+Browse and optionally checkout as guest
+Public + temporary checkout
+Customer Support
+Order/customer assistance, tickets, limited profile access
+Restricted support RBAC
+Catalog Manager
+Products, categories, pricing, media, attributes
+Catalog scope
+Inventory Manager
+Stock, reservations, warehouses, adjustments
+Inventory scope
+Order Manager
+Orders, fulfillment, returns, refunds
+Order scope
+Marketing Manager
+Promotions, coupons, campaigns, banners
+Marketing scope
+Finance
+Payments, refunds, reconciliation, reports
+Finance scope
+Security/Admin
+Security settings, users, audit logs, incident actions
+Privileged
+Super Admin
+Full administration; emergency controls
+Break-glass, MFA + strong controls
+5. Business Goals & KPIs
+KPI
+Target / Measurement
+Store availability
+≥99.9% monthly for production storefront, excluding approved maintenance
+Core web performance
+LCP target ≤2.5s on representative modern mobile/desktop conditions
+Checkout reliability
+≥99.5% successful application processing excluding external PSP declines
+Payment security
+No storage of raw PAN/CVV; tokenized/hosted PSP flow
+Security
+Zero known Critical vulnerabilities at production release
+Bot/abuse control
+Automated detection and throttling for credential stuffing, scraping and checkout abuse
+Recovery
+RPO ≤15 min for transactional data; RTO ≤60 min target, subject to infrastructure design
+Auditability
+Privileged actions and security events traceable to actor, timestamp and request context
+6. Customer Journey
+Customer lands on localized storefront through CDN/edge layer.
+Customer browses collection/category or searches for a product.
+Customer opens product detail page and reviews images, specifications, material, size, availability, shipping and returns.
+Customer adds a variant to wishlist or cart.
+Cart validates price, stock, promotions and country-specific constraints.
+Checkout collects shipping/billing information and creates an expiring checkout session.
+Payment is completed through a PCI-aligned payment provider flow.
+Order service confirms payment and atomically reserves/commits stock.
+Customer receives confirmation and can track order status.
+Fulfillment and carrier events update shipment status through verified webhooks.
+Customer can initiate eligible cancellation/return/refund according to policy.
+7. Functional Requirements — Storefront
+ID
+Requirement
+Priority
+Acceptance / Notes
+FR-STORE-001
+Responsive storefront for mobile, tablet and desktop
+Must
+All major pages responsive; keyboard and screen-reader accessible.
+FR-STORE-002
+Localized country/locale selection
+Must
+Country, language, currency and shipping context are persisted safely.
+FR-STORE-003
+Home page
+Must
+Hero, collections, featured products, editorial blocks, trust elements.
+FR-STORE-004
+Category/collection pages
+Must
+Pagination/infinite loading, filters, sort, price range, availability.
+FR-STORE-005
+Product detail page
+Must
+Images, zoom, variants, materials, dimensions, certifications, care, delivery and returns.
+FR-STORE-006
+Product search
+Must
+Typo tolerance, synonyms, SKU/name search, filters and safe query limits.
+FR-STORE-007
+Wishlist
+Should
+Authenticated users can add/remove products and receive availability notifications.
+FR-STORE-008
+Recently viewed
+Should
+Privacy-conscious local/account history with retention controls.
+FR-STORE-009
+Content pages
+Must
+About, contact, FAQ, shipping, returns, privacy, terms, cookie policy.
+FR-STORE-010
+SEO
+Must
+Server-rendered/indexable pages, metadata, canonical URLs, sitemap and structured data.
+8. Functional Requirements — Customer Account
+ID
+Requirement
+Priority
+Acceptance / Notes
+FR-ACC-001
+Registration with email verification
+Must
+Verification token expires and is single-use.
+FR-ACC-002
+Login/logout
+Must
+Secure session/token handling, throttling and anomaly detection.
+FR-ACC-003
+Password reset
+Must
+Generic response, single-use expiring token, rate-limited.
+FR-ACC-004
+MFA / step-up authentication
+Must for admin; Recommended for customers
+Support phishing-resistant methods where feasible.
+FR-ACC-005
+Profile and address book
+Must
+PII access controlled; change history for sensitive actions.
+FR-ACC-006
+Order history
+Must
+Customer can only access own orders.
+FR-ACC-007
+Account deletion/export request
+Must
+Workflow aligned with applicable privacy obligations.
+9. Functional Requirements — Catalog & Jewellery Domain
+Domain
+Required Fields / Capabilities
+Notes
+Product identity
+Product ID, SKU, slug, title, subtitle, description, status
+Immutable internal ID; human-readable SKU.
+Jewellery type
+Ring, necklace, bracelet, earrings, pendant, brooch, ornament, etc.
+Configurable taxonomy.
+Materials
+Gold, silver, platinum, alloy, vermeil, etc.
+Use controlled vocabulary.
+Purity / fineness
+e.g., 9K/14K/18K/22K/24K or applicable regional standard
+Display by market.
+Gemstones
+Type, carat, cut, clarity, color, treatment
+Optional per product/variant.
+Certification
+Certificate number, issuing lab, certificate document/media
+Validate upload type and access.
+Dimensions
+Length, width, height, weight, ring size
+Unit conversion by locale.
+Variants
+Size, metal, stone, finish, color
+Each sellable variant has SKU/stock/price.
+Pricing
+Base price, sale price, currency, effective dates
+Server-side calculation only.
+Media
+Images, video, alt text, sort order
+Object storage + CDN; validate files.
+Compliance
+Country restrictions, material disclosure, customs data
+Configurable per market.
+10. Functional Requirements — Cart & Checkout
+ID
+Requirement
+Priority
+Acceptance / Notes
+FR-CHECK-001
+Persistent cart
+Must
+Server-side cart for authenticated users; signed/session-bound guest cart.
+FR-CHECK-002
+Stock validation
+Must
+Revalidate at add-to-cart and checkout.
+FR-CHECK-003
+Inventory reservation
+Must
+Short TTL reservation prevents overselling; idempotent release.
+FR-CHECK-004
+Promotion validation
+Must
+All discount eligibility calculated server-side.
+FR-CHECK-005
+Shipping quote
+Must
+Destination, weight, dimensions, service level and restrictions considered.
+FR-CHECK-006
+Tax calculation
+Must
+Country/region rules or external tax provider; final calculation server-side.
+FR-CHECK-007
+Checkout session
+Must
+Short-lived state machine with anti-replay and idempotency.
+FR-CHECK-008
+Payment
+Must
+Hosted/tokenized PSP integration; never trust client payment success.
+FR-CHECK-009
+Order confirmation
+Must
+Only after verified payment result and transactional order state.
+FR-CHECK-010
+Abuse controls
+Must
+Rate limits, bot signals, velocity rules and suspicious-order review.
+11. Functional Requirements — Orders, Fulfillment & Returns
+ID
+Requirement
+Priority
+Acceptance / Notes
+FR-ORD-001
+Order state machine
+Must
+Pending payment → paid → processing → shipped → delivered / cancelled / returned.
+FR-ORD-002
+Payment webhook processing
+Must
+Verify provider signature; idempotent event handling.
+FR-ORD-003
+Shipment tracking
+Must
+Carrier integration with normalized status model.
+FR-ORD-004
+Cancellation
+Must
+Eligibility based on order/fulfillment state.
+FR-ORD-005
+Returns
+Must
+Policy-driven eligibility, RMA/reference number and inspection status.
+FR-ORD-006
+Refunds
+Must
+Role-controlled; idempotent and reconciled with PSP.
+FR-ORD-007
+Customer notifications
+Must
+Email/optional SMS/push with preference and consent controls.
+FR-ORD-008
+Admin notes
+Must
+Internal notes segregated from customer-visible content.
+12. Admin Portal Requirements
+Module
+Capabilities
+Security
+Dashboard
+Revenue, orders, stock alerts, failed payments, returns, security alerts
+Role-filtered metrics
+Catalog
+CRUD products, variants, media, attributes, categories
+Approval workflow for high-risk changes
+Inventory
+Stock by warehouse/location, adjustments, reservations
+Dual control for large adjustments
+Orders
+Search, filter, payment/fulfillment state, cancellation, returns
+PII minimization
+Customers
+Search and support view, account status, order history
+No unnecessary bulk export
+Promotions
+Coupons, campaigns, usage limits, eligibility
+Prevent unlimited discount abuse
+Content
+Banners, collections, editorial pages
+Sanitize rich text; approval
+Reports
+Sales, inventory, returns, tax/payment reconciliation
+Export permissions
+Users & Roles
+Admin users, roles, permissions, sessions
+MFA mandatory
+Audit & Security
+Audit logs, security events, suspicious activity
+Append-only / tamper-evident storage
+13. UI/UX Requirements
+Visual direction: premium luxury aesthetic with restrained typography, high-quality product photography, generous whitespace and clear conversion paths.
+Desktop: mega navigation, search, account, wishlist and cart in persistent header; editorial hero and collection-led discovery.
+Mobile: compact header, sticky cart/checkout actions, touch-friendly filters and image-first product browsing.
+Product page: gallery left / information right on desktop; stacked gallery and purchase module on mobile.
+Checkout: distraction-minimized, progress indicator, address autocomplete where lawful, shipping options, taxes and final total before payment.
+Admin portal: data-dense but readable tables, filters, bulk actions, side drawers/modals, audit context and permission-aware controls.
+Accessibility target: WCAG 2.2 AA as the design baseline, subject to final audit and applicable local requirements.
+Every destructive action must require confirmation and show scope; high-risk actions may require re-authentication.
+14. Recommended Frontend Architecture
+Layer
+Recommendation
+Purpose
+Framework
+Next.js + React + TypeScript
+SSR/SSG, SEO, performance, maintainability
+Styling
+Tailwind CSS or design-system CSS
+Consistent responsive UI
+State
+React Query/TanStack Query + local state
+Server cache and predictable client state
+Forms
+React Hook Form + schema validation
+Strong validation with low re-render cost
+Search UI
+Dedicated search client
+Autocomplete, facets, safe query limits
+Analytics
+Consent-aware analytics layer
+Conversion and product analytics
+Security headers
+Managed at edge + application
+CSP, HSTS, frame protections, MIME controls
+Testing
+Unit + component + E2E + accessibility
+Regression prevention
+15. Recommended Backend Architecture
+Recommended baseline: modular monolith initially, with clear domain boundaries and the ability to split high-load services later. This reduces early operational complexity while preserving scalability. Node.js/NestJS + TypeScript is recommended for the REST API; PostgreSQL is the system of record; Redis supports caching, short-lived state, queues and rate-limit counters; object storage + CDN serves media.
+Domain Module
+Responsibilities
+Identity & Access
+Customers, admin users, sessions, MFA, roles, permissions
+Catalog
+Products, variants, attributes, categories, media metadata
+Pricing
+Prices, currencies, promotions, coupons, effective dates
+Inventory
+Stock, reservations, warehouses, adjustments
+Cart
+Guest/auth carts, line items, expiration
+Checkout
+Address, shipping, tax, payment orchestration
+Orders
+Order state machine, order items, returns
+Payments
+PSP adapters, webhooks, reconciliation, idempotency
+Shipping
+Carrier adapters, rates, tracking
+Notifications
+Email/SMS providers, templates, preferences
+Content
+CMS-like pages, banners, collections
+Reporting
+Aggregated metrics, exports, reconciliation
+Security/Audit
+Security events, admin audit trail, incident evidence
+16. API Design
+Method / Endpoint
+Purpose
+Security / Controls
+POST /api/v1/auth/register
+Create customer
+Validation, email verification, bot controls
+POST /api/v1/auth/login
+Authenticate
+Rate limit, risk scoring, MFA/step-up
+POST /api/v1/auth/password/reset
+Reset password
+Single-use token, throttling
+GET /api/v1/products
+Catalog search/list
+Cache, query limits, pagination
+GET /api/v1/products/{slug}
+Product detail
+Public; safe field projection
+POST /api/v1/cart/items
+Add item
+Stock check, quantity limits, anti-bot
+POST /api/v1/checkout/session
+Create checkout
+Auth/session binding, idempotency
+POST /api/v1/payments/create
+Start payment
+Server-side amount; PSP tokenization
+POST /api/v1/webhooks/payment
+Payment callback
+Signature verification + idempotency
+POST /api/v1/orders
+Finalize order
+Server-side recalculation; transactional
+GET /api/v1/orders/{id}
+Order details
+Object-level authorization
+POST /api/v1/returns
+Create return
+Eligibility + ownership checks
+GET /api/v1/admin/audit
+Audit events
+Admin RBAC + MFA
+All APIs must use versioning, strict schemas, allow-listed fields, pagination, maximum request sizes, timeouts, correlation IDs, consistent error contracts and server-side authorization. Object-level authorization must be checked on every resource access.
+17. Core Data Model
+Entity
+Key Fields
+Security / Integrity
+Customer
+id, email, password_hash, status, locale, consent, created_at
+Hash passwords with Argon2id; encrypt sensitive fields where justified
+Address
+id, customer_id, country, region, city, postal_code, line1, line2
+Ownership checks; minimize retention
+Product
+id, sku, slug, title, description, status, tax_class
+Sanitize content; audit privileged changes
+ProductVariant
+id, product_id, attributes, price, currency, weight, stock_policy
+Unique SKU; optimistic/concurrency controls
+Inventory
+variant_id, location_id, on_hand, reserved, updated_at
+Transactional updates
+Cart
+id, customer/session reference, expires_at
+Signed/session-bound guest carts
+Order
+id, customer_id, totals, currency, status, payment_status
+Immutable financial history + audit
+OrderItem
+order_id, variant_id, sku_snapshot, price_snapshot, quantity
+Snapshot critical values at purchase
+Payment
+id, order_id, provider_ref, amount, currency, status
+Never store raw card data
+Return
+id, order_id, reason, status, refund_ref
+RBAC and audit
+AdminUser
+id, email, role, mfa_state, status
+MFA, least privilege
+AuditEvent
+actor, action, object, timestamp, request_id, metadata
+Append-only / tamper-evident
+18. Security Architecture — Defense in Depth
+The platform should be designed against automated attacks, application-layer exploitation, credential abuse, data theft, payment fraud, traffic floods and supply-chain compromise. OWASP Top 10:2025 identifies Broken Access Control, Security Misconfiguration, Software Supply Chain Failures, Cryptographic Failures, Injection, Insecure Design, Authentication Failures, Software/Data Integrity Failures, Logging/Alerting Failures and Mishandling of Exceptional Conditions as the current top web application risk categories. The API layer should additionally address the OWASP API Security Top 10, including object-level authorization, unrestricted resource consumption, sensitive business-flow abuse and SSRF.
+Threat
+Risk
+Primary Controls
+Detection / Response
+DDoS / volumetric flood
+Availability loss
+CDN, DDoS protection, origin lockdown, autoscaling
+Edge telemetry, alerting, failover
+L7 HTTP flood
+API/server exhaustion
+WAF, rate limits, bot detection, caching
+Request anomaly detection
+Credential stuffing
+Account takeover
+MFA/step-up, breached-password checks, rate limits, bot controls
+Risk scoring + lock/step-up
+Account takeover
+Customer/data theft
+Secure sessions, device/IP risk, MFA, re-auth for sensitive actions
+Impossible-travel/anomaly signals
+SQL/NoSQL injection
+Data compromise
+Parameterized queries, ORM, allowlists, validation
+WAF + SIEM + security testing
+XSS
+Session/data theft
+Output encoding, sanitization, strict CSP
+CSP reports + monitoring
+CSRF
+Unauthorized actions
+SameSite cookies + CSRF tokens where applicable
+Audit anomalies
+IDOR/BOLA
+Cross-account data access
+Object-level authorization on every request
+Authorization tests + alerts
+SSRF
+Internal service access
+URL allowlists, egress filtering, metadata IP blocking
+Network logs + alerts
+Bot scraping
+IP/content abuse
+Bot management, rate limits, signed URLs where needed
+Bot scores, traffic analytics
+Inventory hoarding
+Lost sales / stock manipulation
+Short reservations, per-user/device limits, bot detection
+Velocity alerts
+Coupon abuse
+Revenue loss
+Server-side eligibility, usage limits, risk controls
+Promotion anomaly reports
+Payment fraud
+Chargebacks/loss
+PSP fraud tools, velocity checks, AVS/3DS where available
+Manual review queue
+Malicious uploads
+RCE/data theft
+Allowlisted types, content inspection, isolated storage
+Quarantine + scanning
+Supply-chain attack
+Code compromise
+SBOM, dependency pinning, SCA, signed builds, CI controls
+CI alerts + provenance
+Admin compromise
+Full platform compromise
+MFA, least privilege, IP/device controls, JIT access
+Privileged activity alerts
+Secret leakage
+Credential compromise
+Secret manager, no secrets in repo, rotation
+Secret scanning + rotation
+Log tampering
+Forensic blind spot
+Central immutable/tamper-evident logs
+Integrity monitoring
+19. DDoS, Traffic Flooding & Bot Protection Plan
+Place the storefront and public API behind a reputable CDN/WAF/DDoS edge service.
+Do not expose the origin server directly to the public Internet; permit origin traffic only from approved edge addresses or private connectivity.
+Apply WAF managed rules plus custom rules for authentication, checkout, search, API and admin routes.
+Use endpoint-specific rate limits rather than a single global limit. Login, registration, password reset, search, cart, coupon, checkout and webhooks require different policies.
+Use bot detection/challenges selectively. Avoid CAPTCHAs on every page; trigger friction when risk signals justify it.
+Cache public catalog content aggressively at the edge. Never cache personalized account/order/payment responses.
+Use request body size limits, header limits, query complexity limits, pagination caps and upstream timeouts.
+Implement circuit breakers, queue backpressure and graceful degradation so non-critical features do not take down checkout.
+Keep origin IPs private and rotate them after targeted exposure where necessary.
+Maintain a documented DDoS runbook with escalation contacts, traffic baselines and emergency WAF rules.
+Cloudflare's current guidance specifically recommends WAF custom rules, rate limiting and keeping the origin inaccessible from the public Internet except through the edge. Rate limiting can also target credential stuffing, scraping, programmatic buying and API resource exhaustion. citeturn1search4turn1search15
+20. Payment Security & PCI DSS
+Use a PCI-compliant payment service provider and hosted/tokenized payment components to reduce the application's card-data scope.
+Do not store CVV or raw PAN in application databases, logs, analytics or support systems.
+Verify payment status server-to-server or through authenticated webhooks; never accept a client-side 'payment successful' flag as proof.
+Use idempotency keys for payment creation, capture and refund operations.
+Validate amount, currency, order ID and merchant reference server-side before confirming an order.
+Restrict and monitor administrative refund capabilities.
+Maintain payment reconciliation between application orders and PSP settlement/reporting.
+Use PCI DSS v4.0.1 as the baseline where the organization falls within PCI DSS scope. PCI SSC describes PCI DSS as a global baseline of technical and operational requirements for protecting payment account data. citeturn1search0turn1search7
+21. Privacy & International Data Protection
+Determine the legal jurisdictions in which customers are located and where the business operates before launch.
+Use data minimization, purpose limitation, retention controls and transparent privacy notices.
+Provide mechanisms for applicable access, correction, deletion and portability requests.
+Record marketing consent separately from account creation and transactional communications.
+Maintain cookie/analytics consent where required; do not assume consent merely because a user visits the site.
+Control cross-border transfers and processor/subprocessor relationships. For EU personal data, GDPR principles include lawfulness/transparency, purpose limitation, data minimization, storage limitation, accuracy, integrity/confidentiality and accountability. citeturn1search1
+When EU personal data is transferred outside the EU, use an applicable adequacy decision or safeguards such as Standard Contractual Clauses where required. citeturn1search23
+22. Authentication, Authorization & Session Security
+Use Argon2id or another modern password hashing scheme with appropriate work factors; never reversible encryption for passwords.
+Use short-lived access tokens and secure refresh/session rotation strategy; revoke sessions after high-risk changes.
+Admin accounts require MFA. Prefer phishing-resistant authentication for privileged users where supported.
+Use RBAC with least privilege; consider attribute-based checks for warehouse, geography or business unit scopes.
+Perform object-level authorization on every customer/order/address/resource lookup.
+Use secure, HttpOnly, SameSite cookies where cookie sessions are used; enforce HTTPS and HSTS.
+Re-authenticate for password changes, payment method changes, high-value orders, refunds and admin security changes.
+Provide session listing and revocation for customers and administrators.
+23. Application Security Engineering
+Control
+Implementation Requirement
+Secure SDLC
+Threat modeling before major features; security acceptance criteria in each epic.
+SAST
+Run static analysis on pull requests and protected branches.
+SCA
+Scan dependencies, lock versions and generate SBOM.
+DAST
+Run authenticated and unauthenticated dynamic testing against staging.
+Secrets
+Secret manager; CI secret scanning; rotation policy.
+Container security
+Minimal images, non-root runtime, image scanning, signed/provenance-aware builds.
+Code review
+Two-person review for authentication, payment, authorization, data export and security-sensitive changes.
+Pen testing
+Pre-production external and authenticated penetration testing; remediate Critical/High before launch.
+Vulnerability management
+Defined severity SLAs and evidence of remediation.
+Patch management
+Critical internet-facing vulnerabilities prioritized immediately; all dependencies continuously monitored.
+24. Logging, Monitoring & Incident Response
+Centralize application, WAF, API gateway, database audit, authentication, payment and infrastructure logs.
+Use structured JSON logs with request/correlation ID, timestamp, actor, route, status, latency and security outcome.
+Never log passwords, full payment-card data, authentication tokens or sensitive secrets.
+Send security events to SIEM or equivalent centralized monitoring.
+Create alerts for admin login anomalies, repeated authorization failures, brute force, abnormal checkout velocity, large exports, refund spikes, WAF blocks and payment webhook failures.
+Maintain incident runbooks for DDoS, account takeover, payment fraud, data breach, credential leakage and supply-chain compromise.
+Preserve evidence with synchronized time, restricted access and tamper-evident storage.
+25. Backup, Disaster Recovery & Business Continuity
+Area
+Requirement
+Database backups
+Automated encrypted backups + point-in-time recovery.
+Backup isolation
+Separate credentials/accounts; backups not writable by normal application role.
+Restore testing
+Scheduled restore drills; verify application-level consistency.
+RPO
+Target ≤15 minutes for transactional data, subject to final infrastructure.
+RTO
+Target ≤60 minutes for critical customer-facing services, subject to final architecture.
+Multi-zone
+Deploy critical workloads across multiple availability zones where supported.
+Failure mode
+Catalog browsing should degrade gracefully; checkout must fail closed rather than create inconsistent orders.
+Runbooks
+Document failover, rollback, database restore and emergency access.
+26. Performance & Scalability
+CDN-cache public product and content pages; use revalidation for catalog updates.
+Use PostgreSQL indexes for SKU, slug, category, status, price and search-supporting fields.
+Use a search engine when catalog size or query complexity requires it; avoid unbounded SQL wildcard searches.
+Use Redis for hot catalog data, session/checkout state where appropriate, rate-limit counters and job coordination.
+Use asynchronous queues for email, image processing, search indexing, analytics and non-blocking integrations.
+Use autoscaling at the application layer and load testing at expected peak plus safety margin.
+Set database connection pool limits and upstream timeouts to avoid cascading failures.
+Protect expensive operations such as search, recommendations and reports with caching, quotas and background processing.
+27. International Commerce Requirements
+Capability
+Requirement
+Currencies
+Display and transact in supported currencies; define source of truth for FX.
+Languages
+Externalize all UI copy; support locale-specific formatting.
+Number/date formats
+Locale-aware formatting; server-side canonical storage.
+Addresses
+Country-specific address fields and validation.
+Tax
+Country/region tax rules or tax provider; display tax treatment clearly.
+Duties
+Define DDP/DAP policy; communicate customs/duty responsibility.
+Shipping
+Multiple carriers and service levels; destination restrictions.
+Returns
+Country-specific return windows and return labels where applicable.
+Jewellery restrictions
+Configurable restrictions for materials, stones, value limits and destination.
+Fraud
+Country/IP/device/payment velocity signals; manual review for high-risk orders.
+28. SEO, Analytics & Marketing
+Server-rendered/indexable product and collection pages.
+Unique canonical URLs, metadata, Open Graph/Twitter metadata, XML sitemap and robots policy.
+Product structured data with accurate price, availability and review data where applicable.
+Consent-aware analytics with clear separation between necessary and optional tracking.
+Campaign attribution should not expose PII unnecessarily.
+Marketing emails require preference management and applicable consent/legal basis.
+29. Non-Functional Requirements
+Category
+Requirement
+Availability
+Target ≥99.9% monthly for production storefront.
+Performance
+Core pages optimized for fast first render; API p95 targets defined during load testing.
+Security
+No known Critical vulnerabilities at release; High findings require documented risk acceptance or remediation.
+Scalability
+Support planned peak traffic with load-test evidence.
+Maintainability
+TypeScript, modular architecture, coding standards and automated CI.
+Observability
+Metrics, logs, traces and actionable alerts.
+Accessibility
+WCAG 2.2 AA baseline.
+Compatibility
+Current major Chrome, Edge, Firefox, Safari; current mobile browsers.
+Localization
+Locale, currency, timezone and translation-ready architecture.
+Auditability
+Privileged actions and financial changes traceable.
+Data retention
+Configured by data class and jurisdiction; automated deletion/archival where appropriate.
+30. Recommended Deployment Architecture
+DNS → CDN/DDoS/WAF → load balancer/API gateway → application runtime → private PostgreSQL/Redis/object storage/integration network.
+Separate production, staging and development environments with distinct credentials and data.
+Admin portal should use a dedicated hostname and stricter WAF/rate-limit policies.
+Database and Redis must not be directly reachable from the public Internet.
+Use private subnets/security groups/firewalls and explicit egress controls.
+Use managed secret storage and KMS-backed encryption where available.
+CI/CD should build, test, scan, sign and deploy immutable artifacts.
+Use infrastructure-as-code with peer review and drift detection.
+31. Environment & Access Matrix
+Resource
+Developer
+Support
+Admin
+Security
+Production database
+No direct access
+No
+Controlled
+Controlled/audited
+Production logs
+Read sanitized
+Read scoped
+Read
+Full security logs
+Admin portal
+No by default
+Scoped
+Full role
+Security admin
+Secrets
+No production secrets
+No
+JIT only
+JIT + audited
+Deployment
+Staging
+No
+Controlled
+Approval for security-sensitive changes
+Customer PII export
+No
+No by default
+Scoped
+Audited approval
+32. Testing & Quality Assurance
+Test Type
+Scope
+Exit Criteria
+Unit
+Domain logic, pricing, promotions, authorization
+High coverage for critical modules
+Integration
+DB, Redis, PSP, shipping, tax, email
+Stable contracts and error handling
+E2E
+Browse → checkout → order → return
+Critical customer journeys pass
+Security
+SAST, SCA, DAST, API authorization tests
+No Critical; High addressed/accepted
+Penetration
+External + authenticated admin/API
+Critical/High issues remediated
+Load
+Catalog, search, login, cart, checkout, webhooks
+Meets agreed p95/error targets
+Resilience
+Dependency failure, queue delay, DB failover
+No inconsistent financial/order state
+Accessibility
+Keyboard, screen reader, contrast, forms
+WCAG 2.2 AA baseline
+Browser/device
+Desktop/mobile major browsers
+No P0/P1 UI defects
+33. Major Risks, Challenges & Solutions
+Challenge
+Impact
+Solution
+International traffic spikes
+Slowdown/outage
+CDN caching, autoscaling, WAF/DDoS, load testing
+Bot-driven scraping
+Infrastructure and content abuse
+Bot management, rate limits, cache, selective challenges
+Credential stuffing
+Account takeover
+MFA, throttling, risk scoring, breached-password controls
+High-value order fraud
+Financial loss
+PSP fraud tooling, 3DS where appropriate, velocity/device signals, manual review
+Inventory race conditions
+Overselling
+Transactional reservation with TTL and idempotency
+Payment webhook duplication
+Duplicate orders/refunds
+Signature validation + idempotency keys
+Third-party outage
+Checkout failure
+Circuit breakers, timeouts, graceful error states, provider fallback where justified
+Admin compromise
+Catastrophic impact
+MFA, least privilege, JIT access, audit logs, separate admin edge controls
+Supply-chain compromise
+Code/data compromise
+SCA, SBOM, lockfiles, signed artifacts, protected CI/CD
+Privacy non-compliance
+Legal/reputational risk
+Jurisdictional review, minimization, consent, retention and DSR workflows
+Origin exposure
+Bypass of WAF/DDoS
+Private origin, firewall allowlist, rotate exposed origin
+Malicious product media
+Client/server compromise
+Strict validation, isolated object storage, scanning, no execution
+Search abuse
+CPU/DB exhaustion
+Search service, query caps, caching, rate limits
+Coupon abuse
+Revenue leakage
+Server-side rules, usage limits, customer/device velocity controls
+Data export abuse
+PII leakage
+Role restrictions, approval, masking, export audit trail
+34. Detailed Security Acceptance Checklist
+All public endpoints are behind TLS and security headers.
+Origin infrastructure is not directly reachable from the public Internet.
+WAF managed protections are enabled and tuned.
+Endpoint-specific rate limiting is configured.
+Admin authentication requires MFA.
+Authorization tests cover object-level and function-level access.
+Payment data is tokenized/hosted; raw PAN/CVV is not stored.
+Payment webhooks validate signatures and are idempotent.
+All database queries are parameterized/ORM-safe.
+Rich text and uploaded media are sanitized/validated.
+Secrets are stored outside source control and rotated.
+Dependencies and containers are continuously scanned.
+SBOM is generated for production releases.
+Security logs are centralized and do not contain secrets or payment credentials.
+Backups are encrypted and restore-tested.
+DDoS and incident response runbooks are approved.
+Critical and High penetration-test findings are closed or formally accepted.
+Privacy notices, consent and retention rules are implemented for target jurisdictions.
+Customer data export/deletion workflows are tested.
+Production deployment requires peer review and CI security gates.
+35. API Error & Resilience Standard
+Return stable machine-readable error codes and human-safe messages.
+Never reveal stack traces, SQL errors, internal hostnames or secrets to clients.
+Use 400-series responses for client errors, 401/403 for authentication/authorization, 409 for state conflicts and 429 for throttling.
+Use retry-after headers for rate limiting where appropriate.
+External integrations must use bounded retries with exponential backoff and jitter.
+Payment and order operations must use idempotency and state machines to prevent duplicate financial actions.
+36. Release & Go-Live Plan
+Finalize requirements, countries, currencies, tax/shipping policy and legal/privacy requirements.
+Approve UI/UX design system and responsive prototypes.
+Implement foundation: repositories, CI/CD, environments, authentication and security baseline.
+Implement catalog, search and product media.
+Implement cart, checkout, payment and order state machine.
+Implement shipping, tax, notifications and returns.
+Implement admin portal, reporting and audit.
+Complete performance testing, security testing and penetration test.
+Complete backup restore test and incident-response drill.
+Production readiness review and client UAT sign-off.
+Phased launch with monitored traffic and rollback plan.
+37. Acceptance Criteria
+Customer can browse and purchase supported jewellery variants from a supported country/currency.
+Price, promotion, tax, shipping and total are calculated server-side and displayed clearly.
+Successful payment produces exactly one order even if the client retries or webhooks are duplicated.
+Stock cannot be oversold under tested concurrent checkout conditions.
+Customers cannot access another customer's address, cart or order by modifying IDs.
+Admin users cannot perform functions outside their assigned role.
+All high-risk admin and payment operations are audited.
+Origin is inaccessible except through approved edge/network paths.
+Load and security tests meet agreed release thresholds.
+Backup restore and disaster-recovery procedures have been demonstrated successfully.
+Privacy, cookie and terms flows are implemented for the approved launch jurisdictions.
+38. Recommended Technology Stack
+Layer
+Recommended Stack
+Alternative
+Frontend
+Next.js, React, TypeScript
+Nuxt/Vue
+Backend
+NestJS, Node.js, TypeScript
+FastAPI / Java Spring Boot
+Database
+PostgreSQL
+MySQL compatible managed DB
+ORM
+Prisma or TypeORM
+Drizzle
+Cache / Queue
+Redis + BullMQ or managed queue
+RabbitMQ / cloud queue
+Search
+OpenSearch/Elasticsearch or managed search
+Algolia
+Object storage
+S3-compatible object storage
+Cloud provider object storage
+CDN/WAF
+Cloudflare or equivalent enterprise edge
+Cloud provider CDN/WAF
+Payments
+Stripe/Adyen/Checkout.com or approved regional PSP
+Other PCI-compliant PSP
+Email
+SES/SendGrid/Postmark or equivalent
+Transactional provider
+Observability
+OpenTelemetry + managed logs/metrics/SIEM
+Datadog/New Relic/etc.
+Deployment
+Docker + managed containers/Kubernetes as scale requires
+Serverless where appropriate
+CI/CD
+GitHub Actions/GitLab CI + security gates
+Cloud-native CI/CD
+39. Project Phases & Deliverables
+Phase
+Key Deliverables
+Indicative Duration
+Phase 0
+Discovery, legal/compliance, countries, payment/shipping decisions
+1–2 weeks
+Phase 1
+UX/UI system, architecture, threat model, data model
+2–3 weeks
+Phase 2
+Storefront + catalog + search + customer account
+4–6 weeks
+Phase 3
+Cart + checkout + payment + orders
+4–6 weeks
+Phase 4
+Admin + inventory + promotions + reporting
+4–6 weeks
+Phase 5
+Security hardening + load + UAT + penetration test
+2–4 weeks
+Phase 6
+Production launch + hypercare
+1–2 weeks
+40. Governance & Change Control
+Requirements changes after baseline require impact analysis across UI, API, database, security, compliance and schedule.
+Security-sensitive changes require security review before production.
+Payment, refund, tax and inventory logic require regression testing before release.
+Maintain versioned API contracts and database migration history.
+Maintain a decision log for architecture and third-party provider selections.
+41. Open Decisions Required from Client
+Brand name, logo, design system and exact visual direction.
+Launch countries and blocked countries.
+Languages and currencies.
+Jewellery categories, material/purity standards and product attribute schema.
+Payment providers and settlement currencies.
+Tax/duty model: DDP vs DAP and tax provider.
+Shipping carriers, warehouses and fulfillment locations.
+Return/refund policy by country.
+Customer account policy: guest checkout vs mandatory account.
+Customer service channels.
+Required certifications and legal product disclosures.
+Analytics/marketing providers and consent requirements.
+Target traffic, peak campaigns and expected catalog size.
+Cloud/hosting preference and data residency requirements.
+42. Architecture Summary
+The architecture intentionally separates customer experience, edge/security controls, backend domain services and private data/integration layers. The most important security principle is that the database, cache and internal services are never directly exposed to the Internet.
+43. Reference Standards & Sources
+The BRD security baseline incorporates current guidance from the following authoritative sources:
+OWASP Top 10:2025 — web application security baseline.
+OWASP API Security Top 10:2023 — API-specific risks including BOLA, broken authentication, resource consumption, SSRF and unsafe API consumption.
+PCI Security Standards Council — PCI DSS v4.0.1 for applicable payment-card environments.
+European Commission — GDPR principles and organizational obligations for applicable EU personal data processing.
+European Data Protection Board — safeguards for international transfers of EU personal data.
+Cloudflare security guidance — WAF, rate limiting, DDoS protection and origin protection patterns.
+44. Final Recommendation
+Build the first production version as a secure modular commerce platform rather than an overly fragmented microservice estate. Put the public surface behind CDN/WAF/DDoS controls, keep the origin private, enforce authorization at the service/resource level, use a PCI-compliant hosted/tokenized payment architecture, and treat observability, backup recovery and security testing as release requirements—not post-launch enhancements. This approach provides a practical path to international scale while keeping operational complexity manageable.
+45. Complete UI/UX Sitemap
+Area
+Screen
+Major Components
+Primary Actions
+Public
+Home
+Luxury header, mega menu, search, hero, collections, featured products, editorial, trust strip, footer
+Browse, search, account, cart
+Public
+Shop / Category
+Breadcrumbs, filters, sort, grid, pagination
+Filter, sort, quick view
+Public
+Collection
+Campaign hero, story, curated products
+Explore collection
+Public
+Search
+Autocomplete, suggestions, facets, no-result recovery
+Search, filter
+Public
+Product Detail
+Gallery, zoom, title, price, variants, stock, certificate, care, shipping/returns, reviews
+Add to cart, wishlist, share
+Public
+Wishlist
+Saved products, availability, move-to-cart
+Save/remove
+Checkout
+Cart
+Line items, quantity, promotion, delivery estimate, totals
+Update, checkout
+Checkout
+Identity
+Guest checkout or sign-in, email verification
+Continue
+Checkout
+Shipping
+Address, country, shipping methods, delivery estimate
+Select address/method
+Checkout
+Review
+Items, address, shipping, tax, duties notice, final total
+Confirm
+Checkout
+Payment
+Hosted/tokenized PSP UI, 3DS/step-up where required
+Pay
+Checkout
+Success
+Order number, summary, tracking, account CTA
+Track / continue
+Account
+Dashboard
+Profile, recent orders, wishlist, notifications
+Navigate
+Account
+Orders
+Order list and filters
+Open order
+Account
+Order Detail
+Timeline, items, shipment, documents, return CTA
+Track / return
+Account
+Security
+Password, MFA, sessions, security alerts
+Secure account
+Account
+Preferences
+Language, currency, marketing, notifications
+Update
+Support
+Contact
+FAQ, contact form, order reference, channels
+Submit support request
+Content
+Brand / Story
+About, craftsmanship, materials, certifications
+Learn
+Content
+Policies
+Shipping, returns, privacy, cookies, terms
+Read
+Admin
+Dashboard
+Sales, orders, stock, payment failures, fraud/security alerts
+Monitor
+Admin
+Catalog
+Product table, filters, bulk actions
+CRUD
+Admin
+Product Editor
+General, variants, pricing, media, SEO, compliance, publishing
+Create/edit/publish
+Admin
+Inventory
+On-hand, reserved, low stock, adjustments
+Manage
+Admin
+Orders
+Search, payment/fulfillment state, refunds, returns
+Operate
+Admin
+Customers
+Search, account state, order history, support notes
+Support
+Admin
+Promotions
+Coupons, rules, limits, schedules
+Manage
+Admin
+Content
+Banners, pages, collections
+Publish
+Admin
+Reports
+Sales, returns, stock, tax, reconciliation
+Export
+Admin
+Users & Roles
+Users, roles, MFA, active sessions
+Manage
+Admin
+Audit & Security
+Audit events, alerts, security telemetry
+Investigate
+46. UI Design System Requirements
+Component
+States
+Requirements
+Header
+Default, sticky, scrolled, mobile, logged-in
+Keyboard navigation, accessible labels, responsive menus
+Search
+Idle, typing, suggestions, no results, loading, error
+Debounced input, keyboard navigation, safe query limits
+Product Card
+Default, hover, sale, sold out, loading
+Accessible card action, visible availability and price
+Filters
+Collapsed, expanded, selected, loading
+Mobile drawer, clear-all, URL/state persistence
+Buttons
+Primary, secondary, text, loading, disabled, danger
+Visible focus; never color-only states
+Forms
+Default, focus, invalid, valid, disabled, loading
+Labels, inline errors, error summary, preserved input
+Modal
+Open, loading, error, confirmation
+Focus trap, escape close when safe, focus return
+Toast
+Success, warning, error, info
+Screen-reader announcement, dismissible
+Tables
+Loading, empty, paginated, selected
+Semantic headers, responsive fallback
+Price
+Regular, sale, unavailable, converted currency
+Currency code and locale formatting
+Stock
+Available, low, sold out, preorder
+Text + icon, not color alone
+Order Timeline
+Pending, paid, packed, shipped, delivered, returned
+Status text, timestamp and clear progression
+47. UX Behavior & Accessibility Rules
+Show shipping cost, taxes and any applicable duties before final payment confirmation; do not surprise users at the final click.
+Show selected jewellery variant, size, metal, gemstone and quantity clearly before adding to cart and again during checkout.
+High-value jewellery product pages must prominently expose authenticity/certification, material/purity, sizing, care, shipping and return information.
+Checkout must preserve recoverable form data after expected validation or payment errors.
+All errors must state the problem, the next action and whether retrying is safe.
+Destructive actions need confirmation; high-risk actions may require re-authentication.
+Use semantic HTML, logical heading order, keyboard navigation, visible focus, accessible labels and screen-reader announcements.
+Design baseline: WCAG 2.2 AA, with manual testing for keyboard, zoom/reflow and assistive technology.
+48. UI Acceptance Criteria
+Screen
+Acceptance Criteria
+Home
+Responsive at supported breakpoints; no broken links; meaningful alt text; stable layout while images load.
+Product List
+Filters/sort/pagination update correctly; URL/state is deterministic; no duplicate products.
+Product Detail
+Variant changes update price/SKU/stock; gallery works with touch and keyboard; policy and certification information visible.
+Cart
+All totals are server-authoritative; quantity and stock constraints enforced; unavailable items are explained.
+Checkout
+Address/shipping/tax/payment states are recoverable; duplicate submission cannot create duplicate order.
+Account
+Only owner data visible; sensitive changes require re-authentication where appropriate; sessions can be revoked.
+Admin
+Role-restricted features cannot be reached through direct API requests; sensitive actions show audit context.
+Mobile
+Touch targets, sticky actions, filters and dialogs do not obstruct essential content.
+Accessibility
+Automated and manual WCAG 2.2 AA checks pass before production.
+49. Frontend Development Blueprint
+Module
+Development Scope
+Definition of Done
+App shell
+Routing, layouts, global error boundaries, loading states
+Stable shell and error recovery
+Design system
+Design tokens, typography, spacing, components
+Reusable components + story/test coverage
+Catalog
+Lists, categories, collections, filters, sort
+Responsive product discovery
+Search
+Autocomplete, suggestions, facets, no-result flows
+Fast and abuse-resistant
+Product
+Gallery, variants, pricing, availability, certification
+Complete PDP
+Cart
+Server-synchronized cart, promotions, stock checks
+Correct after refresh/re-login
+Checkout
+Shipping, tax, review, payment, success
+State-machine UI
+Account
+Profile, orders, security, preferences
+Self-service complete
+Admin
+Dashboard, tables, editors, forms, reports
+Permission-aware UI
+i18n
+Translations, locale, currency, date/number formats
+No hard-coded user-facing strings
+Analytics
+Consent-aware commerce events
+Funnel and attribution data
+Accessibility
+Keyboard, screen reader, contrast, zoom/reflow
+WCAG baseline
+Testing
+Unit, component, E2E, visual regression
+Automated release regression
+50. Backend Development Blueprint
+Domain
+Responsibilities
+Critical Controls
+Identity & Access
+Registration, login, MFA, sessions, reset
+Rate limiting, anomaly detection, secure lifecycle
+Customer
+Profile, addresses, preferences
+Ownership checks
+Catalog
+Products, variants, categories, publishing
+Draft/published state
+Search
+Indexing, facets, synonyms, ranking
+Query caps and abuse protection
+Pricing
+Price books, currencies, promotions
+Server-authoritative
+Inventory
+On-hand, reservations, adjustments
+Transactions + concurrency controls
+Cart
+Guest/auth cart state
+Expiry + integrity checks
+Checkout
+Orchestration
+Idempotency + state machine
+Payments
+PSP APIs, webhooks, reconciliation
+Signature verification + duplicate protection
+Orders
+Order creation/state transitions
+Immutable purchase snapshots
+Fulfillment
+Carrier integration/tracking
+Timeouts + retries
+Returns
+Eligibility, RMA, refunds
+Policy + approval
+Notifications
+Email/SMS events
+Template and consent controls
+Admin
+Roles, privileged operations
+MFA + audit
+Audit
+Security and business logs
+Append-only/tamper-evident
+51. API & Integration Standards
+Use versioned APIs such as /api/v1 and consistent resource naming.
+Validate every request server-side with typed schemas, length limits, maximum body sizes and allowlisted fields.
+Require bounded pagination and maximum page sizes on list APIs.
+Check both function-level and object-level authorization on every protected resource.
+Use idempotency keys for payment, final order creation, refund and other non-repeatable actions.
+External calls must have timeouts, bounded retries with exponential backoff/jitter and circuit-breaker behavior.
+Webhook endpoints must verify provider signatures, timestamps/replay controls and unique event IDs.
+Do not expose stack traces, SQL errors, internal hostnames or sensitive identifiers to clients.
+52. Database & Data Engineering Requirements
+Area
+Requirement
+PostgreSQL
+Managed/private database, encryption at rest, automated backups, point-in-time recovery.
+Schema
+Version-controlled migrations; peer-reviewed migration changes.
+Integrity
+Transactions for inventory, order creation, refunds and critical financial state changes.
+Concurrency
+Row locking or optimistic concurrency for stock and high-contention operations.
+Indexes
+Designed from actual queries; monitor slow queries and missing indexes.
+PII
+Minimum collection; encrypt/tokenize sensitive values where justified.
+Analytics
+Pseudonymous IDs; avoid unnecessary PII transfer.
+Exports
+Asynchronous generation, scope controls, expiry and audit log.
+Retention
+Different retention schedules by data class and jurisdiction.
+Deletion
+De-identify or delete customer data where allowed while preserving legally required financial records.
+53. Security Threat Model & Abuse Cases
+Threat
+Attack Path
+Mitigation
+Credential stuffing
+Automated login attempts using leaked credentials
+Bot controls, rate limits, MFA/step-up, anomaly detection
+Account enumeration
+Responses reveal whether an account exists
+Uniform responses and timing controls where practical
+BOLA/IDOR
+Change object IDs in order/address/API URLs
+Object-level authorization every request
+Cart tampering
+Client modifies price, quantity or discount
+Server-authoritative cart/pricing
+Coupon abuse
+Guess/reuse promotions
+Eligibility, counters, velocity limits
+Inventory hoarding
+Bots reserve scarce stock
+Short reservations, per-user/device caps, bot signals
+Checkout replay
+Repeat a successful request
+Idempotency + order/payment state machine
+Webhook replay
+Replay a valid provider event
+Signature + event ID + timestamp/replay checks
+Scraping
+High-rate catalog enumeration
+CDN caching, rate limits, bot management
+API exhaustion
+Expensive search/report requests
+Query caps, quotas, async jobs
+SSRF
+User-controlled URL reaches internal network
+Allowlist destinations, egress filtering, metadata blocking
+Malicious upload
+Script disguised as image
+Type/content validation, scanning, isolated storage, no execution
+Admin compromise
+Stolen privileged account
+MFA, least privilege, JIT access, privileged monitoring
+Supply-chain attack
+Compromised dependency or build process
+SCA, SBOM, lockfiles, signed/provenance-aware builds
+Data exfiltration
+Bulk export or service compromise
+Least privilege, masking, audit and anomaly detection
+54. Security Control Matrix
+Control
+Minimum Standard
+Test / Evidence
+TLS
+HTTPS everywhere; secure redirects; HSTS
+TLS/header scan
+Secrets
+Managed secret store; no secrets in source/logs
+Secret scanning
+Authentication
+Strong password hashing; MFA for admin; secure sessions
+Auth security tests
+Authorization
+RBAC + object-level authorization
+Negative tests
+Validation
+Typed allowlists + size/length controls
+Fuzz/validation tests
+XSS/HTML
+Output encoding, sanitization, CSP
+XSS + header tests
+Rate limiting
+Per-endpoint and identity-aware
+Abuse/load tests
+WAF/DDoS
+Managed WAF rules + custom business rules
+Traffic simulation
+Network
+DB/cache private; restricted egress
+Network review
+Payments
+Hosted/tokenized; no raw PAN/CVV
+PCI scope review
+Logging
+Centralized; no secrets/payment credentials
+Log review
+Monitoring
+Actionable security + SLO alerts
+Alert drill
+Backups
+Encrypted, isolated, tested restore
+Restore evidence
+Dependencies
+SCA + SBOM + patch process
+CI artifacts
+Containers
+Minimal/non-root/scanned
+Image scan
+CI/CD
+Protected branches + approvals + security gates
+Pipeline evidence
+Pentest
+External + authenticated before launch
+Pentest report
+55. Global Traffic, DDoS & Server Protection
+Place the public storefront and API behind an enterprise CDN/WAF/DDoS protection layer.
+Keep the application origin private; allow inbound origin traffic only from approved edge networks or private connectivity.
+Use different rate limits for login, password reset, search, cart, coupon, checkout, payment and webhooks.
+Cache public catalog content aggressively; never cache personalized account/order/payment responses.
+Apply request body, header, URL and query complexity limits.
+Use bot management and risk-based challenges only where needed to avoid harming legitimate customer conversion.
+Use asynchronous workers for email, image processing, indexing, analytics and reconciliation.
+Use circuit breakers and graceful degradation for non-critical dependencies.
+Monitor regional traffic and latency and maintain a DDoS incident runbook with emergency WAF rules and escalation contacts.
+56. Admin RBAC & Privileged Operations
+Role
+Scope
+High-Risk Controls
+Super Admin
+System-wide
+MFA, separate account, break-glass audit
+Security Admin
+Security settings, audit, identities
+No financial authority by default
+Catalog Manager
+Products, categories, media
+Bulk deletes and publishing controls
+Inventory Manager
+Stock/reservations
+Large adjustments require reason and approval
+Order Manager
+Orders/returns
+Refund thresholds and audit
+Finance
+Refunds/reconciliation
+High-value refunds require dual approval
+Marketing
+Promotions/content
+Coupon schedules and usage limits
+Support
+Customer/order support
+Masked PII, no unrestricted exports
+Analyst
+Read-only reports
+Scoped/audited exports
+57. Commerce & Financial Integrity
+Never trust client totals, prices, taxes, discounts or stock claims.
+Store immutable order-line snapshots for SKU, title, price, tax and currency at purchase time.
+Separate payment authorization, capture, refund and reconciliation states.
+Use provider-reference uniqueness plus idempotency to prevent duplicate capture/refund.
+Use approval thresholds for manual refunds and order-value overrides.
+Run scheduled reconciliation between application payment states and PSP records.
+Flag unusual payment failure, refund, country/payment mismatch and high-value order patterns for manual review.
+58. Email, Notification & Support Security
+Configure SPF, DKIM and DMARC for transactional sending domains.
+Do not log password-reset tokens or expose unnecessary customer PII in notifications.
+Use short-lived, single-use verification/reset links.
+Use provider APIs and fixed templates to prevent header injection.
+Separate mandatory transactional communications from optional marketing preferences.
+Restrict customer-support visibility of PII by role and audit access to sensitive records.
+59. Jewellery Media & Asset Pipeline
+Stage
+Requirement
+Upload
+Authenticated/authorized admin only
+Validation
+Allowlisted types, MIME validation, size/dimension limits
+Scanning
+Malware/content scan; quarantine suspicious files
+Storage
+Private origin object storage; CDN delivery
+Processing
+Generate responsive images and optimized formats asynchronously
+Metadata
+Alt text, captions, order, focal point
+Publishing
+Published assets are cacheable and referenced via controlled URLs
+Deletion
+Audit and retention controls; prevent accidental removal
+60. Observability & SRE Requirements
+Signal
+Examples
+Alert Conditions
+Metrics
+RPS, latency, errors, DB pool, queue depth, cache hit rate
+SLO breach/saturation
+Logs
+Auth, WAF, API errors, payment events, admin actions
+Security/event spikes
+Traces
+Checkout and third-party flows
+Latency bottlenecks
+Business
+Conversion, payment failure, reservation failure, refund rate
+Abnormal business behavior
+Security
+Blocked traffic, credential attacks, exports
+Anomalous activity
+Synthetic
+Homepage, search, checkout health
+Regional outage/degradation
+61. DevOps, CI/CD & Release Controls
+Run linting, type checks and unit tests on pull requests.
+Run SAST, dependency/SCA, secret scanning, container scanning and SBOM generation.
+Build immutable release artifacts with traceable version metadata.
+Deploy to staging and run integration, E2E, accessibility and DAST tests.
+Require peer approval for production deployment; sensitive security/payment changes need additional review.
+Use rolling, blue-green or canary deployment where supported.
+Run post-deployment smoke tests and observe key SLO/security dashboards.
+Keep a documented rollback and database-migration recovery strategy.
+Record deployment version, migration version and change owner.
+62. Complete QA & Security Test Plan
+Test Class
+Minimum Coverage
+Functional
+All business requirements and negative cases
+UI/Responsive
+Desktop, tablet, mobile, orientation, touch
+Accessibility
+Keyboard, screen reader, contrast, zoom/reflow, automated + manual
+API
+Schema, auth, authorization, validation, rate limits, error handling
+Security
+OWASP Top 10 + API Security Top 10 risks
+Payments
+Retries, duplicates, declines, 3DS, refund edge cases
+Concurrency
+Inventory reservation and order/refund race conditions
+Load
+Baseline, peak, spike, soak and recovery
+Resilience
+PSP, database, cache, email, queue failures
+DR
+Backup restore, failover, rollback
+Penetration
+External, authenticated API and admin testing
+63. Development Work Breakdown Structure
+Epic
+Deliverables
+Definition of Done
+E1 Foundation
+Repo, environments, CI/CD, secrets, observability
+Secure pipeline deploys
+E2 UX System
+Design tokens, components, responsive layouts
+Approved component set
+E3 Identity
+Customer/admin auth, MFA, sessions
+Security tests pass
+E4 Catalog
+Products, variants, categories, media
+CRUD + publish
+E5 Search
+Search, facets, autocomplete
+Performance + abuse controls
+E6 Cart
+Guest/auth cart, coupons, stock check
+Correct and persistent
+E7 Checkout
+Shipping, tax, payment
+Idempotent and recoverable
+E8 Orders
+State machine, tracking, returns
+End-to-end lifecycle
+E9 Admin
+Catalog, inventory, orders, reports, users
+RBAC + audit
+E10 Integrations
+PSP, tax, shipping, email
+Failure/retry tests
+E11 Security
+WAF, rate limits, fraud, SIEM, pentest
+Security gate passed
+E12 Performance
+Caching, indexing, load tests
+SLOs met
+E13 Launch
+UAT, DR drill, go-live
+Client sign-off
+64. Production Readiness Gate
+Gate
+Pass Condition
+Owner
+Business
+All UAT requirements accepted
+Client Product Owner
+UI/UX
+Design and accessibility approved
+UX Lead
+Engineering
+No open P0/P1 defects
+Engineering Lead
+Security
+No Critical findings; High issues fixed/accepted
+Security Lead
+Payments
+Provider certification + reconciliation tested
+Finance/Engineering
+Performance
+Load/soak targets passed
+Engineering/SRE
+Operations
+Dashboards, alerts, runbooks live
+SRE/Ops
+DR
+Restore/failover drill passed
+SRE/Ops
+Legal/Privacy
+Required policies and jurisdictional controls approved
+Client/Legal
+Support
+Escalation/support process ready
+Support Lead
+Release
+Rollback and incident contacts confirmed
+Release Manager
+65. Client Inputs Required Before Development Lock
+Brand kit: logo, palette, typography, photography standards and tone.
+Approved jewellery catalogue and product attributes: materials, purity, stones, sizes, certifications and compliance.
+Countries, currencies, languages, tax/duty policy and shipping regions.
+Payment PSPs and merchant account details.
+Return, cancellation and refund policy by market.
+Privacy, cookie, terms, shipping and customer-support policies.
+Admin users, roles, approval thresholds and emergency contacts.
+Peak campaign traffic estimates and launch calendar.
+Cloud, hosting and data-residency requirements.
+Existing ERP, warehouse, CRM, accounting, tax, shipping or marketing integrations.
+Final approved screens from the current dummy site and exact components to retain.
+66. Architecture Reference Image
+The Bling Haven - International Jewellery E-Commerce System Architecture
+67. Implementation Recommendation
+Implement The Bling Haven as a modular commerce platform with an edge security layer, typed application/API domains, a private transactional data layer and isolated third-party integrations. Start as a modular monolith with explicit domains for Identity, Catalog, Search, Pricing, Inventory, Cart, Checkout, Payments, Orders, Returns and Admin; split only those domains that later need independent scaling. Security, accessibility, performance, observability, backup recovery and payment integrity must be release gates.
+68. Reference Website Review Note
+The client provided https://theblinghaven.shop as the current dummy storefront reference. The live site could not be retrieved from the available browsing environment during this document update, so this BRD does not make unverified claims about the current live implementation. The BRD is intentionally written as a complete target-state specification; the final UI sign-off should reconcile the approved screens and the current site against the requirements listed above.
