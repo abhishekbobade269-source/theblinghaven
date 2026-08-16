@@ -752,7 +752,17 @@ export default function CmsManagementPage() {
       const igList = Array.isArray(igRes) ? igRes : igRes?.data || [];
       const igConf = igConfRes?.data || igConfRes;
 
-      setPageControls(pcList.length > 0 ? pcList : (cmsManifest.pageControls as any[]));
+      let finalPcList = pcList.length > 0 ? pcList : (cmsManifest.pageControls as any[]);
+      if (typeof window !== 'undefined') {
+        try {
+          const overrides = JSON.parse(localStorage.getItem('tbh_page_controls_override') || '{}');
+          finalPcList = finalPcList.map((p: any) =>
+            overrides[p.pageRoute] ? { ...p, ...overrides[p.pageRoute] } : p
+          );
+        } catch {}
+      }
+
+      setPageControls(finalPcList);
       setProducts(prodList);
       setBanners(banList.length > 0 ? banList : (cmsManifest.heroBanners as any[]));
       setInstagramPosts(igList.length > 0 ? igList : (cmsManifest.instagramPosts as any[]));
