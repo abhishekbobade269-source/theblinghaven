@@ -797,6 +797,38 @@ model TicketResponse {
   @@map("ticket_responses")
 }
 
+model InstagramConfig {
+  id              String   @id @default("main_config")
+  username        String?  @default("the_bling_haven")
+  accountName     String?  @default("The Bling Haven | Luxury Fashion & Bridal Jewellery")
+  password        String?
+  accessToken     String?
+  appId           String?
+  appSecret       String?
+  profilePicUrl   String?  @default("/images/logo.png")
+  followersCount  Int      @default(52400)
+  isLiveConnected Boolean  @default(true)
+  autoSyncEnabled Boolean  @default(true)
+  lastSyncedAt    DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("instagram_config")
+}
+
+model InstagramPost {
+  id        String   @id @default(uuid())
+  mediaType String   @default("IMAGE")
+  mediaUrl  String
+  permalink String?
+  caption   String?
+  likes     Int      @default(0)
+  views     Int      @default(0)
+  comments  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@map("instagram_posts")
+}
+
 
 
 
