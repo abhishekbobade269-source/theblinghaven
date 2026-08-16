@@ -1159,8 +1159,31 @@ export default function CmsManagementPage() {
             products={products}
             onClose={() => setEditingPage(null)}
             onSave={async (data) => {
-              await apiRequest(`/cms/page-controls/${editingPage.id}`, { method: 'PUT', data });
-              fetchData();
+              try {
+                await apiRequest(`/cms/page-controls/${editingPage.id}`, {
+                  method: 'PUT',
+                  data: { ...data, pageRoute: editingPage.pageRoute },
+                });
+              } catch (err) {
+                console.warn('API page control update:', err);
+              }
+
+              // Update local state immediately
+              setPageControls((prev) =>
+                prev.map((p) =>
+                  p.id === editingPage.id || p.pageRoute === editingPage.pageRoute
+                    ? { ...p, ...data }
+                    : p
+                )
+              );
+
+              if (typeof window !== 'undefined') {
+                const overrides = JSON.parse(localStorage.getItem('tbh_page_controls_override') || '{}');
+                overrides[editingPage.pageRoute] = { ...editingPage, ...data };
+                localStorage.setItem('tbh_page_controls_override', JSON.stringify(overrides));
+              }
+
+              setEditingPage(null);
             }}
           />
         )}

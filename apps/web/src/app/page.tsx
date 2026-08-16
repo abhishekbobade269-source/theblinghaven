@@ -32,12 +32,70 @@ import {
 } from 'lucide-react';
 
 import cmsManifest from '@/data/cms-manifest.json';
+import productsManifest from '@/data/products-manifest.json';
+
+const defaultCollections: CollectionDto[] = [
+  {
+    id: 'col-bridal',
+    name: 'Bridal & Solitaire Symphony',
+    slug: 'bridal-sets',
+    tagline: 'Royal Kundan & Polki Heirlooms',
+    description: 'Masterfully handcrafted parures for wedding celebrations.',
+    heroBannerUrl: '/uploads/sets_5621e16b_1s6a9422.jpg',
+    isFeatured: true,
+    displayOrder: 1,
+    productCount: 72,
+    isActive: true,
+    createdAt: '2026-08-15T12:00:00.000Z',
+  },
+  {
+    id: 'col-rings',
+    name: 'High-Jewellery Solitaire Rings',
+    slug: 'rings',
+    tagline: 'Solitaires & Emerald Cut Bands',
+    description: 'Certified lab diamonds & AAA+ CZ in 18K gold.',
+    heroBannerUrl: '/uploads/rings_15ca97c8_1s6a0175.jpg',
+    isFeatured: true,
+    displayOrder: 2,
+    productCount: 28,
+    isActive: true,
+    createdAt: '2026-08-15T12:00:00.000Z',
+  },
+  {
+    id: 'col-earrings',
+    name: 'Fine Earrings & Statement Drops',
+    slug: 'earrings',
+    tagline: 'Chandbali & Waterfall Drops',
+    description: 'Lightweight elegance with freshwater pearls & rubies.',
+    heroBannerUrl: '/uploads/earrings_01462b03_1s6a0431.jpg',
+    isFeatured: true,
+    displayOrder: 3,
+    productCount: 45,
+    isActive: true,
+    createdAt: '2026-08-15T12:00:00.000Z',
+  },
+  {
+    id: 'col-bangles',
+    name: 'Heritage Bangles & Tennis Kadas',
+    slug: 'bangles',
+    tagline: 'Handcrafted Elephant Head Kadas',
+    description: '22K gold micro-plated bangles with safety clasps.',
+    heroBannerUrl: '/uploads/bangles_0deb44c0_1s6a9953.jpg',
+    isFeatured: true,
+    displayOrder: 4,
+    productCount: 32,
+    isActive: true,
+    createdAt: '2026-08-15T12:00:00.000Z',
+  },
+];
 
 export default function HomePage() {
   const [banners, setBanners] = useState<HeroBannerDto[]>((cmsManifest.heroBanners as any[]) || []);
   const [activeBannerIdx, setActiveBannerIdx] = useState(0);
-  const [featuredProducts, setFeaturedProducts] = useState<ProductDto[]>([]);
-  const [collections, setCollections] = useState<CollectionDto[]>([]);
+  const [featuredProducts, setFeaturedProducts] = useState<ProductDto[]>(
+    ((productsManifest as any[]) || []).slice(0, 8),
+  );
+  const [collections, setCollections] = useState<CollectionDto[]>(defaultCollections);
   const [metalRates, setMetalRates] = useState<MetalPriceRateDto[]>([]);
   const [instagramPosts, setInstagramPosts] = useState<any[]>((cmsManifest.instagramPosts as any[]) || []);
   const [instagramConfig, setInstagramConfig] = useState<any>(cmsManifest.instagramConfig || null);
@@ -71,10 +129,10 @@ export default function HomePage() {
         setBanners(activeBanners.length > 0 ? activeBanners : (cmsManifest.heroBanners as any[]));
 
         const prodList = Array.isArray(productsRes) ? productsRes : productsRes?.data || [];
-        setFeaturedProducts(prodList);
+        setFeaturedProducts(prodList.length > 0 ? prodList : (productsManifest as any[]).slice(0, 8));
 
         const colList = Array.isArray(collectionsRes) ? collectionsRes : collectionsRes?.data || [];
-        setCollections(colList);
+        setCollections(colList.length > 0 ? colList : defaultCollections);
 
         const ratesList = Array.isArray(metalsRes) ? metalsRes : metalsRes?.data || [];
         setMetalRates(ratesList);

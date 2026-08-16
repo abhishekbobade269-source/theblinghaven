@@ -312,25 +312,46 @@ export class CmsService {
 
   async updatePageControl(id: string, data: any, actorId?: string): Promise<any> {
     const rawPages = await this.prisma.$queryRawUnsafe<any[]>(
-      `SELECT * FROM page_controls WHERE id = ? LIMIT 1`,
-      id
+      `SELECT * FROM page_controls WHERE id = ? OR pageRoute = ? LIMIT 1`,
+      id,
+      data.pageRoute || id
     );
+
+    const nowIso = new Date().toISOString();
+    const status = data.status || 'ACTIVE';
+    const customHeadline = data.customHeadline !== undefined ? data.customHeadline : null;
+    const customSubtext = data.customSubtext !== undefined ? data.customSubtext : null;
+    const heroBannerUrl = data.heroBannerUrl !== undefined ? data.heroBannerUrl : null;
+    const badgeText = data.badgeText !== undefined ? data.badgeText : null;
+    const pageTitle = data.pageTitle || 'Page';
+    const estimatedReturnAt = data.estimatedReturnAt !== undefined ? data.estimatedReturnAt : null;
+    const hideFromNav = data.hideFromNavigation !== undefined ? (data.hideFromNavigation ? 1 : 0) : 0;
+    const productIdsJson = data.productIds ? JSON.stringify(data.productIds) : '[]';
+
     if (rawPages.length === 0) {
-      throw new NotFoundException('Page control record not found.');
+      const newId = id && id.length > 3 && !id.startsWith('/') ? id : `pc_${Date.now()}`;
+      const targetRoute = data.pageRoute || (id.startsWith('/') ? id : `/${id}`);
+      await this.prisma.$executeRawUnsafe(
+        `INSERT INTO page_controls (id, pageRoute, pageTitle, pageType, status, customHeadline, customSubtext, heroBannerUrl, badgeText, productIds, hideFromNavigation, createdAt, updatedAt)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        newId,
+        targetRoute,
+        pageTitle,
+        data.pageType || 'CORE_SYSTEM',
+        status,
+        customHeadline,
+        customSubtext,
+        heroBannerUrl,
+        badgeText,
+        productIdsJson,
+        hideFromNav,
+        nowIso,
+        nowIso
+      );
+      return this.findPageControlByRoute(targetRoute);
     }
 
     const current = rawPages[0];
-    const status = data.status || current.status;
-    const customHeadline = data.customHeadline !== undefined ? data.customHeadline : current.customHeadline;
-    const customSubtext = data.customSubtext !== undefined ? data.customSubtext : current.customSubtext;
-    const heroBannerUrl = data.heroBannerUrl !== undefined ? data.heroBannerUrl : current.heroBannerUrl;
-    const badgeText = data.badgeText !== undefined ? data.badgeText : current.badgeText;
-    const pageTitle = data.pageTitle !== undefined ? data.pageTitle : current.pageTitle;
-    const estimatedReturnAt = data.estimatedReturnAt !== undefined ? data.estimatedReturnAt : current.estimatedReturnAt;
-    const hideFromNav = data.hideFromNavigation !== undefined ? (data.hideFromNavigation ? 1 : 0) : current.hideFromNavigation;
-    const productIdsJson = data.productIds ? JSON.stringify(data.productIds) : current.productIds;
-    const nowIso = new Date().toISOString();
-
     await this.prisma.$executeRawUnsafe(
       `UPDATE page_controls SET
         status = ?, customHeadline = ?, customSubtext = ?,
@@ -338,10 +359,17 @@ export class CmsService {
         estimatedReturnAt = ?, hideFromNavigation = ?, productIds = ?,
         updatedAt = ?
        WHERE id = ?`,
-      status, customHeadline, customSubtext,
-      heroBannerUrl, badgeText, pageTitle,
-      estimatedReturnAt, hideFromNav, productIdsJson,
-      nowIso, id
+      status,
+      customHeadline !== null ? customHeadline : current.customHeadline,
+      customSubtext !== null ? customSubtext : current.customSubtext,
+      heroBannerUrl !== null ? heroBannerUrl : current.heroBannerUrl,
+      badgeText !== null ? badgeText : current.badgeText,
+      pageTitle,
+      estimatedReturnAt !== null ? estimatedReturnAt : current.estimatedReturnAt,
+      hideFromNav,
+      productIdsJson,
+      nowIso,
+      current.id
     );
 
     return this.findPageControlByRoute(current.pageRoute);
