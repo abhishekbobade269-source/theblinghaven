@@ -272,17 +272,37 @@ export class CmsService {
 
   // ---------------- UNIVERSAL PAGE CONTROLS ----------------
 
+  private normalizePageControl(p: any) {
+    if (!p) return null;
+    return {
+      id: String(p.id || p.ID || ''),
+      pageRoute: String(p.pageRoute || p.pageroute || p.page_route || '/'),
+      pageTitle: String(p.pageTitle || p.pagetitle || p.page_title || 'Page'),
+      pageType: String(p.pageType || p.pagetype || p.page_type || 'CORE_SYSTEM'),
+      status: String(p.status || p.STATUS || 'ACTIVE') as PageStatus,
+      customHeadline: p.customHeadline ?? p.customheadline ?? p.custom_headline ?? null,
+      customSubtext: p.customSubtext ?? p.customsubtext ?? p.custom_subtext ?? null,
+      heroBannerUrl: p.heroBannerUrl ?? p.herobannerurl ?? p.hero_banner_url ?? null,
+      badgeText: p.badgeText ?? p.badgetext ?? p.badge_text ?? null,
+      productIds: typeof (p.productIds ?? p.productids) === 'string'
+        ? JSON.parse(p.productIds ?? p.productids ?? '[]')
+        : (p.productIds ?? p.productids ?? []),
+      hideFromNavigation: Boolean(
+        p.hideFromNavigation !== undefined ? p.hideFromNavigation : p.hidefromnavigation
+      ),
+      estimatedReturnAt: p.estimatedReturnAt ?? p.estimatedreturnat ?? null,
+      createdAt: String(p.createdAt || p.createdat || new Date().toISOString()),
+      updatedAt: String(p.updatedAt || p.updatedat || new Date().toISOString()),
+    };
+  }
+
   async findAllPageControls(): Promise<any[]> {
     try {
       const rawPages: any[] = await this.prisma.$queryRaw`
         SELECT * FROM page_controls ORDER BY id ASC
       `;
 
-      return rawPages.map((p) => ({
-        ...p,
-        productIds: typeof p.productIds === 'string' ? JSON.parse(p.productIds || '[]') : p.productIds || [],
-        hideFromNavigation: Boolean(p.hideFromNavigation),
-      }));
+      return rawPages.map((p) => this.normalizePageControl(p)).filter(Boolean);
     } catch {
       return [];
     }
@@ -292,11 +312,12 @@ export class CmsService {
     const normalized = routePath.trim() || '/';
     try {
       const rawPages: any[] = await this.prisma.$queryRaw`
-        SELECT * FROM page_controls WHERE pageRoute = ${normalized} OR id = ${normalized} LIMIT 1
+        SELECT * FROM page_controls WHERE pageroute = ${normalized} OR id = ${normalized} LIMIT 1
       `;
 
       if (rawPages.length === 0) {
         return {
+          id: `pc_${normalized.replace(/[^a-z0-9]/gi, '_')}`,
           pageRoute: normalized,
           pageTitle: 'The Bling Haven Canada',
           pageType: 'CORE_SYSTEM',
@@ -306,14 +327,10 @@ export class CmsService {
         };
       }
 
-      const p = rawPages[0];
-      return {
-        ...p,
-        productIds: typeof p.productIds === 'string' ? JSON.parse(p.productIds || '[]') : p.productIds || [],
-        hideFromNavigation: Boolean(p.hideFromNavigation),
-      };
+      return this.normalizePageControl(rawPages[0]);
     } catch {
       return {
+        id: `pc_${normalized.replace(/[^a-z0-9]/gi, '_')}`,
         pageRoute: normalized,
         pageTitle: 'The Bling Haven Canada',
         pageType: 'CORE_SYSTEM',
@@ -339,30 +356,30 @@ export class CmsService {
 
     try {
       const rawPages: any[] = await this.prisma.$queryRaw`
-        SELECT * FROM page_controls WHERE id = ${id} OR pageRoute = ${targetRoute} LIMIT 1
+        SELECT * FROM page_controls WHERE id = ${id} OR pageroute = ${targetRoute} LIMIT 1
       `;
 
       if (rawPages.length === 0) {
         const newId = id && id.length > 3 && !id.startsWith('/') ? id : `pc_${Date.now()}`;
         await this.prisma.$executeRaw`
-          INSERT INTO page_controls (id, pageRoute, pageTitle, pageType, status, customHeadline, customSubtext, heroBannerUrl, badgeText, productIds, hideFromNavigation, estimatedReturnAt, createdAt, updatedAt)
+          INSERT INTO page_controls (id, pageroute, pagetitle, pagetype, status, customheadline, customsubtext, herobannerurl, badgetext, productids, hidefromnavigation, estimatedreturnat, createdat, updatedat)
           VALUES (${newId}, ${targetRoute}, ${pageTitle}, ${data.pageType || 'CORE_SYSTEM'}, ${status}, ${customHeadline}, ${customSubtext}, ${heroBannerUrl}, ${badgeText}, ${productIdsJson}, ${hideFromNav}, ${estimatedReturnAt}, ${nowIso}, ${nowIso})
         `;
       } else {
-        const current = rawPages[0];
+        const current = this.normalizePageControl(rawPages[0])!;
         await this.prisma.$executeRaw`
           UPDATE page_controls SET
             status = ${status},
-            customHeadline = ${customHeadline !== null ? customHeadline : current.customHeadline},
-            customSubtext = ${customSubtext !== null ? customSubtext : current.customSubtext},
-            heroBannerUrl = ${heroBannerUrl !== null ? heroBannerUrl : current.heroBannerUrl},
-            badgeText = ${badgeText !== null ? badgeText : current.badgeText},
-            pageTitle = ${pageTitle},
-            estimatedReturnAt = ${estimatedReturnAt !== null ? estimatedReturnAt : current.estimatedReturnAt},
-            hideFromNavigation = ${hideFromNav},
-            productIds = ${productIdsJson},
-            updatedAt = ${nowIso}
-          WHERE id = ${current.id}
+            customheadline = ${customHeadline !== null ? customHeadline : current.customHeadline},
+            customsubtext = ${customSubtext !== null ? customSubtext : current.customSubtext},
+            herobannerurl = ${heroBannerUrl !== null ? heroBannerUrl : current.heroBannerUrl},
+            badgetext = ${badgeText !== null ? badgeText : current.badgeText},
+            pagetitle = ${pageTitle},
+            estimatedreturnat = ${estimatedReturnAt !== null ? estimatedReturnAt : current.estimatedReturnAt},
+            hidefromnavigation = ${hideFromNav},
+            productids = ${productIdsJson},
+            updatedat = ${nowIso}
+          WHERE id = ${current.id} OR pageroute = ${targetRoute}
         `;
       }
     } catch (err) {
