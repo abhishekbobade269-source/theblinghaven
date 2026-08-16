@@ -16,89 +16,134 @@ import {
   ShieldAlert,
   RefreshCw,
 } from 'lucide-react';
+import cmsManifest from '@/data/cms-manifest.json';
 
 interface PageStatusGuardProps {
   children: React.ReactNode;
   fallbackRoute?: string;
 }
 
-import cmsManifest from '@/data/cms-manifest.json';
+// Global memory cache for instant 0ms route resolution across client navigations
+let globalCache: Record<string, any> = {};
+let globalFetchPromise: Promise<any> = null as any;
+
+const getInitialCache = () => {
+  const cache: Record<string, any> = {};
+
+  // 1. Base default from static manifest
+  if (cmsManifest?.pageControls) {
+    (cmsManifest.pageControls as any[]).forEach((p) => {
+      if (p.pageRoute) cache[p.pageRoute] = p;
+    });
+  }
+
+  // 2. Client-side stored live cache
+  if (typeof window !== 'undefined') {
+    try {
+      const savedCache = localStorage.getItem('tbh_page_controls_cache');
+      if (savedCache) {
+        const parsed = JSON.parse(savedCache);
+        Object.assign(cache, parsed);
+      }
+    } catch {}
+
+    try {
+      const overrides = localStorage.getItem('tbh_page_controls_override');
+      if (overrides) {
+        const parsed = JSON.parse(overrides);
+        Object.assign(cache, parsed);
+      }
+    } catch {}
+  }
+
+  return cache;
+};
+
+// Initialize cache synchronously
+globalCache = getInitialCache();
 
 export function PageStatusGuard({ children, fallbackRoute }: PageStatusGuardProps) {
   const pathname = usePathname();
   const rawRoute = fallbackRoute || pathname || '/';
   const currentRoute = rawRoute.endsWith('/') && rawRoute.length > 1 ? rawRoute.slice(0, -1) : rawRoute;
 
-  const [pageData, setPageData] = useState<any>(null);
-  const [isChecking, setIsChecking] = useState(true);
+  // Synchronous resolution on frame 0
+  const getResolvedStatus = (route: string) => {
+    if (globalCache[route]) return globalCache[route];
+    if (typeof window !== 'undefined') {
+      try {
+        const overrides = JSON.parse(localStorage.getItem('tbh_page_controls_override') || '{}');
+        if (overrides[route]) return overrides[route];
+      } catch {}
+    }
+    return { pageRoute: route, status: 'ACTIVE' };
+  };
+
+  const initialRouteData = getResolvedStatus(currentRoute);
+  const initialHomeData = getResolvedStatus('/');
+
+  const [pageData, setPageData] = useState<any>(() => {
+    if (currentRoute !== '/' && initialHomeData?.status && initialHomeData.status !== 'ACTIVE') {
+      return { ...initialHomeData, isGlobalHomeLock: true };
+    }
+    return initialRouteData;
+  });
+
+  const [isChecking, setIsChecking] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
 
-    const resolveRouteData = (route: string) => {
-      if (typeof window !== 'undefined') {
-        try {
-          const overrides = JSON.parse(localStorage.getItem('tbh_page_controls_override') || '{}');
-          if (overrides[route]) return overrides[route];
-        } catch {}
-      }
-      const fromManifest = (cmsManifest.pageControls as any[]).find(
-        (p) => p.pageRoute === route || (p.pageRoute === '/' && route === '')
-      );
-      return fromManifest || { pageRoute: route, status: 'ACTIVE' };
-    };
-
-    const checkStatus = async () => {
-      // 1. Resolve instant local data
-      const localCurrent = resolveRouteData(currentRoute);
-      const localHome = resolveRouteData('/');
-
-      if (currentRoute !== '/' && localHome && localHome.status && localHome.status !== 'ACTIVE') {
-        if (isMounted) {
-          setPageData({ ...localHome, isGlobalHomeLock: true });
-          setIsChecking(false);
-        }
+    const syncRoute = () => {
+      const home = getResolvedStatus('/');
+      if (currentRoute !== '/' && home?.status && home.status !== 'ACTIVE') {
+        if (isMounted) setPageData({ ...home, isGlobalHomeLock: true });
         return;
       }
 
-      if (isMounted && localCurrent) {
-        setPageData(localCurrent);
-      }
-
-      // 2. Fetch latest from API backend in background
-      try {
-        const routeRes = await apiRequest<any>(
-          `/cms/page-controls/route?path=${encodeURIComponent(currentRoute)}`
-        ).catch(() => null);
-        const currentData = routeRes?.data || routeRes;
-
-        if (currentRoute !== '/') {
-          const homeRes = await apiRequest<any>(`/cms/page-controls/route?path=%2F`).catch(() => null);
-          const homeData = homeRes?.data || homeRes;
-          if (homeData && homeData.status && homeData.status !== 'ACTIVE') {
-            if (isMounted) {
-              setPageData({ ...homeData, isGlobalHomeLock: true });
-              setIsChecking(false);
-              return;
-            }
-          }
-        }
-
-        if (isMounted && currentData && currentData.status) {
-          setPageData(currentData);
-        }
-      } catch (e) {
-        // Keep resolved local state
-      } finally {
-        if (isMounted) setIsChecking(false);
-      }
+      const current = getResolvedStatus(currentRoute);
+      if (isMounted) setPageData(current);
     };
 
-    checkStatus();
+    // Instant local sync
+    syncRoute();
+
+    // Fetch and update global cache from API in background
+    const fetchLatest = async () => {
+      try {
+        if (!globalFetchPromise) {
+          globalFetchPromise = apiRequest<any>('/cms/page-controls')
+            .then((res) => (Array.isArray(res) ? res : res?.data || []))
+            .catch(() => []);
+        }
+
+        const allPages = await globalFetchPromise;
+        globalFetchPromise = null as any;
+
+        if (Array.isArray(allPages) && allPages.length > 0) {
+          allPages.forEach((p: any) => {
+            if (p.pageRoute) globalCache[p.pageRoute] = p;
+          });
+
+          if (typeof window !== 'undefined') {
+            try {
+              localStorage.setItem('tbh_page_controls_cache', JSON.stringify(globalCache));
+            } catch {}
+          }
+
+          if (isMounted) {
+            syncRoute();
+          }
+        }
+      } catch {}
+    };
+
+    fetchLatest();
 
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'tbh_page_controls_override') {
-        checkStatus();
+      if (e.key === 'tbh_page_controls_override' || e.key === 'tbh_page_controls_cache') {
+        globalCache = getInitialCache();
+        syncRoute();
       }
     };
 
@@ -108,11 +153,6 @@ export function PageStatusGuard({ children, fallbackRoute }: PageStatusGuardProp
       window.removeEventListener('storage', handleStorageChange);
     };
   }, [currentRoute]);
-
-  // While checking status, do a fast non-blocking render or spinner if route might be locked
-  if (isChecking) {
-    return <>{children}</>;
-  }
 
   // If status is ACTIVE, render the page normally
   if (!pageData || pageData.status === 'ACTIVE') {
