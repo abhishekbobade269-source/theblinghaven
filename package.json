@@ -7,10 +7,15 @@
     "packages/*"
   ],
   "scripts": {
-    "dev:api": "npm run dev --workspace=apps/api",
-    "dev:admin": "npm run dev --workspace=apps/admin",
-    "dev:storefront": "npm run dev --workspace=apps/storefront",
+    "build": "npm run build --workspace=@theblinghaven/shared && npm run build --workspace=@theblinghaven/api",
     "build:all": "npm run build --workspaces",
+    "start": "npm run start:prod --workspace=@theblinghaven/api",
+    "start:prod": "npm run start:prod --workspace=@theblinghaven/api",
+    "dev:api": "npm run dev --workspace=@theblinghaven/api",
+    "dev:admin": "npm run dev --workspace=@theblinghaven/admin",
+    "dev:web": "npm run dev --workspace=@theblinghaven/web",
+    "prisma:generate": "npx prisma generate --schema=apps/api/prisma/schema.prisma",
+    "prisma:push": "npx prisma db push --schema=apps/api/prisma/schema.prisma",
     "lint:all": "npm run lint --workspaces"
   },
   "devDependencies": {
