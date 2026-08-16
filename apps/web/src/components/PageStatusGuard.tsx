@@ -22,6 +22,8 @@ interface PageStatusGuardProps {
   fallbackRoute?: string;
 }
 
+import cmsManifest from '@/data/cms-manifest.json';
+
 export function PageStatusGuard({ children, fallbackRoute }: PageStatusGuardProps) {
   const pathname = usePathname();
   const rawRoute = fallbackRoute || pathname || '/';
@@ -33,46 +35,77 @@ export function PageStatusGuard({ children, fallbackRoute }: PageStatusGuardProp
   useEffect(() => {
     let isMounted = true;
 
+    const resolveRouteData = (route: string) => {
+      if (typeof window !== 'undefined') {
+        try {
+          const overrides = JSON.parse(localStorage.getItem('tbh_page_controls_override') || '{}');
+          if (overrides[route]) return overrides[route];
+        } catch {}
+      }
+      const fromManifest = (cmsManifest.pageControls as any[]).find(
+        (p) => p.pageRoute === route || (p.pageRoute === '/' && route === '')
+      );
+      return fromManifest || { pageRoute: route, status: 'ACTIVE' };
+    };
+
     const checkStatus = async () => {
+      // 1. Resolve instant local data
+      const localCurrent = resolveRouteData(currentRoute);
+      const localHome = resolveRouteData('/');
+
+      if (currentRoute !== '/' && localHome && localHome.status && localHome.status !== 'ACTIVE') {
+        if (isMounted) {
+          setPageData({ ...localHome, isGlobalHomeLock: true });
+          setIsChecking(false);
+        }
+        return;
+      }
+
+      if (isMounted && localCurrent) {
+        setPageData(localCurrent);
+      }
+
+      // 2. Fetch latest from API backend in background
       try {
-        // 1. Fetch current route control
         const routeRes = await apiRequest<any>(
           `/cms/page-controls/route?path=${encodeURIComponent(currentRoute)}`
-        );
+        ).catch(() => null);
         const currentData = routeRes?.data || routeRes;
 
-        // 2. If current route is not root '/', also check if root '/' is locked in maintenance
         if (currentRoute !== '/') {
-          const homeRes = await apiRequest<any>(`/cms/page-controls/route?path=%2F`);
+          const homeRes = await apiRequest<any>(`/cms/page-controls/route?path=%2F`).catch(() => null);
           const homeData = homeRes?.data || homeRes;
           if (homeData && homeData.status && homeData.status !== 'ACTIVE') {
             if (isMounted) {
-              setPageData({
-                ...homeData,
-                isGlobalHomeLock: true,
-              });
+              setPageData({ ...homeData, isGlobalHomeLock: true });
               setIsChecking(false);
               return;
             }
           }
         }
 
-        if (isMounted) {
-          setPageData(currentData || { status: 'ACTIVE' });
-          setIsChecking(false);
+        if (isMounted && currentData && currentData.status) {
+          setPageData(currentData);
         }
       } catch (e) {
-        if (isMounted) {
-          setPageData({ status: 'ACTIVE' });
-          setIsChecking(false);
-        }
+        // Keep resolved local state
+      } finally {
+        if (isMounted) setIsChecking(false);
       }
     };
 
     checkStatus();
 
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'tbh_page_controls_override') {
+        checkStatus();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
     return () => {
       isMounted = false;
+      window.removeEventListener('storage', handleStorageChange);
     };
   }, [currentRoute]);
 

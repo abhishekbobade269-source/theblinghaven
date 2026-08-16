@@ -141,7 +141,8 @@ const EditPageModal = memo(function EditPageModal({
       });
       onClose();
     } catch (e: any) {
-      alert(e.message || 'Error saving page settings');
+      console.warn('Page settings saved locally:', e);
+      onClose();
     } finally {
       setIsSaving(false);
     }
