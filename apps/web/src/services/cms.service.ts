@@ -63,6 +63,51 @@ export async function getAllPageControls(): Promise<PageControlDto[]> {
   return Array.from(pageControlCache.values());
 }
 
+const DEFAULT_HERO_BANNERS: HeroBannerDto[] = [
+  {
+    id: 'banner-1',
+    title: 'Haute Joaillerie & Royal Kundan Heirlooms',
+    subtitle: 'Handcrafted AAA+ Solitaires, 22K Micro Gold Plated Bridal Chokers & Fine Jewelry in Toronto.',
+    imageUrl: '/uploads/sets_5621e16b_1s6a9422.jpg',
+    ctaText: 'Explore Collection',
+    ctaLink: '/catalog',
+    badgeText: 'Maison Heritage 2026',
+    isActive: true,
+    displayOrder: 1,
+    alignment: 'LEFT',
+    createdAt: '2026-08-15T12:00:00.000Z',
+    updatedAt: '2026-08-15T12:00:00.000Z',
+  },
+  {
+    id: 'banner-2',
+    title: 'Solitaire Statement Rings & Precious Bands',
+    subtitle: 'Anti-tarnish 18K solid gold prong settings with certified hallmarked brilliance.',
+    imageUrl: '/uploads/rings_15ca97c8_1s6a0175.jpg',
+    ctaText: 'Shop Solitaires',
+    ctaLink: '/rings',
+    badgeText: 'Trending Masterpiece',
+    isActive: true,
+    displayOrder: 2,
+    alignment: 'LEFT',
+    createdAt: '2026-08-15T12:00:00.000Z',
+    updatedAt: '2026-08-15T12:00:00.000Z',
+  },
+  {
+    id: 'banner-3',
+    title: 'Austrian Crystal & Heritage Kadas',
+    subtitle: 'Artisanal bridal jewels engineered for eternal luster and sacred ceremonies.',
+    imageUrl: '/uploads/earrings_d696144e_1s6a9783.jpg',
+    ctaText: 'View All Parures',
+    ctaLink: '/catalog',
+    badgeText: 'Toronto Atelier',
+    isActive: true,
+    displayOrder: 3,
+    alignment: 'LEFT',
+    createdAt: '2026-08-15T12:00:00.000Z',
+    updatedAt: '2026-08-15T12:00:00.000Z',
+  },
+];
+
 export async function getHeroBanners(): Promise<HeroBannerDto[]> {
   if (cachedBanners && cachedBanners.length > 0) return cachedBanners;
 
@@ -75,8 +120,14 @@ export async function getHeroBanners(): Promise<HeroBannerDto[]> {
     }
   } catch {}
 
-  cachedBanners = (cmsManifest.heroBanners as any[]) || [];
-  return cachedBanners;
+  const fallback: HeroBannerDto[] =
+    (cmsManifest as any).heroBanners?.length > 0 ? (cmsManifest as any).heroBanners : DEFAULT_HERO_BANNERS;
+  cachedBanners = fallback;
+  return fallback;
+}
+
+export function getCachedHeroBannersSync(): HeroBannerDto[] {
+  return cachedBanners && cachedBanners.length > 0 ? cachedBanners : DEFAULT_HERO_BANNERS;
 }
 
 export async function getInstagramPosts(): Promise<InstagramPostDto[]> {

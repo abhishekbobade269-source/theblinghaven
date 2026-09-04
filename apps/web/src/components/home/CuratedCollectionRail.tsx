@@ -36,7 +36,7 @@ export function CuratedCollectionRail({ products }: CuratedCollectionRailProps) 
   }, [products, activeTab]);
 
   return (
-    <section className="py-16 sm:py-24 bg-slate-50/50 dark:bg-black/40 border-y border-slate-200/60 dark:border-white/5">
+    <section className="py-16 sm:py-24 bg-[#FAF7F2]/80 dark:bg-black/40 border-y border-[#EADBCE] dark:border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-12">
         {/* Header and Filter Tabs */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">

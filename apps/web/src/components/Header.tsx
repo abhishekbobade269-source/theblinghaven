@@ -579,6 +579,15 @@ export function Header() {
               </button>
             )}
 
+            {/* 3D Gallery Button */}
+            <Link
+              href="/gallery"
+              className="hidden md:inline-flex items-center space-x-1.5 rounded-2xl border border-gold-500/40 bg-gold-500/10 hover:bg-gold-500 hover:text-obsidian-950 px-3.5 py-2 text-xs font-mono font-bold text-gold-700 dark:text-gold-300 transition-all shadow-sm hover:scale-105"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-gold-600 dark:text-gold-400" />
+              <span>3D Gallery</span>
+            </Link>
+
             {/* Currency Selector */}
             <div className="relative hidden sm:block">
               <button

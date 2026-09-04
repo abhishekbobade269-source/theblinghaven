@@ -115,6 +115,7 @@ export function Footer() {
             <ul className="space-y-2 text-xs">
               <li><Link href="/account" className="hover:text-gold-600 transition">My Account & Profile</Link></li>
               <li><Link href="/concierge" className="hover:text-gold-600 transition">Book Appointment</Link></li>
+              <li><Link href="/gallery" className="hover:text-gold-600 dark:hover:text-gold-400 font-bold text-gold-700 dark:text-gold-300 transition flex items-center space-x-1"><span>✦ 3D Interactive Gallery</span></Link></li>
               <li><Link href="/try-on" className="hover:text-gold-600 transition">Virtual Try-On</Link></li>
               <li><Link href="/track" className="hover:text-gold-600 transition">Track Your Order</Link></li>
               <li><Link href="/verify" className="hover:text-gold-600 transition">Verify Certificate</Link></li>

@@ -324,8 +324,16 @@ export function ToonHubGallery({
           className="absolute top-6 left-4 right-4 sm:left-8 sm:right-8 flex items-center justify-between"
           style={{ zIndex: 60 }}
         >
-          {/* Top-left brand label "TOONHUB" */}
+          {/* Top-left brand label "TOONHUB" + Return to Store */}
           <div className="flex items-center space-x-3">
+            <Link
+              href="/"
+              className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full bg-black/30 hover:bg-black/50 text-white/90 hover:text-white backdrop-blur-md border border-white/25 text-[11px] font-mono font-bold transition-all shadow-sm"
+              title="Return to The Bling Haven Storefront"
+            >
+              <ArrowLeft className="w-3 h-3" />
+              <span>STORE</span>
+            </Link>
             <span className="text-xs font-semibold uppercase tracking-[0.18em] text-white/90">
               {mode === 'toonhub' ? 'TOONHUB' : 'THE BLING HAVEN'}
             </span>

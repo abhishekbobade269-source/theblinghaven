@@ -9,6 +9,7 @@ import { HeroCarousel } from '@/components/home/HeroCarousel';
 import { CategoryBento } from '@/components/home/CategoryBento';
 import { CuratedCollectionRail } from '@/components/home/CuratedCollectionRail';
 import { VirtualTryOnBanner } from '@/components/home/VirtualTryOnBanner';
+import { InteractiveGalleryBanner } from '@/components/home/InteractiveGalleryBanner';
 import { InstagramReelsRail } from '@/components/home/InstagramReelsRail';
 import { MaisonHeritage } from '@/components/home/MaisonHeritage';
 
@@ -38,13 +39,16 @@ export default function HomePage() {
         {/* 3. Featured Heirlooms & Solitaires with Tabs */}
         <CuratedCollectionRail products={products} />
 
-        {/* 4. 3D AR Virtual Try-On Studio Banner */}
+        {/* 4. 3D Kinetic Figurines & Haute Joaillerie Gallery Banner */}
+        <InteractiveGalleryBanner />
+
+        {/* 5. 3D AR Virtual Try-On Studio Banner */}
         <VirtualTryOnBanner />
 
-        {/* 5. Real Instagram Reels Showcase */}
+        {/* 6. Real Instagram Reels Showcase */}
         <InstagramReelsRail posts={instagramPosts} />
 
-        {/* 6. Maison Heritage & Hallmark Purity Guarantee */}
+        {/* 7. Maison Heritage & Hallmark Purity Guarantee */}
         <MaisonHeritage />
       </div>
     </PageStatusGuard>

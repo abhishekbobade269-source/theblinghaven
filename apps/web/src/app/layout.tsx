@@ -45,7 +45,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="light" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -55,7 +55,7 @@ export default function RootLayout({
         />
         <script src="https://accounts.google.com/gsi/client" async defer />
       </head>
-      <body className="bg-[#FAF9F5] text-slate-900 dark:bg-[#09090C] dark:text-slate-100 font-sans flex flex-col min-h-[100dvh] antialiased selection:bg-gold-500 selection:text-obsidian-950">
+      <body className="bg-[#FAF8F5] text-stone-900 dark:bg-[#09090C] dark:text-stone-100 font-sans flex flex-col min-h-[100dvh] antialiased selection:bg-gold-500 selection:text-obsidian-950">
         <SmoothScroll>
           <ThemeProvider>
             <CurrencyProvider>

@@ -2,20 +2,19 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { HeroBannerDto } from '@theblinghaven/shared';
-import { getHeroBanners } from '@/services/cms.service';
+import { getHeroBanners, getCachedHeroBannersSync } from '@/services/cms.service';
 
 export function useHeroBanners(autoAdvanceIntervalMs = 6000) {
-  const [banners, setBanners] = useState<HeroBannerDto[]>([]);
+  const [banners, setBanners] = useState<HeroBannerDto[]>(() => getCachedHeroBannersSync());
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
     getHeroBanners().then((list) => {
-      if (isMounted) {
+      if (isMounted && list.length > 0) {
         setBanners(list);
-        setIsLoading(false);
       }
     });
     return () => {

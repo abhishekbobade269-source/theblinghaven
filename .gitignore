@@ -39,3 +39,7 @@ APIs/
 Thumbs.db
 node_modules
 
+# Playwright Test Artifacts
+playwright-report/
+test-results/
+

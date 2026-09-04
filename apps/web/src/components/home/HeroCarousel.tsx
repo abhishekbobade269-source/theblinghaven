@@ -109,6 +109,16 @@ export function HeroCarousel() {
                 <span>AR Virtual Try-On</span>
               </Link>
             </Magnet>
+
+            <Magnet padding={40} magnetStrength={3.5}>
+              <Link
+                href="/gallery"
+                className="inline-flex items-center space-x-2 rounded-full border border-white/40 bg-white/10 hover:bg-white/20 backdrop-blur-md px-5 sm:px-6 py-3 sm:py-3.5 text-xs sm:text-sm font-mono font-bold uppercase tracking-wider text-white transition-all shadow-lg"
+              >
+                <Sparkles className="h-4 w-4 text-amber-300" />
+                <span>3D Gallery</span>
+              </Link>
+            </Magnet>
           </div>
         </motion.div>
       </div>
