@@ -56,6 +56,7 @@ module.exports = {
       fontFamily: {
         serif: ['Cinzel', 'Playfair Display', 'Cormorant Garamond', 'Georgia', 'serif'],
         sans: ['Outfit', 'Inter', 'system-ui', 'sans-serif'],
+        anton: ['Anton', 'sans-serif'],
       },
     },
   },

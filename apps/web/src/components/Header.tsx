@@ -31,6 +31,7 @@ import {
   Tag,
   LogOut,
   Package,
+  Maximize2,
 } from 'lucide-react';
 
 const CATEGORIES = [
@@ -359,6 +360,17 @@ export function Header() {
                 <span>VIP Club</span>
               </Link>
             )}
+
+            {/* 5. 3D Gallery Showcase */}
+            <Link
+              href="/gallery"
+              className={`hover:text-gold-600 dark:hover:text-gold-400 transition flex items-center space-x-1.5 py-1.5 ${
+                pathname === '/gallery' ? 'text-gold-600 dark:text-gold-400 font-extrabold' : ''
+              }`}
+            >
+              <Maximize2 className="h-3.5 w-3.5 text-gold-500" />
+              <span>3D Gallery</span>
+            </Link>
 
             {/* 5. Customer Services Dropdown */}
             <div className="relative group py-2">
@@ -697,6 +709,14 @@ export function Header() {
               >
                 <Sparkles className="h-4 w-4 text-gold-500" />
                 <span>Virtual Try-On</span>
+              </Link>
+              <Link
+                href="/gallery"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center space-x-2 p-2.5 rounded-xl bg-slate-50 dark:bg-[#14141A] text-xs font-mono uppercase font-bold text-slate-800 dark:text-slate-200"
+              >
+                <Maximize2 className="h-4 w-4 text-gold-500" />
+                <span>3D Gallery</span>
               </Link>
               <Link
                 href="/about"
