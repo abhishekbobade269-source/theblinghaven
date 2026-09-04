@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { AuthProvider } from '@/lib/auth-context';
 import { ThemeProvider } from '@/lib/theme-context';
-import { SmoothScroll } from '@/components/SmoothScroll';
 
 export const metadata: Metadata = {
   title: 'The Bling Haven — Admin Portal',
@@ -17,11 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased selection:bg-gold-500/30 selection:text-gold-700 dark:selection:text-gold-200">
-        <SmoothScroll>
-          <ThemeProvider>
-            <AuthProvider>{children}</AuthProvider>
-          </ThemeProvider>
-        </SmoothScroll>
+        <ThemeProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -3,8 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import Lenis from 'lenis';
-import gsap from 'gsap';
 import { useAuth } from '@/lib/auth-context';
 import { ThemeToggle } from './ThemeToggle';
 import { CommandPalette } from './CommandPalette';
@@ -70,48 +68,10 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const mainScrollRef = useRef<HTMLElement>(null);
-  const lenisRef = useRef<Lenis | null>(null);
 
-  // Initialize Lenis smooth scrolling on the main administrative scroll viewport
+  // Seamlessly reset scroll position to top on route change
   useEffect(() => {
-    if (!mainScrollRef.current) return;
-
-    const lenis = new Lenis({
-      wrapper: mainScrollRef.current,
-      content: (mainScrollRef.current.firstElementChild as HTMLElement) || mainScrollRef.current,
-      eventsTarget: mainScrollRef.current,
-      duration: 1.1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 0.95,
-      touchMultiplier: 1.5,
-      infinite: false,
-    });
-
-    lenisRef.current = lenis;
-
-    const updateTicker = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-
-    gsap.ticker.add(updateTicker);
-    gsap.ticker.lagSmoothing(0);
-
-    return () => {
-      gsap.ticker.remove(updateTicker);
-      lenis.destroy();
-      lenisRef.current = null;
-    };
-  }, []);
-
-  // Seamlessly reset scroll position to top and update dimensions on route change
-  useEffect(() => {
-    if (lenisRef.current) {
-      lenisRef.current.scrollTo(0, { immediate: true });
-      lenisRef.current.resize();
-    } else if (mainScrollRef.current) {
+    if (mainScrollRef.current) {
       mainScrollRef.current.scrollTo({ top: 0, behavior: 'instant' });
     }
   }, [pathname]);
@@ -419,10 +379,10 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           </div>
         )}
 
-        {/* Main Body with Smooth Momentum Scrolling & Cinematic Page Transitions */}
+        {/* Main Body with Smooth Scrolling & Cinematic Page Transitions */}
         <main
           ref={mainScrollRef}
-          className="flex-1 overflow-y-auto bg-[#F8F7F4] dark:bg-obsidian-950 p-4 sm:p-6 lg:p-8"
+          className="flex-1 overflow-y-auto scroll-smooth bg-[#F8F7F4] dark:bg-obsidian-950 p-4 sm:p-6 lg:p-8"
         >
           <PageTransition>{children}</PageTransition>
         </main>
