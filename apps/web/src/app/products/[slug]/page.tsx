@@ -24,6 +24,9 @@ import {
   Camera,
 } from 'lucide-react';
 
+import { getProductBySlug } from '@/services/catalog.service';
+import { JewelleryLensZoom } from '@/components/ui/JewelleryLensZoom';
+
 const RING_SIZES = ['US 5.0', 'US 5.5', 'US 6.0', 'US 6.5', 'US 7.0', 'US 7.5', 'US 8.0', 'US 8.5'];
 const BANGLE_SIZES = ['2.4 (57mm)', '2.6 (60mm)', '2.8 (63mm)', '2.10 (67mm)'];
 
@@ -46,22 +49,21 @@ export default function ProductDetailPage() {
   const [salonClientName, setSalonClientName] = useState('');
   const [salonClientEmail, setSalonClientEmail] = useState('');
   const [isSalonBooking, setIsSalonBooking] = useState(false);
+  const [isAddedToast, setIsAddedToast] = useState(false);
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      setIsLoading(true);
-      try {
-        const res = await apiRequest<any>(`/catalog/products/${slug}`);
-        const p: ProductDto = res.data || res;
+    let isMounted = true;
+    setIsLoading(true);
+    getProductBySlug(slug).then((p) => {
+      if (isMounted) {
         setProduct(p);
-        setSelectedImage(p.primaryImageUrl);
-      } catch (e: any) {
-        alert(e.message || 'Failed to load jewelry creation.');
-      } finally {
+        if (p?.primaryImageUrl) setSelectedImage(p.primaryImageUrl);
         setIsLoading(false);
       }
+    });
+    return () => {
+      isMounted = false;
     };
-    fetchProduct();
   }, [slug]);
 
   const handleAddToBag = () => {
@@ -144,15 +146,15 @@ export default function ProductDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         {/* Left 7 Columns: Visual Gallery */}
         <div className="lg:col-span-7 space-y-4">
-          {/* Main Large Visual Frame */}
+          {/* Main Large Visual Frame with Macro Zoom */}
           <div className="relative aspect-square w-full overflow-hidden rounded-3xl border border-gold-500/30 bg-obsidian-950 shadow-2xl">
-            <img
+            <JewelleryLensZoom
               src={selectedImage}
               alt={product.title}
-              className="h-full w-full object-cover object-center transition-all duration-500"
+              className="h-full w-full"
             />
             {diamondWeight && (
-              <div className="absolute top-4 left-4 rounded-full bg-obsidian-950/80 backdrop-blur-md border border-gold-500/40 px-3 py-1 font-mono text-xs font-bold text-gold-300">
+              <div className="absolute top-4 left-4 pointer-events-none rounded-full bg-obsidian-950/80 backdrop-blur-md border border-gold-500/40 px-3 py-1 font-mono text-xs font-bold text-gold-300">
                 💎 {diamondWeight} Carat Certified
               </div>
             )}

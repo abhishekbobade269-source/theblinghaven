@@ -1,261 +1,180 @@
 'use client';
 
-import React, { useEffect, useState, Suspense } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { apiRequest } from '@/lib/api';
+import { useCatalog } from '@/hooks/useCatalog';
 import { ProductCard } from '@/components/ProductCard';
-import { ProductDto, CategoryDto, CollectionDto } from '@theblinghaven/shared';
+import { PageStatusGuard } from '@/components/PageStatusGuard';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Filter,
   Search,
-  RefreshCw,
-  Gem,
   SlidersHorizontal,
   ChevronDown,
   X,
+  Sparkles,
 } from 'lucide-react';
-
-import productsManifest from '@/data/products-manifest.json';
 
 function CatalogContent() {
   const searchParams = useSearchParams();
-  const initialCategory = searchParams.get('category') || 'ALL';
-  const initialCollection = searchParams.get('collection') || 'ALL';
+  const urlCategory = searchParams.get('category') || 'all';
 
-  const [products, setProducts] = useState<ProductDto[]>((productsManifest as any[]) || []);
-  const [categories, setCategories] = useState<CategoryDto[]>([
-    { id: 'rings', name: 'Rings', slug: 'rings', description: 'Solitaires & Bands', displayOrder: 1, isActive: true, productCount: 14, createdAt: '2026-08-15T12:00:00.000Z' },
-    { id: 'bridal-sets', name: 'Bridal Sets', slug: 'bridal-sets', description: 'Polki & Kundan', displayOrder: 2, isActive: true, productCount: 72, createdAt: '2026-08-15T12:00:00.000Z' },
-    { id: 'earrings', name: 'Earrings', slug: 'earrings', description: 'Chandbali & Jhumkas', displayOrder: 3, isActive: true, productCount: 31, createdAt: '2026-08-15T12:00:00.000Z' },
-    { id: 'bangles', name: 'Bangles', slug: 'bangles', description: 'Kadas & Bracelets', displayOrder: 4, isActive: true, productCount: 16, createdAt: '2026-08-15T12:00:00.000Z' },
-    { id: 'artisan-silver', name: 'Artisan Silver', slug: 'artisan-silver', description: '925 Sterling Silver', displayOrder: 5, isActive: true, productCount: 17, createdAt: '2026-08-15T12:00:00.000Z' },
-  ]);
-  const [collections, setCollections] = useState<CollectionDto[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState(urlCategory);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'newest'>('featured');
 
-  // Filter States
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
-  const [selectedCollection, setSelectedCollection] = useState(initialCollection);
-  const [selectedMetal, setSelectedMetal] = useState('ALL');
-  const [sortBy, setSortBy] = useState('FEATURED');
-  const [search, setSearch] = useState('');
-
-  useEffect(() => {
-    const fetchMetadata = async () => {
-      try {
-        const [catRes, colRes] = await Promise.all([
-          apiRequest<any>('/catalog/categories').catch(() => null),
-          apiRequest<any>('/catalog/collections').catch(() => null),
-        ]);
-        if (catRes) {
-          const list = Array.isArray(catRes) ? catRes : catRes?.data || [];
-          if (list.length > 0) setCategories(list);
-        }
-        if (colRes) {
-          const list = Array.isArray(colRes) ? colRes : colRes?.data || [];
-          if (list.length > 0) setCollections(list);
-        }
-      } catch (e) {
-        console.error('Failed to load categories/collections:', e);
-      }
-    };
-    fetchMetadata();
-  }, []);
-
-  const fetchProducts = async () => {
-    setIsLoading(true);
-    try {
-      let loaded: ProductDto[] = [];
-      try {
-        const q = new URLSearchParams();
-        if (selectedCategory !== 'ALL') {
-          const matched = categories.find(
-            (c) =>
-              c.slug?.toLowerCase() === selectedCategory.toLowerCase() ||
-              c.name.toLowerCase().includes(selectedCategory.toLowerCase()) ||
-              c.id === selectedCategory
-          );
-          if (matched) q.set('categoryId', matched.id);
-        }
-        if (selectedCollection !== 'ALL') q.set('collectionId', selectedCollection);
-        if (search) q.set('search', search);
-
-        const res = await apiRequest<any>(`/catalog/products?${q.toString()}`);
-        const list = Array.isArray(res) ? res : res?.data || [];
-        if (list.length > 0) loaded = list;
-      } catch (err) {
-        // Fallback
-      }
-
-      if (loaded.length === 0) {
-        let manifestList = (productsManifest as any[]) || [];
-        if (selectedCategory !== 'ALL') {
-          manifestList = manifestList.filter(
-            (p) =>
-              p.categorySlug?.toLowerCase() === selectedCategory.toLowerCase() ||
-              p.categoryId?.toLowerCase() === selectedCategory.toLowerCase(),
-          );
-        }
-        if (search) {
-          const s = search.toLowerCase();
-          manifestList = manifestList.filter(
-            (p) =>
-              p.title.toLowerCase().includes(s) ||
-              p.description?.toLowerCase().includes(s) ||
-              p.sku.toLowerCase().includes(s),
-          );
-        }
-        loaded = manifestList;
-      }
-
-      setProducts(loaded);
-    } catch (e) {
-      console.error('Failed to load products:', e);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, [selectedCategory, selectedCollection, search]);
-
-  // Apply in-memory sort & metal filter
-  let filtered = products.filter((p) => {
-    if (selectedMetal !== 'ALL') {
-      const pMetal = p.specs?.metalType || '';
-      if (!pMetal.toLowerCase().includes(selectedMetal.toLowerCase())) return false;
-    }
-    return true;
+  const {
+    products,
+    categories,
+    isLoading,
+    totalCount,
+    updateFilters,
+  } = useCatalog({
+    category: selectedCategory,
+    sortBy,
+    search: searchQuery,
   });
 
-  if (sortBy === 'PRICE_LOW_HIGH') {
-    filtered.sort((a, b) => a.basePriceUsd - b.basePriceUsd);
-  } else if (sortBy === 'PRICE_HIGH_LOW') {
-    filtered.sort((a, b) => b.basePriceUsd - a.basePriceUsd);
-  }
+  const handleCategoryChange = (catSlug: string) => {
+    setSelectedCategory(catSlug);
+    updateFilters({ category: catSlug });
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSearchQuery(val);
+    updateFilters({ search: val });
+  };
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value as any;
+    setSortBy(val);
+    updateFilters({ sortBy: val });
+  };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12 space-y-8 sm:space-y-10">
-      {/* Header */}
-      <div className="text-center max-w-2xl mx-auto space-y-2.5">
-        <span className="text-xs font-mono font-bold uppercase tracking-widest text-gold-700 dark:text-gold-400">
-          The Bling Haven Vault
-        </span>
-        <h1 className="font-serif text-3xl sm:text-5xl font-bold text-slate-900 dark:text-slate-100">
-          Haute Joaillerie Catalog
+    <div className="min-h-screen max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-8">
+      {/* Title & Description */}
+      <div className="text-center max-w-2xl mx-auto space-y-3">
+        <div className="inline-flex items-center space-x-1.5 rounded-full border border-gold-500/30 bg-gold-500/10 px-3.5 py-1 text-xs font-mono font-bold uppercase tracking-widest text-gold-600 dark:text-gold-400">
+          <Sparkles className="h-3.5 w-3.5" />
+          <span>Haute Joaillerie Archive</span>
+        </div>
+        <h1 className="font-serif text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
+          Complete Jewellery Vault
         </h1>
-        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-          Certified AAA+ CZ solitaires, royal polki bridal sets, and handcrafted demi-fine jewelry.
+        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 font-light">
+          Browse 300+ certified solitaires, royal bridal sets, chandelier drops, and 22K micro-gold plated bangles.
         </p>
       </div>
 
-      {/* Filter & Search Bar (Full Theme-Aware) */}
-      <div className="rounded-3xl border border-slate-200 dark:border-gold-500/30 bg-white dark:bg-[#0E0E14] p-5 space-y-4 shadow-xl">
-        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
-          {/* Category Chips */}
-          <div className="flex flex-wrap gap-2">
+      {/* Filter and Search Bar */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-3xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-obsidian-900/70 backdrop-blur-md shadow-sm">
+        {/* Search Input */}
+        <div className="relative w-full md:w-80">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={handleSearchChange}
+            placeholder="Search by stone, SKU, or style..."
+            className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/40 pl-10 pr-4 py-2.5 text-xs font-mono text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-gold-500 transition"
+          />
+          {searchQuery && (
             <button
-              onClick={() => setSelectedCategory('ALL')}
-              className={`rounded-xl px-4 py-2 text-xs font-bold transition font-mono ${
-                selectedCategory === 'ALL'
+              onClick={() => {
+                setSearchQuery('');
+                updateFilters({ search: '' });
+              }}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
+
+        {/* Category Pills Rail */}
+        <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-2 md:pb-0 scrollbar-none">
+          <button
+            onClick={() => handleCategoryChange('all')}
+            className={`px-3.5 py-1.5 rounded-full text-xs font-mono font-bold tracking-wider transition whitespace-nowrap ${
+              selectedCategory === 'all'
+                ? 'bg-gold-500 text-obsidian-950 shadow-md'
+                : 'bg-slate-100 dark:bg-obsidian-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-obsidian-700'
+            }`}
+          >
+            All Vault
+          </button>
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => handleCategoryChange(cat.slug)}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-mono font-bold tracking-wider transition whitespace-nowrap ${
+                selectedCategory === cat.slug
                   ? 'bg-gold-500 text-obsidian-950 shadow-md'
-                  : 'bg-slate-100 dark:bg-obsidian-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10 hover:border-gold-500'
+                  : 'bg-slate-100 dark:bg-obsidian-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-obsidian-700'
               }`}
             >
-              All Pieces ({products.length})
+              {cat.name}
             </button>
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.name)}
-                className={`rounded-xl px-4 py-2 text-xs font-bold transition font-mono ${
-                  selectedCategory.toLowerCase() === cat.name.toLowerCase()
-                    ? 'bg-gold-500 text-obsidian-950 shadow-md'
-                    : 'bg-slate-100 dark:bg-obsidian-900 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10 hover:border-gold-500'
-                }`}
-              >
-                {cat.name}
-              </button>
-            ))}
-          </div>
-
-          {/* Search Box */}
-          <div className="relative min-w-[280px]">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search solitaire, SKU, finish..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-2xl border border-slate-300 dark:border-gold-500/30 bg-slate-50 dark:bg-obsidian-950 py-2.5 pl-10 pr-4 text-xs text-slate-900 dark:text-slate-100 focus:border-gold-500 focus:outline-none transition-colors"
-            />
-          </div>
+          ))}
         </div>
 
-        {/* Second Row: Metal Filter & Sort */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-slate-200 dark:border-white/10 text-xs font-mono">
-          <div className="flex items-center space-x-3">
-            <span className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px]">Finish Alloy:</span>
-            <select
-              value={selectedMetal}
-              onChange={(e) => setSelectedMetal(e.target.value)}
-              className="rounded-xl border border-slate-300 dark:border-white/10 bg-slate-50 dark:bg-obsidian-950 px-3 py-1.5 text-slate-900 dark:text-slate-200 focus:border-gold-500 focus:outline-none cursor-pointer"
-            >
-              <option value="ALL">All Alloys & Finishes</option>
-              <option value="Platinum">Platinum / Rhodium Pt950</option>
-              <option value="18K">18K White / Yellow Gold</option>
-              <option value="22K">22K Micro Gold Plated</option>
-              <option value="Silver">Artisan 925 Silver</option>
-            </select>
-          </div>
-
-          <div className="flex items-center space-x-3">
-            <span className="text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px]">Sort By:</span>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="rounded-xl border border-slate-300 dark:border-white/10 bg-slate-50 dark:bg-obsidian-950 px-3 py-1.5 text-slate-900 dark:text-slate-200 focus:border-gold-500 focus:outline-none cursor-pointer"
-            >
-              <option value="FEATURED">Maison Curated (Featured)</option>
-              <option value="PRICE_HIGH_LOW">Price: High to Low</option>
-              <option value="PRICE_LOW_HIGH">Price: Low to High</option>
-            </select>
-          </div>
+        {/* Sort Dropdown */}
+        <div className="relative w-full md:w-auto self-end md:self-auto">
+          <select
+            value={sortBy}
+            onChange={handleSortChange}
+            className="w-full md:w-auto appearance-none rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/40 px-4 py-2.5 pr-8 text-xs font-mono font-semibold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-gold-500 transition cursor-pointer"
+          >
+            <option value="featured">Featured Heirlooms</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="newest">Newest Arrivals</option>
+          </select>
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
         </div>
+      </div>
+
+      {/* Results Count Header */}
+      <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 px-1">
+        <span>Displaying {totalCount} Certified Creations</span>
+        <span>All Prices Include Insured Armored Delivery</span>
       </div>
 
       {/* Product Grid */}
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-24 space-y-3 text-slate-400">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-gold-500 border-t-transparent" />
-          <p className="text-xs font-mono">Accessing High-Jewelry Vault...</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={i}
+              className="aspect-square rounded-3xl bg-slate-200/60 dark:bg-obsidian-900/60 animate-pulse border border-slate-200 dark:border-white/5"
+            />
+          ))}
         </div>
-      ) : filtered.length === 0 ? (
-        <div className="text-center py-24 space-y-3">
-          <div className="rounded-full border border-slate-200 dark:border-gold-500/30 bg-white dark:bg-obsidian-900 p-4 text-gold-600 dark:text-gold-400 mx-auto w-fit shadow-md">
-            <Gem className="h-8 w-8" />
-          </div>
-          <h3 className="font-serif text-xl font-bold text-slate-900 dark:text-slate-200">No creations match your filter</h3>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto">
-            Try resetting your finish or category selection to view our catalog.
+      ) : products.length > 0 ? (
+        <motion.div
+          layout
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-7"
+        >
+          {products.map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
+        </motion.div>
+      ) : (
+        <div className="py-20 text-center space-y-4 rounded-3xl border border-dashed border-slate-300 dark:border-white/10">
+          <p className="text-base text-slate-600 dark:text-slate-400">
+            No jewellery creations matched your current search filters.
           </p>
           <button
             onClick={() => {
-              setSelectedCategory('ALL');
-              setSelectedMetal('ALL');
-              setSearch('');
+              setSelectedCategory('all');
+              setSearchQuery('');
+              updateFilters({ category: 'all', search: '' });
             }}
-            className="rounded-xl bg-gold-500 px-5 py-2 text-xs font-bold text-obsidian-950 uppercase font-mono shadow-md"
+            className="rounded-full bg-gold-500 px-6 py-2.5 text-xs font-mono font-bold uppercase text-obsidian-950"
           >
             Reset Filters
           </button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {filtered.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
         </div>
       )}
     </div>
@@ -264,17 +183,10 @@ function CatalogContent() {
 
 export default function CatalogPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex h-[70vh] items-center justify-center">
-          <div className="flex flex-col items-center space-x-2 text-slate-400">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-gold-500 border-t-transparent" />
-            <p className="text-xs font-mono mt-3">Accessing High-Jewelry Vault...</p>
-          </div>
-        </div>
-      }
-    >
-      <CatalogContent />
-    </Suspense>
+    <PageStatusGuard fallbackRoute="/catalog">
+      <Suspense fallback={<div className="min-h-screen bg-black" />}>
+        <CatalogContent />
+      </Suspense>
+    </PageStatusGuard>
   );
 }

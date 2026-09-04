@@ -2,25 +2,19 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { apiRequest } from '@/lib/api';
+import { motion } from 'framer-motion';
+import { getProducts } from '@/services/catalog.service';
 import { ProductCard } from '@/components/ProductCard';
 import { ProductDto } from '@theblinghaven/shared';
 import { PageStatusGuard } from '@/components/PageStatusGuard';
 import {
   Sparkles,
-  SlidersHorizontal,
-  RefreshCw,
-  Gem,
   Crown,
   ShieldCheck,
   Truck,
-  RotateCw,
   ArrowRight,
-  Filter,
-  CheckCircle2,
+  ChevronDown,
 } from 'lucide-react';
-
-import productsManifest from '@/data/products-manifest.json';
 
 interface CategoryShowcaseProps {
   categorySlug: string;
@@ -41,178 +35,121 @@ export function CategoryShowcase({
   badgeText,
   highlights,
 }: CategoryShowcaseProps) {
-  const initialCatProducts = (productsManifest as any[]).filter(
-    (p) => p.categorySlug?.toLowerCase() === categorySlug.toLowerCase(),
-  );
-
-  const [products, setProducts] = useState<ProductDto[]>(
-    initialCatProducts.length > 0 ? initialCatProducts : (productsManifest as any[]).slice(0, 12),
-  );
+  const [products, setProducts] = useState<ProductDto[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [sortBy, setSortBy] = useState<'FEATURED' | 'PRICE_LOW_HIGH' | 'PRICE_HIGH_LOW'>('FEATURED');
-  const [selectedMetal, setSelectedMetal] = useState<string>('ALL');
+  const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'newest'>('featured');
 
   useEffect(() => {
     let isMounted = true;
-    const fetchCategoryProducts = async () => {
-      setIsLoading(true);
-      try {
-        let loaded: ProductDto[] = [];
-        try {
-          const catRes = await apiRequest<any>('/catalog/categories');
-          const categories = Array.isArray(catRes) ? catRes : catRes?.data || [];
-          const matchedCat = categories.find(
-            (c: any) => c.slug?.toLowerCase() === categorySlug.toLowerCase(),
-          );
-
-          let url = '/catalog/products?limit=50';
-          if (matchedCat) {
-            url += `&categoryId=${matchedCat.id}`;
-          }
-
-          const res = await apiRequest<any>(url);
-          const prodList = Array.isArray(res) ? res : res?.data || [];
-          if (prodList.length > 0) {
-            loaded = prodList;
-          }
-        } catch (err) {
-          // Fallback to manifest
-        }
-
-        if (loaded.length === 0) {
-          const filteredFromManifest = (productsManifest as any[]).filter(
-            (p) => p.categorySlug?.toLowerCase() === categorySlug.toLowerCase(),
-          );
-          loaded = filteredFromManifest.length > 0 ? filteredFromManifest : (productsManifest as any[]).slice(0, 12);
-        }
-
-        if (!isMounted) return;
-        setProducts(loaded);
-      } catch (e) {
-        console.error('Failed to load category products:', e);
-      } finally {
-        if (isMounted) setIsLoading(false);
+    setIsLoading(true);
+    getProducts({ category: categorySlug, sortBy }).then((data) => {
+      if (isMounted) {
+        setProducts(data);
+        setIsLoading(false);
       }
-    };
-
-    fetchCategoryProducts();
+    });
     return () => {
       isMounted = false;
     };
-  }, [categorySlug]);
-
-  // In-memory filter & sort
-  let filtered = products.filter((p) => {
-    if (selectedMetal !== 'ALL') {
-      const pSpecs = JSON.stringify(p.specs || {}).toLowerCase();
-      if (!pSpecs.includes(selectedMetal.toLowerCase())) return false;
-    }
-    return true;
-  });
-
-  if (sortBy === 'PRICE_LOW_HIGH') {
-    filtered.sort((a, b) => a.basePriceUsd - b.basePriceUsd);
-  } else if (sortBy === 'PRICE_HIGH_LOW') {
-    filtered.sort((a, b) => b.basePriceUsd - a.basePriceUsd);
-  }
+  }, [categorySlug, sortBy]);
 
   return (
     <PageStatusGuard fallbackRoute={`/${categorySlug}`}>
-      <div className="space-y-10 sm:space-y-16 pb-20 overflow-x-hidden">
-        {/* 1. Category Hero Banner */}
-        <section className="relative h-[48dvh] sm:h-[55dvh] min-h-[380px] w-full overflow-hidden bg-[#0A0A0E]">
-          <div className="absolute inset-0">
-            <img
-              src={heroBannerUrl}
-              alt={categoryTitle}
-              loading="eager"
-              decoding="async"
-              className="h-full w-full object-cover object-center transform scale-100 transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/75 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-          </div>
+      <div className="min-h-screen w-full flex flex-col space-y-12 sm:space-y-16 pb-20">
+        {/* Full-bleed Luxury Hero Banner */}
+        <div className="relative h-[48vh] sm:h-[58vh] w-full overflow-hidden bg-black select-none">
+          <img
+            src={heroBannerUrl}
+            alt={categoryTitle}
+            className="h-full w-full object-cover object-center filter brightness-[0.72] contrast-[1.05]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-obsidian-950/80 via-transparent to-obsidian-950/40" />
 
-          <div className="relative h-full w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
-            <div className="max-w-2xl space-y-3 sm:space-y-4">
-              <div className="inline-flex items-center space-x-2 rounded-full border border-gold-500/40 bg-black/70 backdrop-blur-md px-3.5 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs font-mono tracking-widest uppercase text-gold-400">
-                <Sparkles className="h-3.5 w-3.5 text-gold-400" />
-                <span>{badgeText}</span>
-              </div>
-
-              <h1 className="font-serif text-2xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight">
-                {categoryTitle}
-              </h1>
-
-              <p className="text-xs sm:text-sm md:text-base text-slate-300 font-light leading-relaxed max-w-xl line-clamp-3 sm:line-clamp-none">
-                {subtitle}
-              </p>
-
-              <div className="flex flex-wrap items-center gap-2 pt-1 sm:pt-2">
-                {highlights.map((h, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center space-x-1.5 rounded-xl border border-gold-500/20 bg-black/60 px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs text-slate-200 font-mono"
-                  >
-                    <CheckCircle2 className="h-3 w-3 text-gold-400 shrink-0" />
-                    <span>{h}</span>
-                  </div>
-                ))}
-              </div>
+          {/* Hero Content */}
+          <div className="relative z-10 h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-end pb-12 sm:pb-16 space-y-3.5">
+            <div className="inline-flex items-center space-x-2 rounded-full border border-gold-400/40 bg-obsidian-950/80 backdrop-blur-md px-3.5 py-1 text-xs font-mono font-bold uppercase tracking-widest text-gold-300 w-fit">
+              <Crown className="h-3 w-3 text-gold-400" />
+              <span>{badgeText}</span>
             </div>
+            <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight drop-shadow-md">
+              {categoryTitle}
+            </h1>
+            <p className="text-sm sm:text-base text-slate-200 font-light max-w-2xl drop-shadow">
+              {subtitle}
+            </p>
           </div>
-        </section>
+        </div>
 
-        {/* 2. Main Content Grid & Filters */}
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          {/* Filter & Sort Bar */}
-          <div className="rounded-3xl border border-slate-200 dark:border-gold-500/30 bg-white dark:bg-[#0E0E14] p-4 sm:p-5 shadow-lg flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div className="flex items-center space-x-2 overflow-x-auto pb-1 sm:pb-0 text-xs font-mono">
-              <span className="text-slate-500 dark:text-slate-400 font-bold uppercase shrink-0 mr-1 flex items-center space-x-1">
-                <Filter className="h-3.5 w-3.5 text-gold-600" />
-                <span>Filter Finish:</span>
-              </span>
-              {['ALL', 'Gold', 'Rhodium', 'Silver', 'Kundan'].map((metal) => (
-                <button
-                  key={metal}
-                  onClick={() => setSelectedMetal(metal)}
-                  className={`px-3 py-1.5 rounded-xl font-bold transition-all shrink-0 ${
-                    selectedMetal === metal
-                      ? 'bg-gold-500 text-obsidian-950 shadow-md'
-                      : 'bg-slate-100 dark:bg-obsidian-900 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-white/10'
-                  }`}
-                >
-                  {metal === 'ALL' ? 'All Finishes' : metal}
-                </button>
+        {/* Main Content Area */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full space-y-8">
+          {/* Highlights Ribbon */}
+          {highlights && highlights.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-5 rounded-3xl border border-slate-200 dark:border-gold-500/20 bg-slate-50 dark:bg-obsidian-900/60 shadow-sm">
+              {highlights.map((h, i) => (
+                <div key={i} className="flex items-center space-x-2.5 text-xs font-mono text-slate-700 dark:text-slate-300">
+                  <Sparkles className="h-4 w-4 text-gold-500 flex-shrink-0" />
+                  <span>{h}</span>
+                </div>
               ))}
             </div>
+          )}
 
-            <div className="flex items-center space-x-2 shrink-0">
-              <span className="text-xs font-mono text-slate-500 dark:text-slate-400 font-bold">Sort By:</span>
+          {/* Controls Bar */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-3 border-b border-slate-200 dark:border-white/10">
+            <span className="text-xs font-mono text-slate-600 dark:text-slate-400">
+              Showing {products.length} Masterpiece Creations
+            </span>
+
+            <div className="relative">
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="rounded-xl border border-slate-300 dark:border-gold-500/30 bg-slate-50 dark:bg-obsidian-900 px-3 py-1.5 text-xs font-mono text-slate-900 dark:text-slate-100 focus:border-gold-500 focus:outline-none cursor-pointer"
+                className="appearance-none rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/40 px-4 py-2 pr-8 text-xs font-mono font-semibold text-slate-700 dark:text-slate-200 focus:outline-none focus:border-gold-500 transition cursor-pointer"
               >
-                <option value="FEATURED">Maison Featured</option>
-                <option value="PRICE_LOW_HIGH">Price: Low to High</option>
-                <option value="PRICE_HIGH_LOW">Price: High to Low</option>
+                <option value="featured">Featured Heirlooms</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="newest">Newest Additions</option>
               </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
             </div>
           </div>
 
-          {/* Product Grid (Fluid Responsive across Mobile, Tablet, Desktop) */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-            {filtered.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          {/* Products Grid */}
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="aspect-square rounded-3xl bg-slate-200/60 dark:bg-obsidian-900/60 animate-pulse border border-slate-200 dark:border-white/5"
+                />
+              ))}
+            </div>
+          ) : products.length > 0 ? (
+            <motion.div
+              layout
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-7"
+            >
+              {products.map((prod) => (
+                <ProductCard key={prod.id} product={prod} />
+              ))}
+            </motion.div>
+          ) : (
+            <div className="py-20 text-center space-y-4 rounded-3xl border border-dashed border-slate-300 dark:border-white/10">
+              <p className="text-slate-500">No creations found in this collection.</p>
+            </div>
+          )}
 
-          {filtered.length === 0 && !isLoading && (
-            <div className="rounded-3xl border border-dashed border-slate-300 dark:border-gold-500/30 p-12 text-center space-y-3 bg-white dark:bg-obsidian-950/40">
-              <Gem className="h-10 w-10 text-gold-500 mx-auto" />
-              <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-slate-100">No creations match this filter</h3>
-              <p className="text-xs text-slate-500">Try selecting "All Finishes" to explore the full collection.</p>
+          {/* Artisan Heritage Footer */}
+          {artisanDescription && (
+            <div className="mt-16 p-8 sm:p-12 rounded-3xl border border-gold-500/30 bg-gradient-to-br from-obsidian-900 to-obsidian-950 text-slate-200 space-y-3 shadow-xl">
+              <h3 className="font-serif text-xl sm:text-2xl font-bold text-gold-400">
+                Maison Craftsmanship & Provenance
+              </h3>
+              <p className="text-xs sm:text-sm font-light leading-relaxed text-slate-300 max-w-4xl">
+                {artisanDescription}
+              </p>
             </div>
           )}
         </div>

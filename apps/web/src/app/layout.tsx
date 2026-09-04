@@ -9,6 +9,7 @@ import { Footer } from '@/components/Footer';
 import { CartDrawer } from '@/components/CartDrawer';
 import { AuthModal } from '@/components/AuthModal';
 import { PageStatusGuard } from '@/components/PageStatusGuard';
+import { SmoothScroll } from '@/components/SmoothScroll';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -55,21 +56,23 @@ export default function RootLayout({
         <script src="https://accounts.google.com/gsi/client" async defer />
       </head>
       <body className="bg-[#FAF9F5] text-slate-900 dark:bg-[#09090C] dark:text-slate-100 font-sans flex flex-col min-h-[100dvh] antialiased selection:bg-gold-500 selection:text-obsidian-950">
-        <ThemeProvider>
-          <CurrencyProvider>
-            <UserAuthProvider>
-              <CartProvider>
-                <Header />
-                <CartDrawer />
-                <AuthModal />
-                <main className="flex-grow w-full max-w-[100vw] overflow-x-hidden">
-                  <PageStatusGuard>{children}</PageStatusGuard>
-                </main>
-                <Footer />
-              </CartProvider>
-            </UserAuthProvider>
-          </CurrencyProvider>
-        </ThemeProvider>
+        <SmoothScroll>
+          <ThemeProvider>
+            <CurrencyProvider>
+              <UserAuthProvider>
+                <CartProvider>
+                  <Header />
+                  <CartDrawer />
+                  <AuthModal />
+                  <main className="flex-grow w-full max-w-[100vw] overflow-x-hidden">
+                    <PageStatusGuard>{children}</PageStatusGuard>
+                  </main>
+                  <Footer />
+                </CartProvider>
+              </UserAuthProvider>
+            </CurrencyProvider>
+          </ThemeProvider>
+        </SmoothScroll>
       </body>
     </html>
   );
