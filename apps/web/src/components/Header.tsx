@@ -8,6 +8,7 @@ import { useCart } from '@/context/CartContext';
 import { useUserAuth } from '@/context/UserAuthContext';
 import { apiRequest } from '@/lib/api';
 import { ThemeToggle } from './ThemeToggle';
+import { ShinyText } from '@/components/react-bits';
 import {
   ShoppingBag,
   Globe2,
@@ -133,21 +134,28 @@ export function Header() {
       <div className="bg-[#121216] dark:bg-[#070709] text-gold-400 border-b border-gold-500/20 py-2 px-4 sm:px-8 lg:px-12 text-[11px] font-mono tracking-wider flex items-center justify-between z-50 relative">
         <div className="hidden lg:flex items-center space-x-3 text-slate-300 dark:text-slate-400">
           <span className="text-gold-400 font-bold flex items-center">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 mr-2" />
-            LIVE GOLD RATE:
+            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse mr-2" />
+            <ShinyText text="LIVE BULLION RATES:" color="#facc15" shineColor="#ffffff" speed={2.5} />
           </span>
           <span>
-            22K: <strong className="text-white">{currencySymbol} {conv22K}/g</strong>
+            22K: <strong className="text-white font-mono">{currencySymbol} {conv22K}/g</strong>
           </span>
           <span>•</span>
           <span>
-            18K: <strong className="text-white">{currencySymbol} {conv18K}/g</strong>
+            18K: <strong className="text-white font-mono">{currencySymbol} {conv18K}/g</strong>
           </span>
         </div>
 
         <div className="mx-auto flex items-center space-x-2 text-gold-300 text-center text-xs">
           <Sparkles className="h-3.5 w-3.5 text-gold-400 shrink-0" />
-          <span className="truncate">Handcrafted Luxury Fashion & Demi-Fine Jewellery • Fast Insured Delivery Worldwide</span>
+          <span className="truncate">
+            <ShinyText
+              text="Handcrafted Luxury Fashion & Demi-Fine Jewellery • Free Insured Delivery Across Canada & Worldwide"
+              color="#eab308"
+              shineColor="#ffffff"
+              speed={3.5}
+            />
+          </span>
         </div>
 
         <div className="hidden md:flex items-center space-x-4 text-slate-300 text-xs">

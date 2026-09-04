@@ -3,7 +3,9 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Camera, Sparkles, ArrowRight, Eye, ShieldCheck } from 'lucide-react';
+import { Camera, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
+import { DiamondGlint } from '@/components/ui/DiamondGlint';
+import { ShinyText, Magnet } from '@/components/react-bits';
 
 export function VirtualTryOnBanner() {
   return (
@@ -18,7 +20,7 @@ export function VirtualTryOnBanner() {
           <div className="lg:col-span-7 space-y-6 text-left">
             <div className="inline-flex items-center space-x-2 rounded-full border border-gold-400/40 bg-gold-500/10 px-3.5 py-1 text-xs font-mono font-bold uppercase tracking-widest text-gold-300">
               <Camera className="h-3.5 w-3.5 text-gold-400" />
-              <span>Augmented Reality Studio</span>
+              <ShinyText text="Augmented Reality Studio" color="#facc15" shineColor="#ffffff" speed={2.5} />
             </div>
 
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
@@ -36,41 +38,45 @@ export function VirtualTryOnBanner() {
               </div>
               <div className="flex items-center space-x-1.5">
                 <ShieldCheck className="h-4 w-4 text-gold-400" />
-                <span>Zero Installation Required</span>
+                <span>Zero App Download Required</span>
               </div>
             </div>
 
             <div className="pt-3">
-              <Link
-                href="/try-on"
-                className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-gold-400 via-gold-500 to-amber-500 px-8 py-3.5 text-xs font-mono font-bold uppercase tracking-wider text-obsidian-950 hover:brightness-110 shadow-[0_10px_30px_rgba(212,175,55,0.4)] transition-all"
-              >
-                <span>Launch AR Fitting Studio</span>
-                <ArrowRight className="h-4 w-4" />
-              </Link>
+              <Magnet padding={60} magnetStrength={3}>
+                <Link
+                  href="/try-on"
+                  className="inline-flex items-center space-x-2 rounded-full bg-gradient-to-r from-gold-400 via-gold-500 to-amber-500 px-8 py-3.5 text-xs font-mono font-bold uppercase tracking-wider text-obsidian-950 hover:brightness-110 shadow-[0_10px_30px_rgba(212,175,55,0.4)] transition-all"
+                >
+                  <span>Launch AR Fitting Studio</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Magnet>
             </div>
           </div>
 
           {/* Right Visual Interactive Mockup */}
           <div className="lg:col-span-5 relative">
             <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="relative rounded-3xl overflow-hidden border-2 border-gold-500/40 bg-black shadow-2xl"
+              whileHover={{ scale: 1.03, rotateZ: 0.5 }}
+              transition={{ duration: 0.4, ease: 'easeOut' }}
+              className="relative rounded-3xl overflow-hidden border-2 border-gold-500/40 bg-black shadow-2xl group"
             >
               <img
                 src="/uploads/rings_15ca97c8_1s6a0175.jpg"
                 alt="AR Virtual Try-On Fitting"
-                className="w-full h-80 sm:h-96 object-cover object-center filter brightness-[0.88]"
+                className="w-full h-80 sm:h-96 object-cover object-center filter brightness-[0.88] transition-transform duration-700 ease-out group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/20" />
+              <DiamondGlint />
 
               {/* AR Overlay HUD Target Frame */}
-              <div className="absolute inset-8 border border-gold-400/40 rounded-2xl pointer-events-none flex flex-col justify-between p-3">
+              <div className="absolute inset-6 border border-gold-400/40 rounded-2xl pointer-events-none flex flex-col justify-between p-3.5 backdrop-blur-[1px]">
                 <div className="flex justify-between items-center text-[10px] font-mono text-gold-400">
-                  <span>SCALE: 1.00x</span>
-                  <span>ROTATION: 0°</span>
+                  <span className="bg-black/60 px-2 py-0.5 rounded">SCALE: 1.00x</span>
+                  <span className="bg-black/60 px-2 py-0.5 rounded">ROTATION: 0°</span>
                 </div>
-                <div className="text-center text-[10px] font-mono text-white/80 bg-black/60 rounded-lg py-1 px-2 mx-auto">
+                <div className="text-center text-[10px] font-mono text-white/90 bg-black/70 border border-gold-500/30 rounded-lg py-1 px-3 mx-auto shadow-lg">
                   LIVE FITTING CANVAS ACTIVE
                 </div>
               </div>

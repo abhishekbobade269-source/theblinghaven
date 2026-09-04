@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ProductDto } from '@theblinghaven/shared';
 import { ProductCard } from '@/components/ProductCard';
 import { Sparkles, ArrowRight } from 'lucide-react';
+import { ShinyText, Magnet } from '@/components/react-bits';
 
 interface CuratedCollectionRailProps {
   products: ProductDto[];
@@ -42,7 +43,7 @@ export function CuratedCollectionRail({ products }: CuratedCollectionRailProps) 
           <div className="space-y-2.5">
             <div className="inline-flex items-center space-x-1.5 text-xs font-mono font-bold uppercase tracking-widest text-gold-600 dark:text-gold-400">
               <Sparkles className="h-3.5 w-3.5" />
-              <span>Vault Highlights</span>
+              <ShinyText text="Vault Highlights" color="#ca8a04" shineColor="#fef08a" speed={2.5} />
             </div>
             <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
               Featured Creations
@@ -60,7 +61,7 @@ export function CuratedCollectionRail({ products }: CuratedCollectionRailProps) 
                 onClick={() => setActiveTab(tab.id)}
                 className={`relative px-4 py-1.5 rounded-full text-xs font-mono font-bold tracking-wider transition-all duration-200 ${
                   activeTab === tab.id
-                    ? 'text-obsidian-950 dark:text-slate-900'
+                    ? 'text-obsidian-950 dark:text-slate-900 font-extrabold'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                 }`}
               >
@@ -77,7 +78,7 @@ export function CuratedCollectionRail({ products }: CuratedCollectionRailProps) 
           </div>
         </div>
 
-        {/* Product Cards Grid */}
+        {/* Product Grid with Stagger Animation */}
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -95,13 +96,15 @@ export function CuratedCollectionRail({ products }: CuratedCollectionRailProps) 
 
         {/* Explore All CTA */}
         <div className="pt-4 text-center">
-          <Link
-            href={`/catalog${activeTab !== 'all' ? `?category=${activeTab}` : ''}`}
-            className="inline-flex items-center space-x-2 rounded-full border border-gold-500/40 bg-white dark:bg-obsidian-900 px-8 py-3.5 text-xs font-mono font-bold uppercase tracking-wider text-gold-700 dark:text-gold-300 hover:bg-gold-500 hover:text-obsidian-950 transition-all shadow-md"
-          >
-            <span>Explore Complete {activeTab !== 'all' ? activeTab.replace('-', ' ') : 'Maison'} Catalog</span>
-            <ArrowRight className="h-4 w-4" />
-          </Link>
+          <Magnet padding={50} magnetStrength={3}>
+            <Link
+              href={`/catalog${activeTab !== 'all' ? `?category=${activeTab}` : ''}`}
+              className="inline-flex items-center space-x-2 rounded-full border border-gold-500/40 bg-white dark:bg-obsidian-900 px-8 py-3.5 text-xs font-mono font-bold uppercase tracking-wider text-gold-700 dark:text-gold-300 hover:bg-gold-500 hover:text-obsidian-950 transition-all shadow-md"
+            >
+              <span>Explore Complete {activeTab !== 'all' ? activeTab.replace('-', ' ') : 'Maison'} Catalog</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Magnet>
         </div>
       </div>
     </section>
