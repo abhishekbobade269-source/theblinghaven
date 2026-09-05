@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   ShieldCheck,
   Truck,
@@ -15,6 +16,9 @@ import {
 } from 'lucide-react';
 
 export function Footer() {
+  const pathname = usePathname();
+  if (pathname === '/future-fashion') return null;
+
   return (
     <footer className="bg-slate-100 dark:bg-obsidian-950 text-slate-700 dark:text-slate-300 border-t border-slate-200 dark:border-gold-500/20 pt-14 pb-12 transition-colors duration-200">
       {/* 4 Trust Pillars */}
@@ -54,10 +58,10 @@ export function Footer() {
             </div>
             <div>
               <h4 className="font-serif text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
-                Bridal & Custom Fittings
+                Custom Jewellery & Sizing
               </h4>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                Book private jewellery consultations and custom size fittings.
+                Custom designs, bridal jewellery requests and size customization.
               </p>
             </div>
           </div>
@@ -114,11 +118,12 @@ export function Footer() {
             </h5>
             <ul className="space-y-2 text-xs">
               <li><Link href="/account" className="hover:text-gold-600 transition">My Account & Profile</Link></li>
-              <li><Link href="/concierge" className="hover:text-gold-600 transition">Book Appointment</Link></li>
-              <li><Link href="/gallery" className="hover:text-gold-600 dark:hover:text-gold-400 font-bold text-gold-700 dark:text-gold-300 transition flex items-center space-x-1"><span>✦ 3D Interactive Gallery</span></Link></li>
-              <li><Link href="/try-on" className="hover:text-gold-600 transition">Virtual Try-On</Link></li>
+              <li><Link href="/ai-assistant" className="hover:text-gold-600 dark:hover:text-gold-400 font-bold text-gold-700 dark:text-gold-300 transition flex items-center space-x-1"><span>✦ AI Jewelry Stylist</span></Link></li>
+              <li><Link href="/size-guide" className="hover:text-gold-600 transition">Ring & Bangle Size Guide</Link></li>
+              <li><Link href="/care-guide" className="hover:text-gold-600 transition">Jewellery Care & Anti-Tarnish</Link></li>
+              <li><Link href="/bespoke" className="hover:text-gold-600 transition">Custom Jewellery Inquiries</Link></li>
+              <li><Link href="/gallery" className="hover:text-gold-600 dark:hover:text-gold-400 transition flex items-center space-x-1"><span>✦ Jewellery Gallery</span></Link></li>
               <li><Link href="/track" className="hover:text-gold-600 transition">Track Your Order</Link></li>
-              <li><Link href="/verify" className="hover:text-gold-600 transition">Verify Certificate</Link></li>
               <li><Link href="/support" className="hover:text-gold-600 transition">Help & Support</Link></li>
             </ul>
           </div>
@@ -140,7 +145,7 @@ export function Footer() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-slate-200 dark:border-gold-500/20 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400">
         <p>© 2026 The Bling Haven. All rights reserved.</p>
-        <p className="font-mono text-[10px] text-gold-700 dark:text-gold-400 font-bold">Quality Certified • Hallmarked • 100% Insured Delivery</p>
+        <p className="font-mono text-[10px] text-gold-700 dark:text-gold-400 font-bold">Premium Anti-Tarnish Finish • Fast & Insured Courier Delivery</p>
       </div>
     </footer>
   );

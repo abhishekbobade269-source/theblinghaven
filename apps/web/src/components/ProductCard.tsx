@@ -11,8 +11,8 @@ import { ShinyText } from '@/components/react-bits';
 import {
   ShoppingBag,
   Sparkles,
-  Camera,
   Check,
+  Eye,
   Award,
 } from 'lucide-react';
 
@@ -85,14 +85,6 @@ export const ProductCard = memo(function ProductCard({ product }: ProductCardPro
                 💎 {product.specs?.diamondWeightCarats || (product.specs as any)?.gemstoneCarat} ct
               </span>
             )}
-          </div>
-
-          {/* AR Try-On Shortcut Badge */}
-          <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            <span className="inline-flex items-center space-x-1 rounded-full bg-obsidian-950/90 border border-gold-400/60 px-2.5 py-1 font-mono text-[9px] font-bold text-gold-300 shadow-lg backdrop-blur-md">
-              <Camera className="h-3 w-3 text-gold-400" />
-              <span>AR Fit</span>
-            </span>
           </div>
 
           {/* Bottom Quick-Acquire Button */}

@@ -3,32 +3,36 @@
 import React from 'react';
 import Link from 'next/link';
 import { Sparkles, Maximize2, ArrowRight, Gem, Box, Layers } from 'lucide-react';
-import { ShinyText, Magnet } from '@/components/react-bits';
+import { Magnet } from '@/components/react-bits';
 
-const PREVIEW_FIGURINES = [
+const PREVIEW_JEWELRY = [
   {
-    name: 'Blaze Mech',
-    src: 'https://fifth-gentle-45902158.figma.site/_components/v2/4de492f6d9cf8244ad5293233e5c6f52407d42fc/1.02464a56.png',
-    bg: '#F4845F',
-    label: 'TOONHUB 01',
+    name: 'Angoothi',
+    title: 'ANGOOTHI',
+    src: '/gallery/processed/01_ring_transparent.png',
+    bg: '#0B231A',
+    label: 'GALLERY 01',
   },
   {
-    name: 'Verdant Rex',
-    src: 'https://fifth-gentle-45902158.figma.site/_components/v2/4de492f6d9cf8244ad5293233e5c6f52407d42fc/2.b977faab.png',
-    bg: '#6BBF7A',
-    label: 'TOONHUB 02',
+    name: 'Choker',
+    title: 'GULBANDH',
+    src: '/gallery/processed/02_necklace_transparent.png',
+    bg: '#211812',
+    label: 'GALLERY 02',
   },
   {
-    name: 'Sakura Bloom',
-    src: 'https://fifth-gentle-45902158.figma.site/_components/v2/4de492f6d9cf8244ad5293233e5c6f52407d42fc/3.4df853b4.png',
-    bg: '#E882B4',
-    label: 'TOONHUB 03',
+    name: 'Chandbalis',
+    title: 'CHANDBALIS',
+    src: '/gallery/processed/03_earrings_transparent.png',
+    bg: '#0F2018',
+    label: 'GALLERY 03',
   },
   {
-    name: 'Azure Frost',
-    src: 'https://fifth-gentle-45902158.figma.site/_components/v2/4de492f6d9cf8244ad5293233e5c6f52407d42fc/4.4457fbce.png',
-    bg: '#6EB5FF',
-    label: 'TOONHUB 04',
+    name: 'Kadas',
+    title: 'KADAS',
+    src: '/gallery/processed/04_bangles_transparent.png',
+    bg: '#171720',
+    label: 'GALLERY 04',
   },
 ];
 
@@ -48,20 +52,20 @@ export function InteractiveGalleryBanner() {
               {/* Badge */}
               <div className="inline-flex items-center space-x-2 rounded-full px-3.5 py-1.5 bg-gold-500/15 border border-gold-500/30 text-gold-800 dark:text-gold-300 text-[10px] sm:text-xs font-mono font-bold uppercase tracking-widest">
                 <Sparkles className="h-3.5 w-3.5 text-gold-600 dark:text-gold-400" />
-                <span>3D Kinetic Carousel Showcase</span>
+                <span>Interactive Jewellery Gallery Showcase</span>
               </div>
 
               {/* Title */}
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight leading-[1.15]">
-                TOONHUB Figurines &amp; <br className="hidden sm:inline" />
+                Artisanal Heirlooms &amp; <br className="hidden sm:inline" />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-600 via-gold-500 to-amber-600 dark:from-gold-300 dark:via-gold-400 dark:to-amber-200">
-                  Haute Joaillerie Vault
+                  Shahi Jewellery Gallery
                 </span>
               </h2>
 
               {/* Description */}
               <p className="text-sm sm:text-base text-stone-600 dark:text-stone-300 leading-relaxed font-normal max-w-xl">
-                Experience our full-viewport interactive 3D carousel. Powered by fluid momentum transitions, dynamic atmospheric crossfades, Anton ghost typography, and dual figurine and royal gem vault modes.
+                Experience our full-viewport interactive jewellery gallery. Explore royal polki angoothis, bridal gulbandh chokers, marquise jadau chandbalis, and antique kadas handcrafted with royal Indian karigari and cinematic stage lighting.
               </p>
 
               {/* Features List */}
@@ -76,7 +80,7 @@ export function InteractiveGalleryBanner() {
                 </div>
                 <div className="flex items-center space-x-2">
                   <Gem className="w-4 h-4 text-gold-600 dark:text-gold-400 shrink-0" />
-                  <span>Dual Collection Modes</span>
+                  <span>Royal Karigari Archive</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Maximize2 className="w-4 h-4 text-gold-600 dark:text-gold-400 shrink-0" />
@@ -92,16 +96,16 @@ export function InteractiveGalleryBanner() {
                     className="inline-flex items-center space-x-2.5 rounded-full bg-gradient-to-r from-gold-500 via-amber-500 to-gold-600 hover:from-gold-600 hover:to-amber-600 px-7 py-3.5 text-xs sm:text-sm font-mono font-bold uppercase tracking-wider text-stone-950 shadow-[0_10px_25px_rgba(184,144,32,0.3)] transition-all hover:scale-105 active:scale-95"
                   >
                     <Maximize2 className="h-4 w-4" />
-                    <span>Launch 3D Gallery</span>
+                    <span>Explore Gallery</span>
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Magnet>
 
                 <Link
-                  href="/gallery"
+                  href="/catalog"
                   className="inline-flex items-center space-x-2 text-xs font-mono font-bold uppercase tracking-wider text-gold-700 dark:text-gold-400 hover:underline py-3 px-2"
                 >
-                  <span>Explore Figurines &amp; Vault</span>
+                  <span>Explore All Jewellery</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
@@ -113,21 +117,26 @@ export function InteractiveGalleryBanner() {
                 href="/gallery"
                 className="group relative block aspect-[4/3] w-full rounded-2xl overflow-hidden border-2 border-[#EADBCE] dark:border-gold-500/40 shadow-2xl transition-all duration-300 hover:shadow-[0_25px_50px_rgba(184,144,32,0.2)] hover:scale-[1.02]"
               >
-                {/* 4 Multi-tone background preview strips */}
+                {/* 4 Multi-tone background preview strips matching gallery pieces */}
                 <div className="absolute inset-0 grid grid-cols-4">
-                  {PREVIEW_FIGURINES.map((fig) => (
+                  {PREVIEW_JEWELRY.map((item) => (
                     <div
-                      key={fig.name}
-                      style={{ backgroundColor: fig.bg }}
-                      className="relative h-full transition-transform duration-500 group-hover:scale-105 flex flex-col justify-end items-center pb-4"
+                      key={item.name}
+                      style={{ backgroundColor: item.bg }}
+                      className="relative h-full transition-transform duration-500 group-hover:scale-105 flex flex-col justify-between items-center py-4 px-1"
                     >
-                      <img
-                        src={fig.src}
-                        alt={fig.name}
-                        className="w-full h-[75%] object-contain object-bottom drop-shadow-xl transition-transform duration-300 group-hover:-translate-y-2"
-                      />
-                      <span className="text-[9px] font-mono font-bold text-white uppercase tracking-wider opacity-90">
-                        {fig.name}
+                      <span className="text-[9px] sm:text-[10px] font-mono font-bold text-amber-300/80 uppercase tracking-widest">
+                        {item.label}
+                      </span>
+                      <div className="relative w-full h-[65%] flex items-center justify-center p-1">
+                        <img
+                          src={item.src}
+                          alt={item.name}
+                          className="w-full h-full object-contain drop-shadow-[0_12px_24px_rgba(0,0,0,0.6)] transition-transform duration-500 group-hover:scale-110 group-hover:-translate-y-1"
+                        />
+                      </div>
+                      <span className="text-[10px] sm:text-xs font-serif font-bold text-white tracking-wider uppercase opacity-95">
+                        {item.name}
                       </span>
                     </div>
                   ))}
@@ -135,10 +144,10 @@ export function InteractiveGalleryBanner() {
 
                 {/* Center Floating Pill Overlay */}
                 <div className="absolute inset-0 bg-stone-950/20 group-hover:bg-stone-950/10 transition-colors flex items-center justify-center pointer-events-none">
-                  <div className="rounded-full bg-stone-950/80 backdrop-blur-md px-5 py-2.5 text-white flex items-center space-x-2 border border-white/30 shadow-2xl group-hover:scale-110 transition-transform">
+                  <div className="rounded-full bg-stone-950/85 backdrop-blur-md px-5 py-2.5 text-white flex items-center space-x-2 border border-gold-500/40 shadow-2xl group-hover:scale-110 transition-transform">
                     <Maximize2 className="h-4 w-4 text-gold-400 animate-pulse" />
-                    <span className="text-xs font-mono uppercase font-bold tracking-widest">
-                      Enter Full Viewport Gallery
+                    <span className="text-xs font-mono uppercase font-bold tracking-widest text-gold-200">
+                      Explore Interactive Gallery
                     </span>
                   </div>
                 </div>
@@ -152,3 +161,4 @@ export function InteractiveGalleryBanner() {
 }
 
 export default InteractiveGalleryBanner;
+

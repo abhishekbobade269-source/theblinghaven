@@ -137,8 +137,8 @@ function CatalogContent() {
 
       {/* Results Count Header */}
       <div className="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 px-1">
-        <span>Displaying {totalCount} Certified Creations</span>
-        <span>All Prices Include Insured Armored Delivery</span>
+        <span>Displaying {totalCount} Designs</span>
+        <span>Standard Tracked Courier Delivery</span>
       </div>
 
       {/* Product Grid */}

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useHeroBanners } from '@/hooks/useHeroBanners';
 import { ShinyText, Magnet } from '@/components/react-bits';
-import { ChevronLeft, ChevronRight, Sparkles, ArrowRight, Camera } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Sparkles, ArrowRight } from 'lucide-react';
 
 export function HeroCarousel() {
   const {
@@ -97,16 +97,6 @@ export function HeroCarousel() {
               >
                 <span>{currentBanner.ctaText || 'Explore Collection'}</span>
                 <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Magnet>
-
-            <Magnet padding={40} magnetStrength={3.5}>
-              <Link
-                href="/try-on"
-                className="inline-flex items-center space-x-2 rounded-full border border-gold-400/50 bg-obsidian-950/60 backdrop-blur-md px-5 sm:px-7 py-3 sm:py-3.5 text-xs sm:text-sm font-mono font-bold uppercase tracking-wider text-slate-100 hover:border-gold-300 hover:text-gold-300 transition-all shadow-lg"
-              >
-                <Camera className="h-4 w-4 text-gold-400" />
-                <span>AR Virtual Try-On</span>
               </Link>
             </Magnet>
 

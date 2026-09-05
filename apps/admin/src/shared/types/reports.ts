@@ -43,10 +43,50 @@ export interface AnalyticsDataDto {
 }
 
 export type ReportType =
-  | 'hallmark-audit'
+  | 'sales-summary'
+  | 'order-fulfillment'
+  | 'inventory-movement'
   | 'tax-filing'
+  | 'hallmark-audit'
   | 'inventory-valuation'
   | 'chain-of-custody';
+
+export interface SalesSummaryRecordDto {
+  orderNumber: string;
+  orderDate: string;
+  customerName: string;
+  customerEmail: string;
+  itemsCount: number;
+  totalAmountCad: number;
+  totalAmountUsd: number;
+  paymentMethod: string;
+  paymentStatus: string;
+  orderStatus: string;
+}
+
+export interface OrderFulfillmentRecordDto {
+  orderNumber: string;
+  dispatchDate: string;
+  carrier: string; // Canada Post, FedEx, DHL, Express Standard
+  trackingNumber: string;
+  customerName: string;
+  destinationCity: string;
+  destinationCountry: string;
+  deliveryStatus: string;
+  estimatedDeliveryDate?: string;
+}
+
+export interface InventoryMovementRecordDto {
+  sku: string;
+  productTitle: string;
+  categoryName: string;
+  currentStock: number;
+  reservedStock: number;
+  lowStockThreshold: number;
+  unitPriceCad: number;
+  totalStockValueCad: number;
+  status: string;
+}
 
 export interface HallmarkAuditRecordDto {
   orderNumber: string;

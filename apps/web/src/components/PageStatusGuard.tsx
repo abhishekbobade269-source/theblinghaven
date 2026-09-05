@@ -124,11 +124,11 @@ export function PageStatusGuard({ children, fallbackRoute }: PageStatusGuardProp
           </Link>
 
           <Link
-            href="/concierge"
+            href="/bespoke"
             className="flex items-center space-x-2 rounded-2xl border border-gold-500/40 bg-[#14141C] hover:border-gold-400 hover:text-gold-400 px-6 py-3 text-xs font-bold uppercase tracking-wider text-slate-200 transition"
           >
-            <PhoneCall className="h-4 w-4 text-gold-400" />
-            <span>Contact Salon Advisor</span>
+            <Sparkles className="h-4 w-4 text-gold-400" />
+            <span>Custom Jewellery Request</span>
           </Link>
         </div>
       </div>

@@ -16,6 +16,8 @@ import {
   Eye,
   CheckCircle2,
   Lock,
+  BarChart3,
+  PackageCheck,
 } from 'lucide-react';
 
 interface ReportCard {
@@ -29,45 +31,45 @@ interface ReportCard {
 
 const REPORT_TYPES: ReportCard[] = [
   {
-    id: 'hallmark-audit',
-    title: 'BIS Hallmarking & Gemological Certificate Ledger',
-    subtitle: 'Regulatory Compliance & Gem Provenance',
+    id: 'sales-summary',
+    title: 'Sales & Revenue Performance Ledger',
+    subtitle: 'Order Sales, Gross & Net Revenue Analytics',
     description:
-      'Complete export of all BIS 916 gold hallmarking serials, IGI/GIA certificate numbers, metal karats, and diamond weights for tax & customs authorities.',
-    icon: ShieldCheck,
-    badge: 'BIS 916 / GIA',
+      'Complete breakdown of customer orders, net sales in CAD and USD, payment methods, and order fulfillment statuses.',
+    icon: BarChart3,
+    badge: 'Sales & Revenue',
+  },
+  {
+    id: 'order-fulfillment',
+    title: 'Courier Shipping & Delivery Ledger',
+    subtitle: 'Canada Post, FedEx & DHL Tracking Status',
+    description:
+      'Chronological courier dispatch ledger mapping parcels, tracking numbers, destination cities, and doorstep delivery confirmations.',
+    icon: Truck,
+    badge: 'Fulfillment',
+  },
+  {
+    id: 'inventory-movement',
+    title: 'Product Inventory & Stock Movement Audit',
+    subtitle: 'SKU Stock Movements & Catalog Valuation',
+    description:
+      'Comprehensive audit trail of artificial jewellery stock counts, reserved orders, low-stock thresholds, and catalog valuations.',
+    icon: Boxes,
+    badge: 'Inventory Audit',
   },
   {
     id: 'tax-filing',
-    title: 'Cross-Border VAT & GST Tax Filing Ledger',
-    subtitle: 'UK VAT, UAE VAT, India GST & US Sales Tax',
+    title: 'GST, HST & Sales Tax Compliance Ledger',
+    subtitle: 'Canadian HST/GST & Regional Tax Filings',
     description:
-      'Quarterly tax ledger calculating taxable turnover, local tax collected, and export exemptions for global compliance filings.',
+      'Accounting tax ledger calculating taxable turnover, Canadian HST/GST collected, and cross-border exemptions for compliance filings.',
     icon: Landmark,
-    badge: 'HMRC / FTA / GST',
-  },
-  {
-    id: 'inventory-valuation',
-    title: 'Vault Inventory & Insurance Replacement Valuation',
-    subtitle: 'Physical Safe Replacement Cost Audit',
-    description:
-      'Live insurance valuation report detailing piece-by-piece replacement costs across London, Dubai, Zurich, Mumbai, and New York vaults.',
-    icon: Boxes,
-    badge: 'Lloyd’s Insured',
-  },
-  {
-    id: 'chain-of-custody',
-    title: 'Armored Courier Logistics Chain of Custody',
-    subtitle: 'Ferrari Group, Brink’s & Tamper Seals',
-    description:
-      'Chronological transit ledger mapping tamper-evident titanium lock seals, armored convoy handover times, and client passport verification.',
-    icon: Truck,
-    badge: 'Armored Vault',
+    badge: 'Tax Compliance',
   },
 ];
 
 export default function ReportsExportPage() {
-  const [selectedReport, setSelectedReport] = useState<ReportType>('hallmark-audit');
+  const [selectedReport, setSelectedReport] = useState<ReportType>('sales-summary');
   const [previewData, setPreviewData] = useState<any[]>([]);
   const [isLoadingPreview, setIsLoadingPreview] = useState(true);
 
@@ -100,13 +102,13 @@ export default function ReportsExportPage() {
           <div>
             <div className="flex items-center space-x-2 text-xs font-bold uppercase tracking-widest text-gold-600 dark:text-gold-400 mb-1">
               <FileSpreadsheet className="h-4 w-4" />
-              <span>Fiscal Compliance & Regulatory Audit Engine</span>
+              <span>E-Commerce Sales & Inventory Audit Engine</span>
             </div>
             <h1 className="font-serif text-3xl font-bold text-slate-900 dark:text-slate-100">
-              Financial Reports & Compliance Ledgers
+              Sales, Fulfillment & Inventory Reports
             </h1>
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              Export verified compliance ledgers for BIS Hallmarking, VAT/GST tax filings, and insurance replacement valuation.
+              Export verified ledgers for sales revenue, courier deliveries, inventory valuation, and GST/HST tax filings.
             </p>
           </div>
 

@@ -145,11 +145,11 @@ export function CartDrawer() {
                   </span>
                 </div>
                 <div className="flex justify-between text-slate-400">
-                  <span>Armored Insured Freight</span>
-                  <span className="font-mono font-bold text-emerald-400">COMPLIMENTARY</span>
+                  <span>Tracked Courier Shipping</span>
+                  <span className="font-mono font-bold text-emerald-400">FREE OVER $50</span>
                 </div>
                 <div className="flex justify-between text-sm font-serif font-bold text-gold-400 pt-2 border-t border-white/10">
-                  <span>Acquisition Total</span>
+                  <span>Order Total</span>
                   <span>{formatPrice(subtotalUsd)}</span>
                 </div>
               </div>
@@ -159,13 +159,13 @@ export function CartDrawer() {
                 onClick={() => setIsCartOpen(false)}
                 className="flex w-full items-center justify-center space-x-2 rounded-2xl border border-gold-500/60 bg-gradient-to-r from-gold-600 to-gold-500 py-3.5 text-xs font-bold uppercase tracking-widest text-obsidian-950 shadow-xl shadow-gold-500/20 hover:from-gold-500 hover:to-gold-400 transition"
               >
-                <span>Proceed to Insured Checkout</span>
+                <span>Proceed to Checkout</span>
                 <ArrowRight className="h-4 w-4" />
               </Link>
 
               <div className="flex items-center justify-center space-x-2 text-[10px] text-slate-400 text-center font-mono">
                 <ShieldCheck className="h-3.5 w-3.5 text-gold-500" />
-                <span>BIS 916 & GIA Certified • Ferrari Armored Logistics</span>
+                <span>100% Anti-Tarnish Guarantee • Fast Courier Delivery</span>
               </div>
             </div>
           )}

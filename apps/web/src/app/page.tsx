@@ -6,10 +6,10 @@ import { getInstagramPosts, InstagramPostDto } from '@/services/cms.service';
 import { PageStatusGuard } from '@/components/PageStatusGuard';
 
 import { HeroCarousel } from '@/components/home/HeroCarousel';
-import { CategoryBento } from '@/components/home/CategoryBento';
+import { CategoryVideoHero } from '@/components/home/CategoryVideoHero';
 import { CuratedCollectionRail } from '@/components/home/CuratedCollectionRail';
-import { VirtualTryOnBanner } from '@/components/home/VirtualTryOnBanner';
 import { InteractiveGalleryBanner } from '@/components/home/InteractiveGalleryBanner';
+import { AtelierCaseStudies } from '@/components/home/AtelierCaseStudies';
 import { InstagramReelsRail } from '@/components/home/InstagramReelsRail';
 import { MaisonHeritage } from '@/components/home/MaisonHeritage';
 
@@ -33,17 +33,17 @@ export default function HomePage() {
         {/* 1. Cinematic Luxury Hero Carousel */}
         <HeroCarousel />
 
-        {/* 2. Asymmetric Jewellery Category Bento */}
-        <CategoryBento />
-
-        {/* 3. Featured Heirlooms & Solitaires with Tabs */}
+        {/* 2. Featured Heirlooms & Solitaires with Interactive Tabs */}
         <CuratedCollectionRail products={products} />
 
-        {/* 4. 3D Kinetic Figurines & Haute Joaillerie Gallery Banner */}
-        <InteractiveGalleryBanner />
+        {/* 3. 3-Column Split Category Portal (In The Middle) */}
+        <CategoryVideoHero />
 
-        {/* 5. 3D AR Virtual Try-On Studio Banner */}
-        <VirtualTryOnBanner />
+        {/* 4. Featured Customer Favorites with 12x8 Pixel-Dissolve & Magnetic Physics */}
+        <AtelierCaseStudies />
+
+        {/* 5. Kinetic Haute Joaillerie Vault Gallery Showcase */}
+        <InteractiveGalleryBanner />
 
         {/* 6. Real Instagram Reels Showcase */}
         <InstagramReelsRail posts={instagramPosts} />

@@ -39,10 +39,16 @@ export class ReportsController {
     let data: any[] = [];
     let filename = `${reportType}-${new Date().toISOString().slice(0, 10)}`;
 
-    if (reportType === 'hallmark-audit') {
-      data = await this.reportsService.getHallmarkAuditReport();
+    if (reportType === 'sales-summary') {
+      data = await this.reportsService.getSalesSummaryReport();
+    } else if (reportType === 'order-fulfillment') {
+      data = await this.reportsService.getOrderFulfillmentReport();
+    } else if (reportType === 'inventory-movement') {
+      data = await this.reportsService.getInventoryMovementReport();
     } else if (reportType === 'tax-filing') {
       data = await this.reportsService.getTaxFilingReport();
+    } else if (reportType === 'hallmark-audit') {
+      data = await this.reportsService.getHallmarkAuditReport();
     } else if (reportType === 'inventory-valuation') {
       data = await this.reportsService.getInventoryValuationReport();
     } else if (reportType === 'chain-of-custody') {

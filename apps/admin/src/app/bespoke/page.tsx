@@ -4,30 +4,27 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AdminLayout } from '@/components/AdminLayout';
 import { apiRequest } from '@/lib/api';
-import { BespokeRequestDto, BespokeStatus } from '@theblinghaven/shared';
+import { BespokeRequestDto } from '@theblinghaven/shared';
 import {
   Sparkles,
-  Crown,
   Search,
   RefreshCw,
   Eye,
-  Gem,
   CheckCircle2,
   Clock,
-  DollarSign,
   Palette,
-  Shield,
-  Layers,
   Trash2,
+  FileText,
+  Phone,
+  Mail,
 } from 'lucide-react';
 
 const STATUS_FILTERS: { key: string; label: string }[] = [
-  { key: 'ALL', label: 'All Commissions' },
+  { key: 'ALL', label: 'All Inquiries' },
   { key: 'SUBMITTED', label: 'New Requests' },
-  { key: 'CAD_DESIGN_IN_PROGRESS', label: 'CAD 3D Modeling' },
-  { key: 'CASTING_AND_SETTING', label: 'Atelier Goldsmith Bench' },
-  { key: 'HALLMARK_AND_CERTIFICATION', label: 'Hallmarking & GIA' },
-  { key: 'COMPLETED_DISPATCHED', label: 'Completed' },
+  { key: 'CAD_DESIGN_IN_PROGRESS', label: 'Design Review' },
+  { key: 'CASTING_AND_SETTING', label: 'In Crafting' },
+  { key: 'COMPLETED_DISPATCHED', label: 'Dispatched / Contacted' },
 ];
 
 export default function BespokePipelinePage() {
@@ -55,12 +52,12 @@ export default function BespokePipelinePage() {
   }, [statusFilter]);
 
   const handleDeleteProject = async (id: string, refNum: string) => {
-    if (!confirm(`Are you sure you want to permanently delete Bespoke Commission ${refNum}?`)) return;
+    if (!confirm(`Are you sure you want to permanently delete Custom Request ${refNum}?`)) return;
     try {
       await apiRequest(`/admin/bespoke/${id}`, { method: 'DELETE' });
       fetchProjects();
     } catch (e: any) {
-      alert(e.message || 'Failed to delete bespoke project.');
+      alert(e.message || 'Failed to delete custom request.');
     }
   };
 
@@ -71,10 +68,11 @@ export default function BespokePipelinePage() {
       p.category.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const totalQuotedValue = projects.reduce((acc, p) => acc + (p.quotedAmountUsd || 0), 0);
-  const activeCommissions = projects.filter(
+  const activeRequests = projects.filter(
     (p) => p.status !== 'COMPLETED_DISPATCHED' && p.status !== 'DECLINED',
   ).length;
+
+  const newSubmissions = projects.filter((p) => p.status === 'SUBMITTED').length;
 
   return (
     <AdminLayout>
@@ -83,14 +81,14 @@ export default function BespokePipelinePage() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-ivory-400 dark:border-obsidian-750 pb-6">
           <div>
             <div className="flex items-center space-x-2 text-xs font-bold uppercase tracking-widest text-gold-600 dark:text-gold-400 mb-1">
-              <Gem className="h-4 w-4" />
-              <span>Haute Joaillerie Atelier Pipeline & CAD Studio</span>
+              <Sparkles className="h-4 w-4" />
+              <span>Custom Jewellery & Bridal Requests</span>
             </div>
             <h1 className="font-serif text-3xl font-bold text-slate-900 dark:text-slate-100">
-              Bespoke Jewelry Commissions
+              Custom Jewellery Requests
             </h1>
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              Master custom creations, 3D CAD modeling, gemstone sourcing, and goldsmith bench allocations.
+              Manage client custom inquiries for artificial rings, bangles, bridal sets, Kundan chokers, and custom designs.
             </p>
           </div>
 
@@ -98,6 +96,7 @@ export default function BespokePipelinePage() {
             <button
               onClick={fetchProjects}
               className="rounded-lg border border-ivory-400 dark:border-obsidian-700 bg-white dark:bg-obsidian-850 p-2.5 text-slate-600 dark:text-slate-300 hover:bg-ivory-100 dark:hover:bg-obsidian-800"
+              title="Refresh List"
             >
               <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
             </button>
@@ -108,34 +107,32 @@ export default function BespokePipelinePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="rounded-3xl border border-ivory-400 dark:border-obsidian-750 bg-white dark:bg-obsidian-900 p-5 shadow-sm">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Total Quoted Atelier Pipeline
+              New Unreviewed Requests
             </span>
             <p className="mt-2 text-2xl font-bold text-gold-700 dark:text-gold-400 font-serif">
-              ${totalQuotedValue.toLocaleString()} USD
+              {newSubmissions} Inquiries
             </p>
-            <p className="mt-1 text-xs text-slate-400">Aggregated bespoke creation volume</p>
+            <p className="mt-1 text-xs text-amber-600 dark:text-amber-400 font-medium">Awaiting team outreach</p>
           </div>
 
           <div className="rounded-3xl border border-ivory-400 dark:border-obsidian-750 bg-white dark:bg-obsidian-900 p-5 shadow-sm">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Active Atelier Bench Projects
+              Active Inquiries
             </span>
             <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-slate-100 font-serif">
-              {activeCommissions} High Commissions
+              {activeRequests} In Progress
             </p>
-            <p className="mt-1 text-xs text-emerald-600 dark:text-emerald-400 font-bold">
-              Assigned to Master Goldsmiths
-            </p>
+            <p className="mt-1 text-xs text-slate-400">Design review & crafting</p>
           </div>
 
           <div className="rounded-3xl border border-ivory-400 dark:border-obsidian-750 bg-white dark:bg-obsidian-900 p-5 shadow-sm">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Total Client Design Briefs
+              Total Requests Received
             </span>
             <p className="mt-2 text-2xl font-bold text-slate-900 dark:text-slate-100 font-serif">
-              {projects.length} Commissions
+              {projects.length} Total
             </p>
-            <p className="mt-1 text-xs text-slate-400">Rings, chokers, & bridal parures</p>
+            <p className="mt-1 text-xs text-slate-400">Rings, bangles, necklaces & sets</p>
           </div>
         </div>
 
@@ -161,7 +158,7 @@ export default function BespokePipelinePage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input
               type="text"
-              placeholder="Search reference #, client name, or category..."
+              placeholder="Search ref #, client name, or item type..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full rounded-xl border border-ivory-400 dark:border-obsidian-750 bg-white dark:bg-obsidian-900 py-2 pl-9 pr-4 text-xs text-slate-800 dark:text-slate-200 focus:border-gold-500 focus:outline-none"
@@ -169,35 +166,34 @@ export default function BespokePipelinePage() {
           </div>
         </div>
 
-        {/* Bespoke Table */}
+        {/* Requests Table */}
         <div className="rounded-3xl border border-ivory-400 dark:border-obsidian-750 bg-white dark:bg-obsidian-900 p-6 shadow-sm overflow-x-auto">
-          <table className="w-full text-left text-xs min-w-[1000px]">
+          <table className="w-full text-left text-xs min-w-[900px]">
             <thead>
               <tr className="border-b border-ivory-300 dark:border-obsidian-800 text-slate-500 dark:text-slate-400">
-                <th className="pb-3 font-bold uppercase tracking-wider">Reference & Visual</th>
-                <th className="pb-3 font-bold uppercase tracking-wider">Client Profile</th>
-                <th className="pb-3 font-bold uppercase tracking-wider">Category & Metal</th>
-                <th className="pb-3 font-bold uppercase tracking-wider">Gemstone Specifications</th>
-                <th className="pb-3 font-bold uppercase tracking-wider">Quoted Amount</th>
-                <th className="pb-3 font-bold uppercase tracking-wider">Assigned Goldsmith</th>
-                <th className="pb-3 font-bold uppercase tracking-wider">Status Stage</th>
-                <th className="pb-3 font-bold uppercase tracking-wider text-right">Studio File</th>
+                <th className="pb-3 font-bold uppercase tracking-wider">Ref # & Date</th>
+                <th className="pb-3 font-bold uppercase tracking-wider">Client Info</th>
+                <th className="pb-3 font-bold uppercase tracking-wider">Item Type</th>
+                <th className="pb-3 font-bold uppercase tracking-wider">Design Details / Notes</th>
+                <th className="pb-3 font-bold uppercase tracking-wider">Target Budget</th>
+                <th className="pb-3 font-bold uppercase tracking-wider">Status</th>
+                <th className="pb-3 font-bold uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-ivory-300 dark:divide-obsidian-800 text-slate-700 dark:text-slate-300">
               {isLoading ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-400">
+                  <td colSpan={7} className="py-12 text-center text-slate-400">
                     <div className="flex items-center justify-center space-x-2">
                       <div className="h-5 w-5 animate-spin rounded-full border-2 border-gold-500 border-t-transparent" />
-                      <span>Loading bespoke atelier commissions...</span>
+                      <span>Loading custom jewellery requests...</span>
                     </div>
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-400">
-                    No bespoke projects found matching the filter.
+                  <td colSpan={7} className="py-12 text-center text-slate-400">
+                    No custom requests found matching the current filter.
                   </td>
                 </tr>
               ) : (
@@ -208,16 +204,16 @@ export default function BespokePipelinePage() {
                   >
                     <td className="py-3.5">
                       <div className="flex items-center space-x-3">
-                        <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-xl border border-ivory-300 dark:border-obsidian-750 bg-obsidian-950">
-                          {p.inspirationPhotoUrl || p.cadRenderUrl ? (
+                        <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-xl border border-ivory-300 dark:border-obsidian-750 bg-obsidian-950">
+                          {p.inspirationPhotoUrl ? (
                             <img
-                              src={p.cadRenderUrl || p.inspirationPhotoUrl}
+                              src={p.inspirationPhotoUrl}
                               alt={p.referenceNumber}
                               className="h-full w-full object-cover"
                             />
                           ) : (
                             <div className="flex h-full w-full items-center justify-center text-gold-500">
-                              <Gem className="h-5 w-5" />
+                              <FileText className="h-5 w-5" />
                             </div>
                           )}
                         </div>
@@ -233,54 +229,39 @@ export default function BespokePipelinePage() {
                     </td>
 
                     <td className="py-3.5">
-                      <p className="font-serif font-bold text-slate-900 dark:text-slate-100 text-sm">
+                      <p className="font-bold text-slate-900 dark:text-slate-100 text-xs">
                         {p.clientName}
                       </p>
-                      <p className="text-[10px] text-slate-400 font-mono">{p.clientCountry}</p>
-                      {p.vipTier && (
-                        <span className="inline-flex items-center space-x-1 rounded-full bg-gold-500/20 px-2 py-0.5 text-[9px] font-bold text-gold-800 dark:text-gold-300 mt-0.5">
-                          <Crown className="h-2.5 w-2.5" />
-                          <span>{p.vipTier.replace('_', ' ')}</span>
-                        </span>
-                      )}
+                      <p className="text-[10px] text-slate-400 font-mono">
+                        {p.clientCountry || 'Canada'}
+                      </p>
                     </td>
 
                     <td className="py-3.5">
-                      <p className="font-bold text-slate-900 dark:text-slate-100">{p.category}</p>
-                      <p className="text-[10px] text-slate-500">{p.metalPreference}</p>
+                      <span className="font-bold text-slate-900 dark:text-slate-100 block">
+                        {p.category}
+                      </span>
+                      <span className="text-[10px] text-slate-500">
+                        {p.metalPreference || 'Gold Plated / Brass'}
+                      </span>
                     </td>
 
                     <td className="py-3.5 max-w-xs">
-                      <p className="font-medium text-slate-800 dark:text-slate-200 truncate">
-                        {p.gemstonePreference || 'Custom Selection'}
-                      </p>
-                      <p className="text-[10px] text-gold-700 dark:text-gold-400 font-mono">
-                        {p.estimatedCaratWeight ? `${p.estimatedCaratWeight} ct` : ''}{' '}
-                        {p.diamondShape ? `• ${p.diamondShape}` : ''}
+                      <p className="font-medium text-slate-800 dark:text-slate-200 line-clamp-2">
+                        {p.gemstonePreference || 'Custom artificial piece'}
                       </p>
                     </td>
 
                     <td className="py-3.5">
-                      {p.quotedAmountUsd ? (
-                        <div>
-                          <p className="font-serif font-bold text-gold-700 dark:text-gold-400 text-sm">
-                            ${p.quotedAmountUsd.toLocaleString()} USD
-                          </p>
-                          <p className="text-[9px] text-slate-400 font-mono">Formal Atelier Quote</p>
-                        </div>
-                      ) : (
-                        <span className="text-[10px] text-slate-400 font-mono">{p.budgetRangeUsd}</span>
-                      )}
-                    </td>
-
-                    <td className="py-3.5 text-[11px] text-slate-600 dark:text-slate-400">
-                      {p.assignedGoldsmith || 'Pending Bench Allocation'}
+                      <span className="text-xs font-mono font-bold text-gold-700 dark:text-gold-400">
+                        {p.budgetRangeUsd || 'Flexible'}
+                      </span>
                     </td>
 
                     <td className="py-3.5">
                       <span
                         className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
-                          p.status === 'CASTING_AND_SETTING'
+                          p.status === 'SUBMITTED'
                             ? 'bg-amber-500/20 text-amber-800 dark:text-amber-300'
                             : p.status === 'CAD_DESIGN_IN_PROGRESS'
                             ? 'bg-blue-500/20 text-blue-800 dark:text-blue-300'
@@ -299,13 +280,13 @@ export default function BespokePipelinePage() {
                         className="inline-flex items-center space-x-1 rounded-xl border border-ivory-300 dark:border-obsidian-750 bg-ivory-100 dark:bg-obsidian-800 px-3 py-1.5 text-xs font-bold text-slate-800 dark:text-slate-200 hover:text-gold-600 dark:hover:text-gold-400 transition"
                       >
                         <Eye className="h-3.5 w-3.5" />
-                        <span>Manage & CAD</span>
+                        <span>View</span>
                       </Link>
 
                       <button
                         onClick={() => handleDeleteProject(p.id, p.referenceNumber)}
                         className="inline-flex items-center rounded-xl border border-rose-500/30 bg-rose-500/10 hover:bg-rose-500/20 p-1.5 text-rose-500 transition"
-                        title="Delete Commission"
+                        title="Delete Request"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>

@@ -91,21 +91,6 @@
       "updatedAt": "2026-08-15T12:00:00.000Z"
     },
     {
-      "id": "pc-7",
-      "pageRoute": "/try-on",
-      "pageTitle": "Virtual Try-On AR Studio",
-      "pageType": "CORE_SYSTEM",
-      "status": "ACTIVE",
-      "customHeadline": "Real-Time Augmented Reality Jewellery Try-On",
-      "customSubtext": "Experience necklace sizing and ring dimensions with live camera tracking.",
-      "heroBannerUrl": "/uploads/sets_5b95de3f_1s6a8695.jpg",
-      "badgeText": "AR LIVE",
-      "productIds": [],
-      "hideFromNavigation": false,
-      "createdAt": "2026-08-15T12:00:00.000Z",
-      "updatedAt": "2026-08-15T12:00:00.000Z"
-    },
-    {
       "id": "pc-8",
       "pageRoute": "/bespoke",
       "pageTitle": "Bespoke Atelier & Custom Orders",

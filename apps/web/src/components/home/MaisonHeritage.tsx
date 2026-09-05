@@ -6,22 +6,22 @@ import { SpotlightCard, ShinyText, CountUp } from '@/components/react-bits';
 
 export function MaisonHeritage() {
   const stats = [
-    { value: 100, suffix: '%', label: 'BIS Hallmarked Purity' },
-    { value: 300, suffix: '+', label: 'Artisanal Masterpieces' },
-    { value: 48, suffix: 'h', label: 'Insured Armored Dispatch' },
-    { value: 0, suffix: ' Tarnish', label: 'Gold Bonding Guarantee' },
+    { value: 100, suffix: '%', label: 'Anti-Tarnish Plating' },
+    { value: 300, suffix: '+', label: 'Artisanal Designs' },
+    { value: 48, suffix: 'h', label: 'Fast Courier Dispatch' },
+    { value: 0, suffix: ' Tarnish', label: 'Anti-Tarnish Guarantee' },
   ];
 
   const pillars = [
     {
       icon: <ShieldCheck className="h-6 w-6 text-gold-500" />,
-      title: 'Certified BIS & Hallmarked',
-      description: 'Every gold-plated setting and 925 sterling piece carries micro-engraved authenticity stamps.',
+      title: 'Triple-Layer Micro Plating',
+      description: 'Engineered with durable brass base and 18K/22K micro-gold polish for long-lasting radiant lustre.',
     },
     {
       icon: <Truck className="h-6 w-6 text-gold-500" />,
-      title: '100% Insured Worldwide Transit',
-      description: 'Complimentary tamper-evident armoring and signature delivery across Canada, US, and UK.',
+      title: 'Fast Tracked Courier Shipping',
+      description: 'Reliable Blue Dart, DTDC, FedEx & DHL delivery with tracking to your doorstep across India & worldwide.',
     },
     {
       icon: <Award className="h-6 w-6 text-gold-500" />,
@@ -63,7 +63,7 @@ export function MaisonHeritage() {
             Craftsmanship That Outlasts Generations
           </h2>
           <p className="text-sm text-slate-600 dark:text-slate-400 font-light leading-relaxed">
-            Every piece from The Bling Haven is hallmarked and sealed in Toronto, Canada, under uncompromising standards of haute joaillerie.
+            Every piece from The Bling Haven is hallmarked and sealed under uncompromising standards of Indian royal joaillerie and bridal karigari.
           </p>
         </div>
 

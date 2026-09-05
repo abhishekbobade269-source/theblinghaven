@@ -21,7 +21,6 @@ import {
   ChevronRight,
   HelpCircle,
   X,
-  Camera,
 } from 'lucide-react';
 
 import { getProductBySlug } from '@/services/catalog.service';
@@ -202,7 +201,7 @@ export default function ProductDetailPage() {
                 {formatPrice(product.basePriceUsd)}
               </p>
               <p className="text-[11px] text-emerald-400 font-mono mt-0.5">
-                ✓ Insured Armored Global Freight & Taxes Calculated at Checkout
+                ✓ Tracked Courier Delivery & 100% Anti-Tarnish Guarantee
               </p>
             </div>
           </div>
@@ -269,14 +268,6 @@ export default function ProductDetailPage() {
               <span>Add to Shopping Bag</span>
             </button>
 
-            <Link
-              href="/try-on"
-              className="flex w-full items-center justify-center space-x-2 rounded-2xl border border-gold-500/40 bg-gold-500/10 py-3.5 text-xs font-bold uppercase tracking-widest text-gold-400 hover:bg-gold-500 hover:text-obsidian-950 transition shadow-md"
-            >
-              <Camera className="h-4 w-4" />
-              <span>✨ Virtual AR Try-On / Hand Fit</span>
-            </Link>
-
             <button
               onClick={() => setIsSalonModalOpen(true)}
               className="flex w-full items-center justify-center space-x-2 rounded-2xl border border-gold-500/40 bg-obsidian-900 py-3.5 text-xs font-bold uppercase tracking-widest text-gold-400 hover:bg-gold-500/10 transition"
@@ -299,53 +290,53 @@ export default function ProductDetailPage() {
                   Precious Metal:
                 </span>
                 <p className="font-bold text-slate-200 mt-0.5">
-                  {product.specs?.metalType || '18K Solid Gold / Pt950'}
+                  {product.specs?.metalType || 'Premium Brass / Alloy'}
                 </p>
               </div>
 
               <div>
                 <span className="text-slate-400 block text-[10px] uppercase font-bold">
-                  Metal Purity / Karat:
+                  Plating Finish:
                 </span>
                 <p className="font-bold text-slate-200 mt-0.5">
-                  {product.specs?.metalPurity || '750 Gold / Pt950'}
+                  {product.specs?.metalPurity || 'Triple 18K/22K Micro Gold Plating'}
                 </p>
               </div>
 
               {diamondWeight && (
                 <div>
                   <span className="text-slate-400 block text-[10px] uppercase font-bold">
-                    Diamond 4Cs (Weight):
+                    Stone Embellishment:
                   </span>
                   <p className="font-bold text-gold-400 mt-0.5">
-                    {diamondWeight} ct {product.specs?.diamondClarity || 'D-Flawless'}
+                    AAA+ Cubic Zirconia / Kundan Polki
                   </p>
                 </div>
               )}
 
               <div>
                 <span className="text-slate-400 block text-[10px] uppercase font-bold">
-                  Government Hallmark:
+                  Quality Assurance:
                 </span>
                 <p className="font-mono text-emerald-400 font-bold mt-0.5">
-                  {product.specs?.hallmarkCertificate || 'BIS 916 & GIA Triple Ex'}
+                  100% Anti-Tarnish & Hypoallergenic
                 </p>
               </div>
             </div>
 
-            {/* Transparent Valuation Breakdown Tag */}
+            {/* Quality & Craftsmanship Breakdown */}
             <div className="pt-3 border-t border-white/10 space-y-1.5 font-mono text-[11px] text-slate-400">
               <div className="flex justify-between">
-                <span>Gold Alloy Net Weight:</span>
-                <span className="text-slate-200 font-bold">{product.specs?.netWeightGrams || 8.5}g</span>
+                <span>Base Material:</span>
+                <span className="text-slate-200 font-bold">Lead & Nickel Free Alloy</span>
               </div>
               <div className="flex justify-between">
-                <span>BIS Laser Hallmark:</span>
-                <span className="text-emerald-400 font-bold">Government Certified</span>
+                <span>Coating Technology:</span>
+                <span className="text-emerald-400 font-bold">Anti-Tarnish Sealant</span>
               </div>
               <div className="flex justify-between">
-                <span>Master Bench Making:</span>
-                <span className="text-gold-400 font-bold">Hand-Sculpted Included</span>
+                <span>Shipping Method:</span>
+                <span className="text-gold-400 font-bold">Tracked Express Courier</span>
               </div>
             </div>
           </div>

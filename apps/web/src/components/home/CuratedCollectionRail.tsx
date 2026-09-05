@@ -14,10 +14,10 @@ interface CuratedCollectionRailProps {
 
 const TABS = [
   { id: 'all', label: 'All Masterpieces' },
-  { id: 'rings', label: 'Solitaire Rings' },
-  { id: 'bridal-sets', label: 'Bridal Parures' },
-  { id: 'earrings', label: 'Fine Earrings' },
-  { id: 'bangles', label: 'Heritage Bangles' },
+  { id: 'rings', label: 'Angoothi Rings' },
+  { id: 'bridal-sets', label: 'Bridal Trousseau & Sets' },
+  { id: 'earrings', label: 'Jhumkas & Chandbalis' },
+  { id: 'bangles', label: 'Heritage Kadas & Bangles' },
 ];
 
 export function CuratedCollectionRail({ products }: CuratedCollectionRailProps) {
@@ -43,13 +43,13 @@ export function CuratedCollectionRail({ products }: CuratedCollectionRailProps) 
           <div className="space-y-2.5">
             <div className="inline-flex items-center space-x-1.5 text-xs font-mono font-bold uppercase tracking-widest text-gold-600 dark:text-gold-400">
               <Sparkles className="h-3.5 w-3.5" />
-              <ShinyText text="Vault Highlights" color="#ca8a04" shineColor="#fef08a" speed={2.5} />
+              <ShinyText text="Gallery Highlights" color="#ca8a04" shineColor="#fef08a" speed={2.5} />
             </div>
             <h2 className="font-serif text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
               Featured Creations
             </h2>
             <p className="text-sm text-slate-600 dark:text-slate-400 font-light max-w-xl">
-              Discover our most sought-after jewelry designs, featuring AAA+ cubic zirconia, lab-grown diamonds, and 22K micro-gold plating.
+              Discover our most sought-after Indian bridal jewellery, featuring AAA+ uncut polki, jadau gemstones, and 22K micro-gold polish.
             </p>
           </div>
 
