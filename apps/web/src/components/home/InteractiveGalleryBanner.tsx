@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Maximize2, ArrowRight, Gem, ShieldCheck, Compass, Eye, RotateCw } from 'lucide-react';
+import { Sparkles, Maximize2, ArrowRight, Gem, ShieldCheck, Compass, Eye } from 'lucide-react';
 import { Magnet } from '@/components/react-bits';
 
 interface ShowcasePiece {
@@ -125,7 +125,6 @@ const SHOWCASE_PIECES: ShowcasePiece[] = [
 export function InteractiveGalleryBanner() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [activeHotspot, setActiveHotspot] = useState<number | null>(null);
-  const [isRotating, setIsRotating] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -208,7 +207,7 @@ export function InteractiveGalleryBanner() {
                     className="inline-flex items-center space-x-2.5 rounded-full bg-gradient-to-r from-[#B38728] via-[#D4AF37] to-[#996515] hover:from-[#C69C3A] hover:to-[#B38728] px-7 py-3.5 text-xs sm:text-sm font-mono font-bold uppercase tracking-wider text-stone-950 shadow-[0_12px_28px_rgba(212,175,55,0.35)] transition-all hover:scale-105 active:scale-95"
                   >
                     <Maximize2 className="h-4 w-4" />
-                    <span>Enter 3D Gallery</span>
+                    <span>Open Gallery</span>
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Magnet>
@@ -223,7 +222,7 @@ export function InteractiveGalleryBanner() {
               </div>
             </div>
 
-            {/* Right Interactive 3D Showcase Stage */}
+            {/* Right 3D Jewellery Image Showcase */}
             <div className="lg:col-span-7 flex flex-col space-y-4">
               {/* Category Switcher Tabs */}
               <div className="flex items-center justify-between gap-1.5 p-1.5 rounded-2xl bg-white/80 dark:bg-[#151310] border border-[#D4AF37]/30 shadow-sm overflow-x-auto no-scrollbar">
@@ -245,73 +244,53 @@ export function InteractiveGalleryBanner() {
                 ))}
               </div>
 
-              {/* 3D Holographic Pedestal & Jewel Stage */}
+              {/* 3D Floating Jewel Card */}
               <div
                 ref={containerRef}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
-                className="relative aspect-[16/10] w-full rounded-3xl overflow-hidden border-2 border-[#D4AF37]/40 bg-[#0C0B0A] shadow-[0_25px_60px_rgba(0,0,0,0.5)] cursor-pointer select-none group"
+                className="relative aspect-[16/10] w-full rounded-3xl overflow-hidden border-2 border-[#D4AF37]/40 bg-gradient-to-b from-[#14120F] via-[#0E0D0B] to-[#070605] shadow-[0_25px_60px_rgba(0,0,0,0.5)] select-none group"
                 style={{ perspective: 1000 }}
               >
-                {/* Dynamic Jewel Radial Background Glow */}
+                {/* Dynamic Gemstone Atmospheric Ambient Glow */}
                 <div
-                  className="absolute inset-0 transition-all duration-700 pointer-events-none"
+                  className="absolute inset-0 transition-all duration-700 pointer-events-none opacity-80"
                   style={{ background: activePiece.bgGlow }}
                 />
 
-                {/* Concentric Gold Orbit Rings (Pedestal in 3D Perspective) */}
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
-                  <div className="w-[85%] h-[85%] rounded-full border border-[#D4AF37]/30 animate-pulse-slow" />
-                  <div className="absolute w-[65%] h-[65%] rounded-full border border-dashed border-[#D4AF37]/20" />
-                  <div className="absolute w-[45%] h-[45%] rounded-full border border-[#D4AF37]/30" />
-                </div>
+                {/* Soft Reflective Dais Light */}
+                <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-[75%] h-24 bg-gradient-to-t from-gold-500/15 via-gold-500/5 to-transparent rounded-full blur-2xl pointer-events-none" />
 
-                {/* Top Overlay Badge & Controls */}
-                <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
-                  <div className="rounded-full bg-black/70 backdrop-blur-md px-3.5 py-1 text-white border border-[#D4AF37]/30 flex items-center space-x-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                {/* Top Corner 3D Badge */}
+                <div className="absolute top-4 left-4 z-20 flex items-center pointer-events-none">
+                  <div className="rounded-full bg-black/75 backdrop-blur-md px-3.5 py-1.5 text-white border border-[#D4AF37]/35 flex items-center space-x-2 shadow-lg">
+                    <Sparkles className="w-3.5 h-3.5 text-[#E8C574]" />
                     <span className="text-[10px] font-mono font-bold tracking-widest text-[#E8C574] uppercase">
-                      {activePiece.tag}
+                      3D Showcase • {activePiece.tag}
                     </span>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsRotating(!isRotating);
-                    }}
-                    className="pointer-events-auto rounded-full bg-black/70 hover:bg-black/90 backdrop-blur-md px-3 py-1 text-white border border-[#D4AF37]/30 flex items-center space-x-1.5 transition-transform hover:scale-105"
-                  >
-                    <RotateCw className={`w-3 h-3 text-[#E8C574] ${isRotating ? 'animate-spin' : ''}`} />
-                    <span className="text-[10px] font-mono font-bold tracking-wider text-stone-200 uppercase">
-                      {isRotating ? 'Orbiting' : 'Auto 360°'}
-                    </span>
-                  </button>
                 </div>
 
-                {/* Center 3D Floating Jewel with Spring Motion & Mouse Tilt */}
+                {/* Center 3D Floating Jewel with Responsive Tilt Physics */}
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activePiece.id}
-                    initial={{ opacity: 0, scale: 0.85, y: 15 }}
+                    initial={{ opacity: 0, scale: 0.9, y: 15 }}
                     animate={{
                       opacity: 1,
                       scale: 1,
                       y: 0,
                       rotateX: mousePos.y,
-                      rotateY: mousePos.x + (isRotating ? 15 : 0),
+                      rotateY: mousePos.x,
                     }}
-                    exit={{ opacity: 0, scale: 0.85, y: -15 }}
-                    transition={{ type: 'spring', stiffness: 220, damping: 20 }}
+                    exit={{ opacity: 0, scale: 0.9, y: -15 }}
+                    transition={{ type: 'spring', stiffness: 220, damping: 22 }}
                     className="absolute inset-0 flex items-center justify-center p-6 z-10"
                   >
                     <img
                       src={activePiece.src}
                       alt={activePiece.name}
-                      className={`max-h-[75%] max-w-[75%] object-contain drop-shadow-[0_20px_35px_rgba(0,0,0,0.85)] filter brightness-105 contrast-105 transition-transform duration-300 group-hover:scale-105 ${
-                        isRotating ? 'animate-float' : ''
-                      }`}
+                      className="max-h-[78%] max-w-[78%] object-contain drop-shadow-[0_22px_40px_rgba(0,0,0,0.9)] filter brightness-105 contrast-105 transition-transform duration-500 group-hover:scale-105"
                     />
 
                     {/* Interactive Hotspot Pins */}
@@ -361,10 +340,10 @@ export function InteractiveGalleryBanner() {
                   </motion.div>
                 </AnimatePresence>
 
-                {/* Bottom Stage Details & Explore Full-Screen Vault Cue */}
+                {/* Bottom Stage Details & Open Gallery CTA */}
                 <Link
                   href="/gallery"
-                  className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between p-3 rounded-2xl bg-black/75 backdrop-blur-md border border-[#D4AF37]/35 group/link hover:border-[#D4AF37] transition-all"
+                  className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between p-3 rounded-2xl bg-black/80 backdrop-blur-md border border-[#D4AF37]/35 group/link hover:border-[#D4AF37] transition-all shadow-xl"
                 >
                   <div className="text-left">
                     <p className="text-xs font-serif font-bold text-white tracking-wide">
@@ -375,9 +354,9 @@ export function InteractiveGalleryBanner() {
                     </p>
                   </div>
 
-                  <div className="flex items-center space-x-2 rounded-full px-3.5 py-1.5 bg-gradient-to-r from-[#B38728] to-[#D4AF37] text-stone-950 text-[11px] font-mono font-bold uppercase tracking-wider shadow-md group-hover/link:scale-105 transition-transform">
+                  <div className="flex items-center space-x-2 rounded-full px-4 py-1.5 bg-gradient-to-r from-[#B38728] to-[#D4AF37] text-stone-950 text-[11px] font-mono font-bold uppercase tracking-wider shadow-md group-hover/link:scale-105 transition-transform">
                     <Eye className="w-3.5 h-3.5" />
-                    <span>Open 3D Vault</span>
+                    <span>Open Gallery</span>
                     <ArrowRight className="w-3 h-3" />
                   </div>
                 </Link>
