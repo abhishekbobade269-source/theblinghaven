@@ -249,9 +249,9 @@ export function Header() {
             : undefined
         }
       >
-        <div className="w-full px-4 sm:px-8 xl:px-12 flex h-16 sm:h-20 items-center justify-between">
+        <div className="w-full px-4 sm:px-8 xl:px-12 flex h-16 sm:h-20 items-center justify-between relative">
           {/* Brand Identity */}
-          <Link href="/" className="flex items-center space-x-2.5 sm:space-x-4 group shrink-0">
+          <Link href="/" className="flex items-center space-x-2.5 sm:space-x-3.5 group shrink-0">
             <div
               className={`relative h-10 w-10 sm:h-12 sm:w-12 overflow-hidden rounded-full border p-0.5 shadow-md group-hover:scale-108 transition-all duration-300 ${
                 isDarkAtmospherePage || isEditorialMenuOpen
@@ -267,23 +267,23 @@ export function Header() {
             </div>
             <div>
               <span
-                className={`font-marcellus text-base sm:text-xl font-bold tracking-[0.18em] uppercase block transition ${
+                className={`font-script text-2xl sm:text-3xl md:text-[32px] font-normal tracking-wide block leading-none transition ${
                   isDarkAtmospherePage || isEditorialMenuOpen
                     ? 'text-white group-hover:text-gold-300'
                     : 'text-slate-900 dark:text-slate-100 group-hover:text-gold-600 dark:group-hover:text-gold-400'
                 }`}
               >
-                THE BLING HAVEN
+                The Bling Haven
               </span>
-              <span className="text-[7.5px] sm:text-[9px] font-marcellus tracking-[0.26em] text-gold-600 dark:text-gold-400 font-semibold block uppercase">
+              <span className="text-[7.5px] sm:text-[8.5px] font-sans tracking-[0.22em] text-gold-600 dark:text-gold-400 font-semibold block uppercase mt-0.5">
                 Luxury Fashion &amp; Bridal Jewellery
               </span>
             </div>
           </Link>
 
-          {/* Central Editorial MENU (Clean normal text in Anton font, opens on hover, closes on cursor leave) */}
+          {/* Central Editorial MENU (Strictly Centered horizontally across the viewport) */}
           <div
-            className="flex items-center justify-center py-2"
+            className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 flex items-center justify-center py-2 z-10"
             onMouseEnter={handleMenuMouseEnter}
             onMouseLeave={handleMenuMouseLeave}
           >
@@ -582,9 +582,9 @@ export function Header() {
           onMouseEnter={handleMenuMouseLeave}
           onClick={() => setIsEditorialMenuOpen(false)}
         >
-          {/* Central Interactive Menu Column (Floating in the center of full screen) */}
+          {/* Central Interactive Menu Column (Floating in the exact center of full screen) */}
           <div
-            className="relative z-10 flex flex-col items-center justify-center text-center px-6 pt-24 pb-10 max-w-3xl w-full min-h-screen select-none"
+            className="relative z-10 flex flex-col items-center justify-center text-center px-6 py-16 max-w-3xl w-full min-h-screen select-none"
             onMouseEnter={handleMenuMouseEnter}
             onMouseLeave={handleMenuMouseLeave}
             onClick={(e) => e.stopPropagation()}

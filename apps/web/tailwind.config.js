@@ -60,6 +60,7 @@ module.exports = {
         italiana: ['Italiana', 'Cinzel', 'serif'],
         tenor: ['"Tenor Sans"', 'sans-serif'],
         anton: ['Anton', 'sans-serif'],
+        script: ['"Alex Brush"', '"Birthstone"', '"Great Vibes"', 'cursive'],
       },
     },
   },
