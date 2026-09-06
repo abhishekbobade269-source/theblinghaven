@@ -279,7 +279,7 @@ export default function AboutHeritagePage() {
         </div>
 
         {/* Full-bleed Full-Screen Cinema Container without browser controls line */}
-        <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] lg:h-[85vh] bg-black overflow-hidden shadow-[0_0_80px_rgba(212,175,55,0.18)]">
+        <div className="relative w-full aspect-video bg-black overflow-hidden shadow-[0_0_80px_rgba(212,175,55,0.18)]">
           <video
             ref={videoRef}
             src="/videos/woman_inspects_gold_necklace.mp4"
@@ -308,14 +308,26 @@ export default function AboutHeritagePage() {
             </button>
           </div>
 
-          {/* Luxury Button Placed Directly Over the Bottom-Right Watermark */}
+          {/* Luxury Button Placed Directly Over the Bottom-Right Watermark with Dark Shield */}
           <div 
             className="absolute z-20"
-            style={{ bottom: 'clamp(20px, 12.5%, 82px)', right: 'clamp(16px, 5%, 45px)' }}
+            style={{ 
+              bottom: '17.36%', 
+              right: '10.23%', 
+              transform: 'translate(50%, 50%)' 
+            }}
           >
+            {/* Ambient Dark Shield behind button to guarantee 100% watermark concealment */}
+            <div 
+              className="absolute pointer-events-none -inset-3 sm:-inset-5 rounded-3xl"
+              style={{
+                background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.98) 55%, rgba(0,0,0,0.85) 75%, transparent 100%)',
+                filter: 'blur(8px)',
+              }}
+            />
             <Link
               href="/catalog"
-              className="inline-flex items-center space-x-3 rounded-2xl border border-gold-400/80 bg-obsidian-950/95 px-7 py-3.5 text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-gold-300 backdrop-blur-xl shadow-[0_10px_35px_rgba(0,0,0,0.95)] hover:bg-gold-500 hover:text-obsidian-950 hover:border-gold-400 transition-all group"
+              className="relative inline-flex items-center space-x-3 rounded-2xl border border-gold-400/90 bg-obsidian-950/95 px-6 sm:px-8 py-3 sm:py-4 text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-gold-300 backdrop-blur-2xl shadow-[0_15px_40px_rgba(0,0,0,0.98),0_0_20px_rgba(212,175,55,0.2)] hover:bg-gold-500 hover:text-obsidian-950 hover:border-gold-300 transition-all group"
             >
               <Sparkles className="h-4 w-4 text-gold-400 group-hover:text-obsidian-950 transition-colors" />
               <span>Explore Collection</span>
