@@ -443,15 +443,11 @@ export function ToonHubGallery({
 
         {/* 1. Floating Sub-Bar Overlay (Positioned below the transparent main nav bar) */}
         <div className="absolute top-18 sm:top-22 lg:top-24 inset-x-3 sm:inset-x-6 lg:inset-x-8 z-40 flex flex-wrap items-center justify-between gap-2 sm:gap-3 max-w-7xl mx-auto pointer-events-auto">
-          {/* Left: Lookbook Badge & Cinema Camera Spec */}
+          {/* Left: Lookbook Badge */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             <span className="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-mono font-bold uppercase tracking-wider bg-black/70 text-amber-300 backdrop-blur-xl border border-amber-400/40 shadow-xl">
               <Sparkles className="w-3.5 h-3.5 mr-1.5 text-amber-400" />
               Shahi Palace Alcove Lookbook
-            </span>
-            <span className="hidden sm:inline-flex items-center px-3 py-1.5 rounded-full text-[11px] font-mono text-white/90 bg-black/60 backdrop-blur-md border border-white/20 shadow-md">
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse mr-1.5" />
-              ARRI ALEXA 65 • 24FPS
             </span>
           </div>
 
