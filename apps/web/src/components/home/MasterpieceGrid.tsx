@@ -62,7 +62,7 @@ export function MasterpieceGrid({ products }: MasterpieceGridProps) {
     if (selectedCategory !== 'all') {
       const query = selectedCategory.toLowerCase();
       list = list.filter((p) => {
-        const cat = p.category?.toLowerCase() || '';
+        const cat = (p as any).category?.toLowerCase() || p.categoryId?.toLowerCase() || '';
         const title = p.title?.toLowerCase() || '';
         const slug = p.slug?.toLowerCase() || '';
         return cat.includes(query) || title.includes(query) || slug.includes(query);
