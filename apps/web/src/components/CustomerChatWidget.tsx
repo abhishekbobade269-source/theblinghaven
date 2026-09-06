@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import {
   MessageCircle,
   X,
@@ -34,9 +33,6 @@ const QUICK_PROMPTS = [
 ];
 
 export function CustomerChatWidget() {
-  const pathname = usePathname();
-  if (pathname === '/future-fashion' || pathname === '/gallery') return null;
-
   const [isOpen, setIsOpen] = useState(false);
   const [hasUnread, setHasUnread] = useState(true);
   const [inputText, setInputText] = useState('');

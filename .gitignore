@@ -43,3 +43,8 @@ node_modules
 playwright-report/
 test-results/
 
+# Agent scratch & cache
+.serena/
+scratch/
+apps/web/scratch/
+*.tsbuildinfo

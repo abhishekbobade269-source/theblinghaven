@@ -23,6 +23,7 @@ import {
   Film,
   Image as ImageIcon,
 } from 'lucide-react';
+import { VIPVaultCardCarousel } from './VIPVaultCardCarousel';
 
 export interface GalleryItem {
   id: string;
@@ -1001,6 +1002,20 @@ export function ToonHubGallery({
                 />
               ))}
             </div>
+
+            {/* Scroll Down to 3D VIP Vault Carousel */}
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('vip-vault-cards-showcase');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              title="Explore 3D VIP Vault Cards"
+              className="ml-2 hidden sm:flex items-center space-x-1 px-2.5 py-1 rounded-full bg-black/40 hover:bg-black/70 border border-white/25 text-white/85 hover:text-white text-[10px] font-mono tracking-wider transition-all"
+            >
+              <span>3D VAULT</span>
+              <ChevronDown className="w-3 h-3 text-amber-400" />
+            </button>
           </div>
         </div>
 
@@ -1031,6 +1046,11 @@ export function ToonHubGallery({
           </Link>
         </div>
       </section>
+
+      {/* ==================================================================== */}
+      {/* SECTION 3 (BELOW ORBIT): 3D CYLINDER VIP VAULT CAROUSEL              */}
+      {/* ==================================================================== */}
+      <VIPVaultCardCarousel />
     </div>
   );
 }
