@@ -149,33 +149,23 @@ export default function AboutHeritagePage() {
                 </div>
               </div>
 
-              {/* Mini Gallery Strip: Features 360p Earring Sparkle Reel Wisely in Compact Card */}
+              {/* Mini Gallery Strip: Clean stills without tags */}
               <div className="mt-4 grid grid-cols-2 gap-3 max-w-md mx-auto">
-                <div className="relative rounded-2xl overflow-hidden border border-gold-500/30 aspect-video group bg-black shadow-md">
-                  <video
-                    src="/videos/woman_wearing_diamond_earrings.mp4"
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover filter brightness-[0.98] group-hover:scale-105 transition-transform duration-500"
+                <div className="relative rounded-2xl overflow-hidden border border-gold-500/20 aspect-video group shadow-md">
+                  <img
+                    src="/images/about/neha_singh_emerald.jpg"
+                    alt="Neha Singh - Styling Session"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors pointer-events-none" />
-                  <span className="absolute bottom-2 left-2 text-[10px] font-mono text-white/95 bg-black/75 px-2 py-0.5 rounded backdrop-blur-sm flex items-center space-x-1 border border-white/10">
-                    <Play className="h-2.5 w-2.5 fill-gold-400 text-gold-400" />
-                    <span>Sparkle Reel</span>
-                  </span>
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
                 </div>
-                <div className="relative rounded-2xl overflow-hidden border border-gold-500/20 aspect-video group">
+                <div className="relative rounded-2xl overflow-hidden border border-gold-500/20 aspect-video group shadow-md">
                   <img
                     src="/images/about/neha_singh_atelier.jpg"
                     alt="Neha Singh - Brand Curation"
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-black/30 group-hover:bg-transparent transition-colors" />
-                  <span className="absolute bottom-2 left-2 text-[10px] font-mono text-white/90 bg-black/60 px-2 py-0.5 rounded backdrop-blur-sm">
-                    Atelier Shoot
-                  </span>
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
                 </div>
               </div>
             </div>
@@ -247,75 +237,58 @@ export default function AboutHeritagePage() {
             </div>
           </div>
         </section>
+      </div>
 
-        {/* 2.5 HAUTE JOAILLERIE CAMPAIGN FILM — NEHA SINGH ATELIER */}
-        <section className="relative rounded-3xl border border-gold-500/30 bg-gradient-to-b from-obsidian-900/95 via-stone-950/90 to-obsidian-950 p-6 sm:p-10 lg:p-12 shadow-2xl overflow-hidden backdrop-blur-xl space-y-8">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-gold-500/10 blur-3xl pointer-events-none" />
-          
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="space-y-2 max-w-2xl">
-              <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full border border-gold-400/40 bg-gold-500/15 backdrop-blur-md">
-                <Sparkles className="h-3.5 w-3.5 text-gold-300" />
-                <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-gold-200">
-                  Haute Joaillerie Campaign Film
-                </span>
-              </div>
-              <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight">
-                The Art of Inspection: Royal Kundan in Motion
-              </h2>
-              <p className="text-sm sm:text-base text-slate-300 font-light leading-relaxed">
-                Watch the master campaign take featuring Neha Singh hand-evaluating our signature royal gold necklace parure under warm atelier key lights.
-              </p>
-            </div>
+      {/* 2.5 FULL SCREEN CINEMATIC CAMPAIGN FILM (EDGE-TO-EDGE, NO TAGS) */}
+      <section className="relative w-full my-16 sm:my-28 bg-black overflow-hidden border-y border-gold-500/30 shadow-2xl">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-gold-500/10 blur-3xl pointer-events-none" />
 
-            <div className="flex items-center space-x-3 text-xs font-mono text-gold-400">
-              <span className="px-3.5 py-1.5 rounded-full border border-gold-500/30 bg-black/40 backdrop-blur-sm">
-                Cinematic Campaign
-              </span>
-              <span className="px-3.5 py-1.5 rounded-full border border-gold-500/30 bg-black/40 backdrop-blur-sm">
-                Neha Singh Atelier
-              </span>
-            </div>
+        <div className="max-w-5xl mx-auto text-center px-4 pt-12 pb-8 space-y-3">
+          <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tight">
+            The Art of Inspection: Royal Kundan in Motion
+          </h2>
+          <p className="text-sm sm:text-lg text-slate-300 font-light max-w-2xl mx-auto leading-relaxed">
+            Watch Neha Singh hand-evaluate our signature royal gold necklace parure under warm atelier key lights.
+          </p>
+        </div>
+
+        {/* Full-bleed Full-Screen Cinema Container */}
+        <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] lg:h-[85vh] bg-black overflow-hidden shadow-[0_0_80px_rgba(212,175,55,0.18)]">
+          <video
+            src="/videos/woman_inspects_gold_necklace.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            controls
+            className="w-full h-full object-cover object-center"
+          />
+        </div>
+
+        {/* Three Campaign Highlights */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="p-5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm space-y-1">
+            <div className="font-serif text-base font-bold text-gold-300">22K Artisanal Plating</div>
+            <p className="text-xs text-slate-400 font-light leading-relaxed">
+              Lustrous multi-coat micro-gold plating crafted to resist oxidation and maintain warm regal brilliance.
+            </p>
           </div>
-
-          {/* Cinematic Cinema Frame */}
-          <div className="relative rounded-[28px] overflow-hidden border border-gold-500/40 bg-black shadow-[0_0_50px_rgba(212,175,55,0.18)] aspect-[16/9] max-w-5xl mx-auto group">
-            <video
-              src="/videos/woman_inspects_gold_necklace.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-              controls
-              className="w-full h-full object-cover object-center"
-            />
-            {/* Ambient gold border edge */}
-            <div className="absolute inset-0 pointer-events-none border border-gold-500/20 rounded-[28px]" />
+          <div className="p-5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm space-y-1">
+            <div className="font-serif text-base font-bold text-gold-300">Hand-Inspected Prongs</div>
+            <p className="text-xs text-slate-400 font-light leading-relaxed">
+              Every uncut polki stone and bezel setting is tested by hand for stone retention and seamless neckline drape.
+            </p>
           </div>
-
-          {/* Three Campaign Highlights */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 max-w-5xl mx-auto">
-            <div className="p-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm space-y-1">
-              <div className="font-serif text-base font-bold text-gold-300">22K Artisanal Plating</div>
-              <p className="text-xs text-slate-400 font-light leading-relaxed">
-                Lustrous multi-coat micro-gold plating crafted to resist oxidation and maintain warm regal brilliance.
-              </p>
-            </div>
-            <div className="p-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm space-y-1">
-              <div className="font-serif text-base font-bold text-gold-300">Hand-Inspected Prongs</div>
-              <p className="text-xs text-slate-400 font-light leading-relaxed">
-                Every uncut polki stone and bezel setting is tested by hand for stone retention and seamless neckline drape.
-              </p>
-            </div>
-            <div className="p-4 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm space-y-1">
-              <div className="font-serif text-base font-bold text-gold-300">Heirloom Weight & Feel</div>
-              <p className="text-xs text-slate-400 font-light leading-relaxed">
-                Engineered with authentic bridal weight without compromising on ergonomic, day-to-night comfort.
-              </p>
-            </div>
+          <div className="p-5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm space-y-1">
+            <div className="font-serif text-base font-bold text-gold-300">Heirloom Weight & Feel</div>
+            <p className="text-xs text-slate-400 font-light leading-relaxed">
+              Engineered with authentic bridal weight without compromising on ergonomic, day-to-night comfort.
+            </p>
           </div>
-        </section>
+        </div>
+      </section>
 
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 sm:pb-24 space-y-24 sm:space-y-32">
         {/* 3. THREE CRAFT PILLARS */}
         <section className="space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-3">
