@@ -54,8 +54,10 @@ export interface ProductDto {
   comparePriceUsd?: number;
   costPriceUsd?: number;
   categoryId: string;
+  categorySlug?: string;
   categoryName?: string;
   collectionId?: string;
+  collectionSlug?: string;
   collectionName?: string;
   specs: JewelrySpecsDto;
   primaryImageUrl: string;

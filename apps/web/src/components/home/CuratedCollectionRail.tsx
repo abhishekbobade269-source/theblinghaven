@@ -18,6 +18,7 @@ const TABS = [
   { id: 'bridal-sets', label: 'Necklaces & Sets' },
   { id: 'earrings', label: 'Earrings' },
   { id: 'bangles', label: 'Bangles' },
+  { id: 'artisan-silver', label: 'Silver Jewellery' },
 ];
 
 export function CuratedCollectionRail({ products }: CuratedCollectionRailProps) {

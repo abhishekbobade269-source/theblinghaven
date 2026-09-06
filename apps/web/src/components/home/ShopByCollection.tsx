@@ -22,7 +22,7 @@ const COLLECTIONS: CollectionItem[] = [
     id: 'bridal',
     name: 'BRIDAL JEWELLERY',
     href: '/bridal-sets',
-    image: '/uploads/sets_5621e16b_1s6a9422.jpg',
+    image: '/uploads/sets_00c2f42a_1s6a9390.jpg',
   },
   {
     id: 'earrings',
@@ -34,13 +34,13 @@ const COLLECTIONS: CollectionItem[] = [
     id: 'bangles',
     name: 'BANGLES & KADA',
     href: '/bangles',
-    image: '/uploads/bangles_255ba756_1s6a0023.jpg',
+    image: '/uploads/bangles_0deb44c0_1s6a9953.jpg',
   },
   {
     id: 'silver',
     name: 'SILVER JEWELLERY',
     href: '/artisan-silver',
-    image: '/uploads/handmade_8aafcd39_1s6a0402.jpg',
+    image: '/uploads/handmade_2ffa5211_1s6a0379.jpg',
   },
 ];
 

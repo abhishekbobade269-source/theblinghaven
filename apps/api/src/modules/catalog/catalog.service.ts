@@ -83,10 +83,16 @@ export class CatalogService {
 
     const where: any = {};
     if (params.categoryId && params.categoryId !== 'ALL') {
-      where.categoryId = params.categoryId;
+      where.OR = [
+        { categoryId: params.categoryId },
+        { category: { slug: params.categoryId } },
+      ];
     }
     if (params.collectionId && params.collectionId !== 'ALL') {
-      where.collectionId = params.collectionId;
+      where.OR = [
+        { collectionId: params.collectionId },
+        { collection: { slug: params.collectionId } },
+      ];
     }
     if (params.status && params.status !== 'ALL') {
       where.status = params.status;
@@ -106,8 +112,8 @@ export class CatalogService {
         skip,
         take: limit,
         include: {
-          category: { select: { name: true } },
-          collection: { select: { name: true } },
+          category: { select: { name: true, slug: true } },
+          collection: { select: { name: true, slug: true } },
         },
         orderBy: { createdAt: 'desc' },
       }),
@@ -124,6 +130,7 @@ export class CatalogService {
       comparePriceUsd: p.comparePriceUsd || undefined,
       costPriceUsd: p.costPriceUsd || undefined,
       categoryId: p.categoryId,
+      categorySlug: p.category?.slug,
       categoryName: p.category?.name,
       collectionId: p.collectionId || undefined,
       collectionName: p.collection?.name,
@@ -154,8 +161,8 @@ export class CatalogService {
     const p = await this.prisma.product.findUnique({
       where: { id },
       include: {
-        category: { select: { name: true } },
-        collection: { select: { name: true } },
+        category: { select: { name: true, slug: true } },
+        collection: { select: { name: true, slug: true } },
       },
     });
 
@@ -174,6 +181,7 @@ export class CatalogService {
       comparePriceUsd: p.comparePriceUsd || undefined,
       costPriceUsd: p.costPriceUsd || undefined,
       categoryId: p.categoryId,
+      categorySlug: p.category?.slug,
       categoryName: p.category?.name,
       collectionId: p.collectionId || undefined,
       collectionName: p.collection?.name,
@@ -194,8 +202,8 @@ export class CatalogService {
     const p = await this.prisma.product.findUnique({
       where: { slug: slug.toLowerCase() },
       include: {
-        category: { select: { name: true } },
-        collection: { select: { name: true } },
+        category: { select: { name: true, slug: true } },
+        collection: { select: { name: true, slug: true } },
       },
     });
 

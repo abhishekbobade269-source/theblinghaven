@@ -62,10 +62,33 @@ export function MasterpieceGrid({ products }: MasterpieceGridProps) {
     if (selectedCategory !== 'all') {
       const query = selectedCategory.toLowerCase();
       list = list.filter((p) => {
-        const cat = (p as any).category?.toLowerCase() || p.categoryId?.toLowerCase() || '';
-        const title = p.title?.toLowerCase() || '';
-        const slug = p.slug?.toLowerCase() || '';
-        return cat.includes(query) || title.includes(query) || slug.includes(query);
+        const cat = ((p as any).categorySlug || p.categoryId || (p as any).categoryName || '').toLowerCase();
+        const title = (p.title || '').toLowerCase();
+        const slug = (p.slug || '').toLowerCase();
+        const sku = (p.sku || '').toLowerCase();
+
+        if (query === 'bridal') {
+          return (
+            cat.includes('bridal') ||
+            cat.includes('sets') ||
+            title.includes('bridal') ||
+            title.includes('choker') ||
+            title.includes('necklace') ||
+            sku.includes('brd')
+          );
+        }
+
+        if (query === 'silver') {
+          return (
+            cat.includes('silver') ||
+            cat.includes('artisan') ||
+            cat.includes('handmade') ||
+            title.includes('silver') ||
+            sku.includes('slv')
+          );
+        }
+
+        return cat.includes(query) || title.includes(query) || slug.includes(query) || sku.includes(query);
       });
     }
 
