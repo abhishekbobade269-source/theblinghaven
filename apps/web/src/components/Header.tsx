@@ -190,6 +190,19 @@ export function Header() {
 
   return (
     <>
+      {/* Top Announcement Bar from Reference Design */}
+      <div className="bg-[#f7f2e9] dark:bg-[#120f0b] border-b border-stone-200/60 dark:border-gold-500/10 py-1.5 px-4 text-center select-none">
+        <div className="max-w-7xl mx-auto flex items-center justify-center space-x-3 text-[10px] sm:text-xs font-mono font-medium text-stone-700 dark:text-stone-300">
+          <span className="text-gold-600 dark:text-gold-400">‹</span>
+          <span className="tracking-wide">Free Shipping on Orders Above ₹999</span>
+          <span className="opacity-30">|</span>
+          <span className="tracking-wide">Secure Payments</span>
+          <span className="opacity-30">|</span>
+          <span className="tracking-wide">Easy Returns</span>
+          <span className="text-gold-600 dark:text-gold-400">›</span>
+        </div>
+      </div>
+
       {/* Main Navigation Header (Transparent per page with warm golden glassmorphism) */}
       <header
         className={`sticky top-0 z-40 transition-all duration-300 border-b ${
