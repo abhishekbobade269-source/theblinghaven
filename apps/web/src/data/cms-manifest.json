@@ -267,8 +267,10 @@
   "instagramConfig": {
     "id": "ig-conf-1",
     "username": "the_bling_haven",
+    "profileUrl": "https://www.instagram.com/the_bling_haven?stkn=dG54bGY1ZGgyMzJr",
     "accountName": "The Bling Haven | Luxury Fashion & Bridal Jewellery",
-    "followersCount": 124500,
+    "followersCount": 1412,
+    "postsCount": 491,
     "isLiveConnected": true,
     "autoSyncEnabled": true
   },

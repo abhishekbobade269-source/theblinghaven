@@ -21,7 +21,7 @@ export function InstagramReelsRail({ posts }: InstagramReelsRailProps) {
       likes: 1420,
       comments: 84,
       views: 18400,
-      permalink: 'https://instagram.com/the_bling_haven',
+      permalink: 'https://www.instagram.com/the_bling_haven?stkn=dG54bGY1ZGgyMzJr',
     },
     {
       id: 'ig-2',
@@ -31,7 +31,7 @@ export function InstagramReelsRail({ posts }: InstagramReelsRailProps) {
       likes: 2190,
       comments: 112,
       views: 34100,
-      permalink: 'https://instagram.com/the_bling_haven',
+      permalink: 'https://www.instagram.com/the_bling_haven?stkn=dG54bGY1ZGgyMzJr',
     },
     {
       id: 'ig-3',
@@ -41,7 +41,7 @@ export function InstagramReelsRail({ posts }: InstagramReelsRailProps) {
       likes: 980,
       comments: 42,
       views: 12900,
-      permalink: 'https://instagram.com/the_bling_haven',
+      permalink: 'https://www.instagram.com/the_bling_haven?stkn=dG54bGY1ZGgyMzJr',
     },
     {
       id: 'ig-4',
@@ -51,7 +51,7 @@ export function InstagramReelsRail({ posts }: InstagramReelsRailProps) {
       likes: 1750,
       comments: 93,
       views: 22600,
-      permalink: 'https://instagram.com/the_bling_haven',
+      permalink: 'https://www.instagram.com/the_bling_haven?stkn=dG54bGY1ZGgyMzJr',
     },
   ];
 
@@ -74,7 +74,7 @@ export function InstagramReelsRail({ posts }: InstagramReelsRailProps) {
 
         <Magnet padding={40} magnetStrength={3}>
           <a
-            href="https://instagram.com/the_bling_haven"
+            href="https://www.instagram.com/the_bling_haven?stkn=dG54bGY1ZGgyMzJr"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center space-x-2 rounded-full border border-gold-500/40 bg-white dark:bg-obsidian-900 px-6 py-2.5 text-xs font-mono font-bold uppercase tracking-wider text-gold-700 dark:text-gold-300 hover:bg-gold-500 hover:text-obsidian-950 transition-all shadow-sm"
@@ -90,7 +90,7 @@ export function InstagramReelsRail({ posts }: InstagramReelsRailProps) {
         {displayPosts.map((post) => (
           <motion.a
             key={post.id}
-            href={post.permalink || 'https://instagram.com/the_bling_haven'}
+            href={post.permalink || 'https://www.instagram.com/the_bling_haven?stkn=dG54bGY1ZGgyMzJr'}
             target="_blank"
             rel="noopener noreferrer"
             whileHover={{ y: -6, scale: 1.015 }}

@@ -134,7 +134,10 @@ export async function getInstagramPosts(): Promise<InstagramPostDto[]> {
   if (cachedInstagramPosts && cachedInstagramPosts.length > 0) return cachedInstagramPosts;
 
   try {
-    const res = await apiRequest<any>('/admin/cms/instagram-feed');
+    // Try public endpoint first, then admin endpoint
+    const res = await apiRequest<any>('/cms/instagram-feed').catch(() =>
+      apiRequest<any>('/admin/cms/instagram-feed')
+    );
     const list = Array.isArray(res) ? res : res?.data || [];
     if (list.length > 0) {
       cachedInstagramPosts = list;
