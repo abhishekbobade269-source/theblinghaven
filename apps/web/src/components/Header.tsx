@@ -590,11 +590,19 @@ export function Header() {
             onClick={(e) => e.stopPropagation()}
           >
             {/* Centered Large Bold Editorial Menu (Anton font, oversized, high-fashion) */}
-            <div className="flex flex-col items-center justify-center space-y-3 sm:space-y-4 md:space-y-5 text-center my-auto">
+            <div className="flex flex-col items-center justify-center space-y-2.5 sm:space-y-3.5 md:space-y-4 text-center my-auto">
+              <Link
+                href="/"
+                onClick={() => setIsEditorialMenuOpen(false)}
+                className="font-anton text-3xl sm:text-4xl md:text-5xl lg:text-[54px] uppercase tracking-tight text-stone-100 hover:text-gold-400 hover:scale-105 transition-all duration-200 block"
+              >
+                HOME
+              </Link>
+
               <Link
                 href="/catalog"
                 onClick={() => setIsEditorialMenuOpen(false)}
-                className="font-anton text-4xl sm:text-5xl md:text-6xl uppercase tracking-tight text-stone-100 hover:text-gold-400 hover:scale-105 transition-all duration-200 block"
+                className="font-anton text-3xl sm:text-4xl md:text-5xl lg:text-[54px] uppercase tracking-tight text-stone-100 hover:text-gold-400 hover:scale-105 transition-all duration-200 block"
               >
                 COLLECTIONS
               </Link>
@@ -602,7 +610,7 @@ export function Header() {
               <Link
                 href="/bespoke"
                 onClick={() => setIsEditorialMenuOpen(false)}
-                className="font-anton text-4xl sm:text-5xl md:text-6xl uppercase tracking-tight text-stone-100 hover:text-gold-400 hover:scale-105 transition-all duration-200 block"
+                className="font-anton text-3xl sm:text-4xl md:text-5xl lg:text-[54px] uppercase tracking-tight text-stone-100 hover:text-gold-400 hover:scale-105 transition-all duration-200 block"
               >
                 CUSTOM JEWELLERY
               </Link>
@@ -610,7 +618,7 @@ export function Header() {
               <Link
                 href="/ai-assistant"
                 onClick={() => setIsEditorialMenuOpen(false)}
-                className="font-anton text-4xl sm:text-5xl md:text-6xl uppercase tracking-tight text-stone-100 hover:text-gold-400 hover:scale-105 transition-all duration-200 flex items-center justify-center space-x-2 sm:space-x-3"
+                className="font-anton text-3xl sm:text-4xl md:text-5xl lg:text-[54px] uppercase tracking-tight text-stone-100 hover:text-gold-400 hover:scale-105 transition-all duration-200 flex items-center justify-center space-x-2 sm:space-x-3"
               >
                 <span>AI STYLIST</span>
                 <Sparkles className="h-6 w-6 sm:h-7 sm:w-7 text-gold-400 inline-block animate-pulse" />
@@ -619,7 +627,7 @@ export function Header() {
               <Link
                 href="/gallery"
                 onClick={() => setIsEditorialMenuOpen(false)}
-                className="font-anton text-4xl sm:text-5xl md:text-6xl uppercase tracking-tight text-stone-100 hover:text-gold-400 hover:scale-105 transition-all duration-200 block"
+                className="font-anton text-3xl sm:text-4xl md:text-5xl lg:text-[54px] uppercase tracking-tight text-stone-100 hover:text-gold-400 hover:scale-105 transition-all duration-200 block"
               >
                 GALLERY
               </Link>
@@ -627,7 +635,7 @@ export function Header() {
               <Link
                 href="/care-guide"
                 onClick={() => setIsEditorialMenuOpen(false)}
-                className="font-anton text-4xl sm:text-5xl md:text-6xl uppercase tracking-tight text-stone-100 hover:text-gold-400 hover:scale-105 transition-all duration-200 block"
+                className="font-anton text-3xl sm:text-4xl md:text-5xl lg:text-[54px] uppercase tracking-tight text-stone-100 hover:text-gold-400 hover:scale-105 transition-all duration-200 block"
               >
                 CLIENT SERVICES
               </Link>
@@ -635,7 +643,7 @@ export function Header() {
               <Link
                 href="/about"
                 onClick={() => setIsEditorialMenuOpen(false)}
-                className="font-anton text-4xl sm:text-5xl md:text-6xl uppercase tracking-tight text-stone-100 hover:text-gold-400 hover:scale-105 transition-all duration-200 block"
+                className="font-anton text-3xl sm:text-4xl md:text-5xl lg:text-[54px] uppercase tracking-tight text-stone-100 hover:text-gold-400 hover:scale-105 transition-all duration-200 block"
               >
                 ABOUT
               </Link>
