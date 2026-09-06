@@ -253,24 +253,27 @@ export function Header() {
             </div>
           </Link>
 
-          {/* Central Editorial [ MENU ] Trigger (Avant-Garde High Luxury) */}
-          <div className="flex items-center justify-center">
+          {/* Central Editorial MENU (Clean normal text in Anton font, opens on hover) */}
+          <div
+            className="flex items-center justify-center py-2"
+            onMouseEnter={() => setIsEditorialMenuOpen(true)}
+          >
             <button
               type="button"
+              onMouseEnter={() => setIsEditorialMenuOpen(true)}
               onClick={() => setIsEditorialMenuOpen(true)}
-              className={`flex items-center space-x-2.5 px-6 sm:px-8 py-2 rounded-full border text-xs sm:text-sm font-marcellus font-bold tracking-[0.28em] uppercase transition-all duration-300 backdrop-blur-md shadow-md hover:scale-105 group cursor-pointer ${
+              className={`font-anton text-2xl sm:text-3xl tracking-[0.22em] uppercase transition-all duration-300 hover:scale-108 cursor-pointer select-none ${
                 isDarkAtmospherePage
-                  ? 'border-gold-400/50 bg-black/60 text-stone-100 hover:bg-gold-500 hover:text-obsidian-950 hover:border-gold-400 shadow-[0_0_15px_rgba(212,175,55,0.25)]'
-                  : 'border-stone-300 dark:border-gold-400/50 bg-white/70 dark:bg-black/60 text-stone-900 dark:text-stone-100 hover:bg-gold-500 hover:text-obsidian-950 dark:hover:bg-gold-500 dark:hover:text-obsidian-950'
+                  ? 'text-white hover:text-gold-400'
+                  : 'text-stone-900 dark:text-stone-100 hover:text-gold-600 dark:hover:text-gold-400'
               }`}
               aria-label="Open Navigation Menu"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-gold-500 group-hover:bg-obsidian-950 transition-colors" />
-              <span>MENU</span>
+              MENU
             </button>
           </div>
 
-          {/* Consolidated Action Hub (Single Luxury Dark Circle with Cascading Options Downside) */}
+          {/* Consolidated Action Hub (Dynamic Theme Adapted Circle with Cascading Options Downside) */}
           <div
             className="relative"
             onMouseEnter={handleHubMouseEnter}
@@ -283,21 +286,55 @@ export function Header() {
               className={`relative w-11 h-11 sm:w-12 sm:h-12 rounded-full border flex items-center justify-center transition-all duration-300 shadow-lg hover:scale-108 backdrop-blur-xl cursor-pointer ${
                 isActionHubOpen
                   ? 'border-gold-400 bg-gold-500 text-obsidian-950 shadow-[0_0_20px_rgba(212,175,55,0.5)]'
-                  : 'border-gold-500/50 bg-stone-950/80 text-gold-400 hover:border-gold-400 hover:bg-stone-900 shadow-[0_4px_20px_rgba(0,0,0,0.5)]'
+                  : isDarkAtmospherePage
+                    ? 'border-gold-500/50 bg-stone-950/80 text-gold-400 hover:border-gold-400 hover:bg-stone-900 shadow-[0_4px_20px_rgba(0,0,0,0.5)]'
+                    : 'border-stone-300/80 dark:border-gold-500/40 bg-white/90 dark:bg-stone-950/80 text-stone-800 dark:text-gold-400 hover:border-gold-500 shadow-md'
               }`}
               aria-label="Atelier Quick Actions"
             >
               {/* Minimal geometric diamond hub icon */}
               <div className="grid grid-cols-2 gap-1 p-0.5">
-                <span className={`w-1.5 h-1.5 rounded-full transition-colors ${isActionHubOpen ? 'bg-obsidian-950' : 'bg-gold-400'}`} />
-                <span className={`w-1.5 h-1.5 rounded-full transition-colors ${isActionHubOpen ? 'bg-obsidian-950' : 'bg-gold-400'}`} />
-                <span className={`w-1.5 h-1.5 rounded-full transition-colors ${isActionHubOpen ? 'bg-obsidian-950' : 'bg-gold-400'}`} />
-                <span className={`w-1.5 h-1.5 rounded-full transition-colors ${isActionHubOpen ? 'bg-obsidian-950' : 'bg-gold-400'}`} />
+                <span
+                  className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                    isActionHubOpen
+                      ? 'bg-obsidian-950'
+                      : isDarkAtmospherePage
+                        ? 'bg-gold-400'
+                        : 'bg-stone-800 dark:bg-gold-400'
+                  }`}
+                />
+                <span
+                  className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                    isActionHubOpen
+                      ? 'bg-obsidian-950'
+                      : isDarkAtmospherePage
+                        ? 'bg-gold-400'
+                        : 'bg-stone-800 dark:bg-gold-400'
+                  }`}
+                />
+                <span
+                  className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                    isActionHubOpen
+                      ? 'bg-obsidian-950'
+                      : isDarkAtmospherePage
+                        ? 'bg-gold-400'
+                        : 'bg-stone-800 dark:bg-gold-400'
+                  }`}
+                />
+                <span
+                  className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                    isActionHubOpen
+                      ? 'bg-obsidian-950'
+                      : isDarkAtmospherePage
+                        ? 'bg-gold-400'
+                        : 'bg-stone-800 dark:bg-gold-400'
+                  }`}
+                />
               </div>
 
               {/* Notification count badge if bag or wishlist has items */}
               {(itemCount > 0 || wishlistCount > 0) && (
-                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-gold-500 text-obsidian-950 font-mono text-[9px] font-bold shadow-md ring-2 ring-stone-950">
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-gold-500 text-obsidian-950 font-mono text-[9px] font-bold shadow-md ring-2 ring-stone-950 dark:ring-stone-950">
                   {itemCount > 0 ? itemCount : wishlistCount}
                 </span>
               )}
@@ -322,7 +359,11 @@ export function Header() {
                     setIsCartOpen(true);
                     setIsActionHubOpen(false);
                   }}
-                  className="relative w-11 h-11 rounded-full border border-gold-400/40 bg-stone-950/95 text-gold-400 hover:bg-gold-500 hover:text-obsidian-950 flex items-center justify-center shadow-xl transition-all duration-200 hover:scale-110 backdrop-blur-2xl cursor-pointer"
+                  className={`relative w-11 h-11 rounded-full border flex items-center justify-center shadow-xl transition-all duration-200 hover:scale-110 backdrop-blur-2xl cursor-pointer ${
+                    isDarkAtmospherePage
+                      ? 'border-gold-400/40 bg-stone-950/95 text-gold-400 hover:bg-gold-500 hover:text-obsidian-950'
+                      : 'border-stone-200 dark:border-gold-500/30 bg-white/95 dark:bg-stone-950/95 text-stone-800 dark:text-gold-400 hover:bg-gold-500 hover:text-obsidian-950 hover:border-gold-500'
+                  }`}
                   aria-label="Shopping Bag"
                 >
                   <ShoppingBag className="h-4 w-4" />
@@ -332,7 +373,13 @@ export function Header() {
                     </span>
                   )}
                 </button>
-                <span className="pointer-events-none absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-xl bg-stone-950/95 border border-gold-500/30 px-3 py-1 text-[11px] font-marcellus tracking-wider text-gold-300 shadow-xl opacity-0 group-hover/circle:opacity-100 transition-opacity">
+                <span
+                  className={`pointer-events-none absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-xl border px-3 py-1 text-[11px] font-marcellus tracking-wider shadow-xl opacity-0 group-hover/circle:opacity-100 transition-opacity ${
+                    isDarkAtmospherePage
+                      ? 'bg-stone-950/95 border-gold-500/30 text-gold-300'
+                      : 'bg-white/95 dark:bg-stone-950/95 border-stone-200 dark:border-gold-500/30 text-stone-800 dark:text-gold-300'
+                  }`}
+                >
                   Shopping Bag {itemCount > 0 ? `(${itemCount})` : ''}
                 </span>
               </div>
@@ -342,7 +389,11 @@ export function Header() {
                 <Link
                   href="/account"
                   onClick={() => setIsActionHubOpen(false)}
-                  className="relative w-11 h-11 rounded-full border border-gold-400/40 bg-stone-950/95 text-gold-400 hover:bg-rose-500 hover:text-white hover:border-rose-400 flex items-center justify-center shadow-xl transition-all duration-200 hover:scale-110 backdrop-blur-2xl"
+                  className={`relative w-11 h-11 rounded-full border flex items-center justify-center shadow-xl transition-all duration-200 hover:scale-110 backdrop-blur-2xl ${
+                    isDarkAtmospherePage
+                      ? 'border-gold-400/40 bg-stone-950/95 text-gold-400 hover:bg-rose-500 hover:text-white hover:border-rose-400'
+                      : 'border-stone-200 dark:border-gold-500/30 bg-white/95 dark:bg-stone-950/95 text-stone-800 dark:text-gold-400 hover:bg-rose-500 hover:text-white hover:border-rose-400'
+                  }`}
                   aria-label="Wishlist"
                 >
                   <Heart className="h-4 w-4" />
@@ -352,7 +403,13 @@ export function Header() {
                     </span>
                   )}
                 </Link>
-                <span className="pointer-events-none absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-xl bg-stone-950/95 border border-gold-500/30 px-3 py-1 text-[11px] font-marcellus tracking-wider text-gold-300 shadow-xl opacity-0 group-hover/circle:opacity-100 transition-opacity">
+                <span
+                  className={`pointer-events-none absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-xl border px-3 py-1 text-[11px] font-marcellus tracking-wider shadow-xl opacity-0 group-hover/circle:opacity-100 transition-opacity ${
+                    isDarkAtmospherePage
+                      ? 'bg-stone-950/95 border-gold-500/30 text-gold-300'
+                      : 'bg-white/95 dark:bg-stone-950/95 border-stone-200 dark:border-gold-500/30 text-stone-800 dark:text-gold-300'
+                  }`}
+                >
                   Wishlist {wishlistCount > 0 ? `(${wishlistCount})` : ''}
                 </span>
               </div>
@@ -362,19 +419,35 @@ export function Header() {
                 <button
                   type="button"
                   onClick={() => setIsCurrencyDropdownOpen(!isCurrencyDropdownOpen)}
-                  className="relative w-11 h-11 rounded-full border border-gold-400/40 bg-stone-950/95 text-gold-400 hover:bg-gold-500 hover:text-obsidian-950 flex items-center justify-center shadow-xl transition-all duration-200 hover:scale-110 backdrop-blur-2xl font-marcellus text-[10px] font-bold tracking-wider cursor-pointer"
+                  className={`relative w-11 h-11 rounded-full border flex items-center justify-center shadow-xl transition-all duration-200 hover:scale-110 backdrop-blur-2xl font-marcellus text-[10px] font-bold tracking-wider cursor-pointer ${
+                    isDarkAtmospherePage
+                      ? 'border-gold-400/40 bg-stone-950/95 text-gold-400 hover:bg-gold-500 hover:text-obsidian-950'
+                      : 'border-stone-200 dark:border-gold-500/30 bg-white/95 dark:bg-stone-950/95 text-stone-800 dark:text-gold-400 hover:bg-gold-500 hover:text-obsidian-950 hover:border-gold-500'
+                  }`}
                   aria-label="Select Currency"
                 >
                   <span>{currentCurrency}</span>
                 </button>
-                <span className="pointer-events-none absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-xl bg-stone-950/95 border border-gold-500/30 px-3 py-1 text-[11px] font-marcellus tracking-wider text-gold-300 shadow-xl opacity-0 group-hover/circle:opacity-100 transition-opacity">
+                <span
+                  className={`pointer-events-none absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-xl border px-3 py-1 text-[11px] font-marcellus tracking-wider shadow-xl opacity-0 group-hover/circle:opacity-100 transition-opacity ${
+                    isDarkAtmospherePage
+                      ? 'bg-stone-950/95 border-gold-500/30 text-gold-300'
+                      : 'bg-white/95 dark:bg-stone-950/95 border-stone-200 dark:border-gold-500/30 text-stone-800 dark:text-gold-300'
+                  }`}
+                >
                   Currency: {currentCurrency}
                 </span>
 
                 {/* Currency Flyout Submenu */}
                 {isCurrencyDropdownOpen && (
-                  <div className="absolute right-full mr-3 top-0 w-48 rounded-2xl border border-gold-500/40 bg-stone-950/95 p-2 shadow-2xl backdrop-blur-2xl z-[160] animate-in fade-in slide-in-from-right-1 duration-150">
-                    <div className="text-[9px] uppercase font-marcellus font-bold text-gold-400 px-2.5 py-1 border-b border-white/10 mb-1">
+                  <div
+                    className={`absolute right-full mr-3 top-0 w-48 rounded-2xl border p-2 shadow-2xl backdrop-blur-2xl z-[160] animate-in fade-in slide-in-from-right-1 duration-150 ${
+                      isDarkAtmospherePage
+                        ? 'border-gold-500/40 bg-stone-950/95 text-stone-300'
+                        : 'border-stone-200 dark:border-gold-500/40 bg-white/95 dark:bg-stone-950/95 text-stone-800 dark:text-stone-300'
+                    }`}
+                  >
+                    <div className="text-[9px] uppercase font-marcellus font-bold text-gold-500 dark:text-gold-400 px-2.5 py-1 border-b border-stone-200 dark:border-white/10 mb-1">
                       Select Currency
                     </div>
                     <div className="space-y-1 max-h-48 overflow-y-auto">
@@ -388,7 +461,7 @@ export function Header() {
                           className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs transition font-marcellus ${
                             currentCurrency === r.currencyCode
                               ? 'bg-gold-500 text-obsidian-950 font-bold'
-                              : 'text-stone-300 hover:bg-gold-500/20 hover:text-gold-300'
+                              : 'hover:bg-gold-500/20 hover:text-gold-600 dark:hover:text-gold-300'
                           }`}
                         >
                           <span>{r.currencyCode}</span>
@@ -406,7 +479,11 @@ export function Header() {
                   <Link
                     href="/account"
                     onClick={() => setIsActionHubOpen(false)}
-                    className="relative w-11 h-11 rounded-full border border-gold-400/40 bg-stone-950/95 text-gold-400 hover:bg-gold-500 hover:text-obsidian-950 flex items-center justify-center shadow-xl transition-all duration-200 hover:scale-110 backdrop-blur-2xl overflow-hidden"
+                    className={`relative w-11 h-11 rounded-full border flex items-center justify-center shadow-xl transition-all duration-200 hover:scale-110 backdrop-blur-2xl overflow-hidden ${
+                      isDarkAtmospherePage
+                        ? 'border-gold-400/40 bg-stone-950/95 text-gold-400 hover:bg-gold-500 hover:text-obsidian-950'
+                        : 'border-stone-200 dark:border-gold-500/30 bg-white/95 dark:bg-stone-950/95 text-stone-800 dark:text-gold-400 hover:bg-gold-500 hover:text-obsidian-950 hover:border-gold-500'
+                    }`}
                     aria-label="My Account"
                   >
                     {user.avatarUrl ? (
@@ -422,13 +499,23 @@ export function Header() {
                       openAuthModal('LOGIN');
                       setIsActionHubOpen(false);
                     }}
-                    className="relative w-11 h-11 rounded-full border border-gold-400/40 bg-stone-950/95 text-gold-400 hover:bg-gold-500 hover:text-obsidian-950 flex items-center justify-center shadow-xl transition-all duration-200 hover:scale-110 backdrop-blur-2xl cursor-pointer"
+                    className={`relative w-11 h-11 rounded-full border flex items-center justify-center shadow-xl transition-all duration-200 hover:scale-110 backdrop-blur-2xl cursor-pointer ${
+                      isDarkAtmospherePage
+                        ? 'border-gold-400/40 bg-stone-950/95 text-gold-400 hover:bg-gold-500 hover:text-obsidian-950'
+                        : 'border-stone-200 dark:border-gold-500/30 bg-white/95 dark:bg-stone-950/95 text-stone-800 dark:text-gold-400 hover:bg-gold-500 hover:text-obsidian-950 hover:border-gold-500'
+                    }`}
                     aria-label="Sign In"
                   >
                     <User className="h-4 w-4" />
                   </button>
                 )}
-                <span className="pointer-events-none absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-xl bg-stone-950/95 border border-gold-500/30 px-3 py-1 text-[11px] font-marcellus tracking-wider text-gold-300 shadow-xl opacity-0 group-hover/circle:opacity-100 transition-opacity">
+                <span
+                  className={`pointer-events-none absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-xl border px-3 py-1 text-[11px] font-marcellus tracking-wider shadow-xl opacity-0 group-hover/circle:opacity-100 transition-opacity ${
+                    isDarkAtmospherePage
+                      ? 'bg-stone-950/95 border-gold-500/30 text-gold-300'
+                      : 'bg-white/95 dark:bg-stone-950/95 border-stone-200 dark:border-gold-500/30 text-stone-800 dark:text-gold-300'
+                  }`}
+                >
                   {user ? user.firstName || 'My Account' : 'Sign In'}
                 </span>
               </div>
@@ -436,9 +523,19 @@ export function Header() {
               {/* 5. Dark / Light Theme Mode Circle */}
               <div className="relative group/circle">
                 <ThemeToggle
-                  className="!w-11 !h-11 !rounded-full !border-gold-400/40 !bg-stone-950/95 !text-gold-400 hover:!bg-gold-500 hover:!text-obsidian-950 !shadow-xl !backdrop-blur-2xl"
+                  className={`!w-11 !h-11 !rounded-full !shadow-xl !backdrop-blur-2xl ${
+                    isDarkAtmospherePage
+                      ? '!border-gold-400/40 !bg-stone-950/95 !text-gold-400 hover:!bg-gold-500 hover:!text-obsidian-950'
+                      : '!border-stone-200 dark:!border-gold-500/30 !bg-white/95 dark:!bg-stone-950/95 !text-stone-800 dark:!text-gold-400 hover:!bg-gold-500 hover:!text-obsidian-950'
+                  }`}
                 />
-                <span className="pointer-events-none absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-xl bg-stone-950/95 border border-gold-500/30 px-3 py-1 text-[11px] font-marcellus tracking-wider text-gold-300 shadow-xl opacity-0 group-hover/circle:opacity-100 transition-opacity">
+                <span
+                  className={`pointer-events-none absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap rounded-xl border px-3 py-1 text-[11px] font-marcellus tracking-wider shadow-xl opacity-0 group-hover/circle:opacity-100 transition-opacity ${
+                    isDarkAtmospherePage
+                      ? 'bg-stone-950/95 border-gold-500/30 text-gold-300'
+                      : 'bg-white/95 dark:bg-stone-950/95 border-stone-200 dark:border-gold-500/30 text-stone-800 dark:text-gold-300'
+                  }`}
+                >
                   Theme Mode
                 </span>
               </div>
