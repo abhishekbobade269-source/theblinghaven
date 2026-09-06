@@ -1,11 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { Crown, Sparkles, Instagram, ArrowRight, ExternalLink, Award } from 'lucide-react';
+import { Crown, Sparkles, Instagram, ArrowRight, ExternalLink, Play, Film, Image as ImageIcon } from 'lucide-react';
 import { AnimatedBrandLogo } from '@/components/ui/AnimatedBrandLogo';
 
 export function FounderSpotlight() {
+  const [activeMedia, setActiveMedia] = useState<'video' | 'photo'>('video');
+
   return (
     <section className="py-20 sm:py-28 relative overflow-hidden bg-gradient-to-b from-obsidian-950 via-stone-950 to-obsidian-950 text-white border-t border-gold-500/20">
       {/* Ambient background glows */}
@@ -14,22 +16,61 @@ export function FounderSpotlight() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left: Founder Portrait & Animated Emblem */}
+          {/* Left: Founder Media Card (Photo / Video Switchable) */}
           <div className="lg:col-span-5 relative flex flex-col items-center">
             <div className="relative w-full max-w-sm sm:max-w-md mx-auto">
               {/* Outer Golden Aura */}
               <div className="absolute -inset-2 rounded-[36px] bg-gradient-to-tr from-gold-500/40 via-pink-300/20 to-amber-400/50 opacity-80 blur-xl" />
 
-              <div className="relative rounded-[32px] overflow-hidden border border-gold-500/30 bg-black aspect-[4/5] shadow-2xl">
-                <img
-                  src="/images/about/neha_singh.jpg"
-                  alt="Neha Singh — Founder & Creative Director"
-                  className="w-full h-full object-cover object-center filter brightness-[0.98] contrast-[1.03] transition-transform duration-700 hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+              <div className="relative rounded-[32px] overflow-hidden border border-gold-500/40 bg-black aspect-[4/5] shadow-2xl group">
+                {activeMedia === 'video' ? (
+                  <video
+                    src="/videos/woman_inspects_gold_necklace.mp4"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    poster="/images/about/neha_singh.jpg"
+                    className="w-full h-full object-cover object-center filter brightness-[0.98] contrast-[1.02]"
+                  />
+                ) : (
+                  <img
+                    src="/images/about/neha_singh.jpg"
+                    alt="Neha Singh — Founder & Creative Director"
+                    className="w-full h-full object-cover object-center filter brightness-[0.98] contrast-[1.03] transition-transform duration-700 hover:scale-105"
+                  />
+                )}
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/15 to-transparent pointer-events-none" />
+
+                {/* Media Switcher Buttons */}
+                <div className="absolute top-4 left-4 z-20 flex items-center space-x-1.5 p-1 rounded-full bg-black/70 border border-white/20 backdrop-blur-md">
+                  <button
+                    onClick={() => setActiveMedia('video')}
+                    className={`flex items-center space-x-1 px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase transition ${
+                      activeMedia === 'video'
+                        ? 'bg-gold-500 text-obsidian-950 shadow-md'
+                        : 'text-white/80 hover:text-white'
+                    }`}
+                  >
+                    <Film className="h-3 w-3" />
+                    <span>Film</span>
+                  </button>
+                  <button
+                    onClick={() => setActiveMedia('photo')}
+                    className={`flex items-center space-x-1 px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase transition ${
+                      activeMedia === 'photo'
+                        ? 'bg-gold-500 text-obsidian-950 shadow-md'
+                        : 'text-white/80 hover:text-white'
+                    }`}
+                  >
+                    <ImageIcon className="h-3 w-3" />
+                    <span>Portrait</span>
+                  </button>
+                </div>
 
                 {/* Founder Info Overlay Card */}
-                <div className="absolute bottom-6 inset-x-6">
+                <div className="absolute bottom-6 inset-x-6 z-10">
                   <div className="p-4 rounded-2xl border border-white/15 bg-black/75 backdrop-blur-md flex items-center justify-between">
                     <div>
                       <h3 className="font-serif text-xl font-bold text-white tracking-wide">
@@ -46,9 +87,9 @@ export function FounderSpotlight() {
                 </div>
               </div>
 
-              {/* Floating Animated Circular Brand Emblem */}
+              {/* Floating Animated Circular Brand Emblem with Video Reveal */}
               <div className="absolute -top-6 -right-6 hidden sm:block">
-                <AnimatedBrandLogo size="sm" enableGlint={true} />
+                <AnimatedBrandLogo size="md" useVideo={true} enableGlint={true} />
               </div>
             </div>
           </div>
@@ -67,7 +108,7 @@ export function FounderSpotlight() {
             </h2>
 
             <p className="text-sm sm:text-base text-slate-300 font-light leading-relaxed">
-              Conceived by <strong className="text-gold-400 font-semibold">Neha Singh</strong>, The Bling Haven was created to liberate royal Indian high jewelry from traditional retail markups. Every necklace set, chandelier earring, and solitare ring is hand-selected and crafted with 22K micro-gold plating, uncut polki stones, and anti-tarnish lifetime protection.
+              Conceived by <strong className="text-gold-400 font-semibold">Neha Singh</strong>, The Bling Haven was created to liberate royal Indian high jewelry from traditional retail markups. Every necklace set, chandelier earring, and solitaire ring is hand-selected and crafted with 22K micro-gold plating, uncut polki stones, and anti-tarnish lifetime protection.
             </p>
 
             {/* Quick Metrics */}
@@ -98,7 +139,7 @@ export function FounderSpotlight() {
                 href="/about"
                 className="inline-flex items-center space-x-2 rounded-2xl border border-gold-500/60 bg-gradient-to-r from-gold-600 to-gold-500 px-7 py-3.5 text-xs font-bold uppercase tracking-widest text-obsidian-950 shadow-lg hover:brightness-110 transition-all"
               >
-                <span>Read Full Maison Story</span>
+                <span>Watch Campaign & Read Story</span>
                 <ArrowRight className="h-4 w-4" />
               </Link>
 

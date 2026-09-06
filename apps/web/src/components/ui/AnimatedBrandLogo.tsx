@@ -8,6 +8,7 @@ interface AnimatedBrandLogoProps {
   showLabel?: boolean;
   className?: string;
   enableGlint?: boolean;
+  useVideo?: boolean;
 }
 
 export function AnimatedBrandLogo({
@@ -15,6 +16,7 @@ export function AnimatedBrandLogo({
   showLabel = false,
   className = '',
   enableGlint = true,
+  useVideo = false,
 }: AnimatedBrandLogoProps) {
   const sizeClasses = {
     sm: 'w-12 h-12',
@@ -61,12 +63,23 @@ export function AnimatedBrandLogo({
         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
         className={`relative ${sizeClasses} rounded-full p-1 bg-gradient-to-tr from-gold-500/60 via-pink-200/50 to-gold-400/80 shadow-[0_10px_35px_rgba(212,175,55,0.28)] overflow-hidden cursor-pointer`}
       >
-        {/* Core circle logo image */}
-        <img
-          src="/images/logo_circle.png"
-          alt="The Bling Haven Logo"
-          className="w-full h-full object-cover rounded-full select-none"
-        />
+        {useVideo ? (
+          <video
+            src="/videos/brand_logo_reveal.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            poster="/images/logo_circle.png"
+            className="w-full h-full object-cover rounded-full select-none"
+          />
+        ) : (
+          <img
+            src="/images/logo_circle.png"
+            alt="The Bling Haven Logo"
+            className="w-full h-full object-cover rounded-full select-none"
+          />
+        )}
 
         {/* Shimmer sweep reflection */}
         {enableGlint && (

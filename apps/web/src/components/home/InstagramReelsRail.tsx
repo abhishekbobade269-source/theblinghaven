@@ -12,22 +12,23 @@ interface InstagramReelsRailProps {
 }
 
 export function InstagramReelsRail({ posts }: InstagramReelsRailProps) {
-  const displayPosts = posts && posts.length > 0 ? posts : [
+  const displayPosts: (InstagramPostDto & { videoUrl?: string })[] = (posts && posts.length > 0) ? posts : [
     {
       id: 'ig-1',
       mediaType: 'REEL',
-      mediaUrl: '/uploads/sets_00c2f42a_1s6a9390.jpg',
-      caption: 'Sparkle in royal polki choker parures. Handcrafted in Toronto atelier.',
-      likes: 1420,
-      comments: 84,
-      views: 18400,
+      mediaUrl: '/images/about/neha_singh.jpg',
+      videoUrl: '/videos/woman_wearing_diamond_earrings.mp4',
+      caption: 'Sparkle test in sunlight: Waterfall chandelier earrings handcrafted for modern royalty ✨',
+      likes: 2420,
+      comments: 138,
+      views: 38400,
       permalink: 'https://www.instagram.com/the_bling_haven?stkn=dG54bGY1ZGgyMzJr',
     },
     {
       id: 'ig-2',
       mediaType: 'REEL',
       mediaUrl: '/uploads/rings_15ca97c8_1s6a0175.jpg',
-      caption: '3.2ct Emerald Cut Solitaire sparkle test in direct sunlight.',
+      caption: '3.2ct Emerald Cut Solitaire sparkle test in direct sunlight 💍',
       likes: 2190,
       comments: 112,
       views: 34100,
@@ -36,11 +37,11 @@ export function InstagramReelsRail({ posts }: InstagramReelsRailProps) {
     {
       id: 'ig-3',
       mediaType: 'REEL',
-      mediaUrl: '/uploads/earrings_01462b03_1s6a0431.jpg',
-      caption: 'Waterfall chandelier drops with natural freshwater pearls.',
-      likes: 980,
-      comments: 42,
-      views: 12900,
+      mediaUrl: '/uploads/sets_00c2f42a_1s6a9390.jpg',
+      caption: 'Imperial Royal Kundan choker parure. Handcrafted over 180 hours in our atelier.',
+      likes: 1840,
+      comments: 84,
+      views: 24500,
       permalink: 'https://www.instagram.com/the_bling_haven?stkn=dG54bGY1ZGgyMzJr',
     },
     {
@@ -97,12 +98,24 @@ export function InstagramReelsRail({ posts }: InstagramReelsRailProps) {
             transition={{ duration: 0.3, ease: 'easeOut' }}
             className="group relative block aspect-[9/14] rounded-3xl overflow-hidden border border-slate-200/80 dark:border-white/10 bg-black shadow-md hover:shadow-2xl"
           >
-            <img
-              src={post.mediaUrl}
-              alt={post.caption || 'Instagram Reel'}
-              className="h-full w-full object-cover object-center filter brightness-[0.9] transition-transform duration-700 ease-out group-hover:scale-108"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent" />
+            {'videoUrl' in post && post.videoUrl ? (
+              <video
+                src={post.videoUrl}
+                autoPlay
+                loop
+                muted
+                playsInline
+                poster={post.mediaUrl}
+                className="h-full w-full object-cover object-center filter brightness-[0.98] group-hover:scale-105 transition-transform duration-700 ease-out"
+              />
+            ) : (
+              <img
+                src={post.mediaUrl}
+                alt={post.caption || 'Instagram Reel'}
+                className="h-full w-full object-cover object-center filter brightness-[0.9] transition-transform duration-700 ease-out group-hover:scale-108"
+              />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent pointer-events-none" />
             <DiamondGlint />
 
             {/* Play Reel Indicator */}
