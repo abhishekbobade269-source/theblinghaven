@@ -120,7 +120,7 @@ export default function AboutHeritagePage() {
           <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full border border-gold-500/40 bg-gold-500/10 backdrop-blur-md">
             <Sparkles className="h-3.5 w-3.5 text-gold-400" />
             <span className="text-xs font-mono font-bold uppercase tracking-widest text-gold-300">
-              The Heritage of The Bling Haven
+              The Bling Haven
             </span>
           </div>
 
