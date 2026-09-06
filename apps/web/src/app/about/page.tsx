@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { 
@@ -13,6 +13,9 @@ import {
   Heart, 
   MessageCircle, 
   Play, 
+  Pause,
+  Volume2,
+  VolumeX,
   Eye, 
   ExternalLink,
   Award,
@@ -25,6 +28,26 @@ import { getInstagramPosts, InstagramPostDto } from '@/services/cms.service';
 
 export default function AboutHeritagePage() {
   const [instagramPosts, setInstagramPosts] = useState<InstagramPostDto[]>([]);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const togglePlay = () => {
+    if (!videoRef.current) return;
+    if (videoRef.current.paused) {
+      videoRef.current.play();
+      setIsPlaying(true);
+    } else {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  const toggleMute = () => {
+    if (!videoRef.current) return;
+    videoRef.current.muted = !videoRef.current.muted;
+    setIsMuted(videoRef.current.muted);
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -149,15 +172,18 @@ export default function AboutHeritagePage() {
                 </div>
               </div>
 
-              {/* Mini Gallery Strip: Clean stills without tags */}
+              {/* Mini Gallery Strip: Video kept below profile without tags */}
               <div className="mt-4 grid grid-cols-2 gap-3 max-w-md mx-auto">
-                <div className="relative rounded-2xl overflow-hidden border border-gold-500/20 aspect-video group shadow-md">
-                  <img
-                    src="/images/about/neha_singh_emerald.jpg"
-                    alt="Neha Singh - Styling Session"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                <div className="relative rounded-2xl overflow-hidden border border-gold-500/30 aspect-video group bg-black shadow-md">
+                  <video
+                    src="/videos/woman_wearing_diamond_earrings.mp4"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover filter brightness-[0.98] group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors" />
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors pointer-events-none" />
                 </div>
                 <div className="relative rounded-2xl overflow-hidden border border-gold-500/20 aspect-video group shadow-md">
                   <img
@@ -239,7 +265,7 @@ export default function AboutHeritagePage() {
         </section>
       </div>
 
-      {/* 2.5 FULL SCREEN CINEMATIC CAMPAIGN FILM (EDGE-TO-EDGE, NO TAGS) */}
+      {/* 2.5 FULL SCREEN CINEMATIC CAMPAIGN FILM (EDGE-TO-EDGE, NO SCRUBBER LINE, LUXURY BUTTON OVER WATERMARK) */}
       <section className="relative w-full my-16 sm:my-28 bg-black overflow-hidden border-y border-gold-500/30 shadow-2xl">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-gold-500/10 blur-3xl pointer-events-none" />
 
@@ -252,17 +278,50 @@ export default function AboutHeritagePage() {
           </p>
         </div>
 
-        {/* Full-bleed Full-Screen Cinema Container */}
+        {/* Full-bleed Full-Screen Cinema Container without browser controls line */}
         <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] lg:h-[85vh] bg-black overflow-hidden shadow-[0_0_80px_rgba(212,175,55,0.18)]">
           <video
+            ref={videoRef}
             src="/videos/woman_inspects_gold_necklace.mp4"
             autoPlay
             loop
             muted
             playsInline
-            controls
             className="w-full h-full object-cover object-center"
           />
+
+          {/* Luxury Play/Pause & Sound Controls (Bottom-Left) */}
+          <div className="absolute bottom-6 left-6 z-20 flex items-center space-x-2.5">
+            <button
+              onClick={togglePlay}
+              aria-label="Toggle Playback"
+              className="p-3 rounded-full border border-white/20 bg-black/75 text-white backdrop-blur-md hover:bg-gold-500 hover:text-obsidian-950 transition-all shadow-xl"
+            >
+              {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 fill-current" />}
+            </button>
+            <button
+              onClick={toggleMute}
+              aria-label="Toggle Audio"
+              className="p-3 rounded-full border border-white/20 bg-black/75 text-white backdrop-blur-md hover:bg-gold-500 hover:text-obsidian-950 transition-all shadow-xl"
+            >
+              {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+            </button>
+          </div>
+
+          {/* Luxury Button Placed Directly Over the Bottom-Right Watermark */}
+          <div 
+            className="absolute z-20"
+            style={{ bottom: 'clamp(20px, 12.5%, 82px)', right: 'clamp(16px, 5%, 45px)' }}
+          >
+            <Link
+              href="/catalog"
+              className="inline-flex items-center space-x-3 rounded-2xl border border-gold-400/80 bg-obsidian-950/95 px-7 py-3.5 text-xs sm:text-sm font-mono font-bold uppercase tracking-widest text-gold-300 backdrop-blur-xl shadow-[0_10px_35px_rgba(0,0,0,0.95)] hover:bg-gold-500 hover:text-obsidian-950 hover:border-gold-400 transition-all group"
+            >
+              <Sparkles className="h-4 w-4 text-gold-400 group-hover:text-obsidian-950 transition-colors" />
+              <span>Explore Collection</span>
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
         </div>
 
         {/* Three Campaign Highlights */}
