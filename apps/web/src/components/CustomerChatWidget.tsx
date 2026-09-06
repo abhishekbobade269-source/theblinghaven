@@ -115,18 +115,18 @@ export function CustomerChatWidget() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 font-sans">
-      {/* Expanded Chat Window */}
+    <div className="fixed bottom-6 left-6 z-50 font-sans">
+      {/* Expanded Chat Window (Transparent Luxury Frosted Glassmorphism) */}
       {isOpen ? (
-        <div className="w-[360px] sm:w-[390px] h-[540px] max-h-[85vh] rounded-3xl border-2 border-slate-200 dark:border-gold-500/40 bg-white dark:bg-[#0E0E14] shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200 text-slate-900 dark:text-slate-100">
+        <div className="w-[360px] sm:w-[390px] h-[540px] max-h-[85vh] rounded-3xl border border-white/20 dark:border-gold-500/40 bg-stone-950/55 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.5)] flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200 text-stone-100">
           {/* Header */}
-          <div className="bg-gradient-to-r from-slate-900 via-[#161622] to-slate-900 text-white p-4 flex items-center justify-between border-b border-gold-500/20">
+          <div className="bg-stone-900/50 backdrop-blur-xl text-white p-4 flex items-center justify-between border-b border-white/10 dark:border-gold-500/20">
             <div className="flex items-center space-x-3">
               <div className="relative">
                 <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-obsidian-950 font-bold shadow-md">
                   <Sparkles className="h-5 w-5" />
                 </div>
-                <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-400 border-2 border-slate-900" />
+                <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-400 border-2 border-stone-900" />
               </div>
               <div>
                 <h3 className="font-serif text-sm font-bold tracking-wide text-white">
@@ -139,7 +139,7 @@ export function CustomerChatWidget() {
             <div className="flex items-center space-x-1">
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1.5 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition"
+                className="p-1.5 rounded-xl hover:bg-white/10 text-stone-400 hover:text-white transition cursor-pointer"
                 aria-label="Close Chat"
               >
                 <X className="h-4 w-4" />
@@ -147,8 +147,8 @@ export function CustomerChatWidget() {
             </div>
           </div>
 
-          {/* Chat Messages */}
-          <div className="flex-1 p-4 overflow-y-auto space-y-4 text-xs bg-slate-50/50 dark:bg-[#0A0A0E]/50">
+          {/* Chat Messages (Transparent Glass Container) */}
+          <div className="flex-1 p-4 overflow-y-auto space-y-4 text-xs bg-transparent">
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -157,20 +157,20 @@ export function CustomerChatWidget() {
                 <div
                   className={`max-w-[85%] rounded-2xl p-3.5 shadow-sm leading-relaxed ${
                     msg.sender === 'user'
-                      ? 'bg-gold-500 text-obsidian-950 font-medium rounded-tr-sm'
-                      : 'bg-white dark:bg-[#161620] border border-slate-200 dark:border-gold-500/25 text-slate-800 dark:text-slate-200 rounded-tl-sm'
+                      ? 'bg-gradient-to-r from-gold-500 to-amber-500 text-obsidian-950 font-semibold rounded-tr-sm shadow-md'
+                      : 'bg-white/10 dark:bg-white/10 backdrop-blur-xl border border-white/15 dark:border-gold-500/30 text-stone-100 rounded-tl-sm shadow-md'
                   }`}
                 >
                   <p>{msg.text}</p>
 
                   {msg.links && msg.links.length > 0 && (
-                    <div className="mt-2.5 pt-2 border-t border-slate-200 dark:border-gold-500/20 flex flex-wrap gap-1.5">
+                    <div className="mt-2.5 pt-2 border-t border-white/15 dark:border-gold-500/20 flex flex-wrap gap-1.5">
                       {msg.links.map((link) => (
                         <Link
                           key={link.label}
                           href={link.href}
                           onClick={() => setIsOpen(false)}
-                          className="inline-flex items-center space-x-1 rounded-lg bg-gold-500/15 hover:bg-gold-500 hover:text-obsidian-950 px-2 py-1 text-[10px] font-mono font-bold text-gold-700 dark:text-gold-400 transition"
+                          className="inline-flex items-center space-x-1 rounded-lg bg-gold-500/20 hover:bg-gold-500 hover:text-obsidian-950 px-2 py-1 text-[10px] font-mono font-bold text-gold-300 transition border border-gold-400/30"
                         >
                           <span>{link.label}</span>
                           <span>→</span>
@@ -179,27 +179,27 @@ export function CustomerChatWidget() {
                     </div>
                   )}
                 </div>
-                <span className="text-[9px] text-slate-400 mt-1 px-1">{msg.time}</span>
+                <span className="text-[9px] text-stone-400 mt-1 px-1">{msg.time}</span>
               </div>
             ))}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Prompts */}
-          <div className="px-3 py-2 border-t border-slate-200 dark:border-gold-500/20 bg-white dark:bg-[#0E0E14] flex items-center space-x-1.5 overflow-x-auto no-scrollbar">
+          {/* Quick Prompts (Transparent Frosted Glass) */}
+          <div className="px-3 py-2 border-t border-white/10 dark:border-gold-500/20 bg-stone-900/40 backdrop-blur-xl flex items-center space-x-1.5 overflow-x-auto no-scrollbar">
             {QUICK_PROMPTS.map((prompt) => (
               <button
                 key={prompt.label}
                 onClick={() => handleSend(prompt.text)}
-                className="shrink-0 rounded-full border border-slate-200 dark:border-gold-500/30 bg-slate-100 dark:bg-[#161620] hover:border-gold-500 px-3 py-1 text-[10px] font-mono text-slate-700 dark:text-slate-300 hover:text-gold-600 dark:hover:text-gold-400 transition"
+                className="shrink-0 rounded-full border border-white/15 dark:border-gold-500/30 bg-white/10 hover:border-gold-400 hover:bg-gold-500/20 px-3 py-1 text-[10px] font-mono text-stone-200 hover:text-gold-300 transition cursor-pointer backdrop-blur-md"
               >
                 {prompt.label}
               </button>
             ))}
           </div>
 
-          {/* Input Bar */}
-          <div className="p-3 border-t border-slate-200 dark:border-gold-500/20 bg-white dark:bg-[#0E0E14]">
+          {/* Input Bar (Transparent Frosted Glass) */}
+          <div className="p-3 border-t border-white/10 dark:border-gold-500/20 bg-stone-900/50 backdrop-blur-xl">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -212,12 +212,12 @@ export function CustomerChatWidget() {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="Type your question..."
-                className="flex-1 rounded-2xl border border-slate-300 dark:border-gold-500/30 bg-slate-50 dark:bg-[#161620] px-3.5 py-2.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-gold-500 focus:outline-none transition"
+                className="flex-1 rounded-2xl border border-white/20 dark:border-gold-500/30 bg-black/30 px-3.5 py-2.5 text-xs text-white placeholder-stone-400 focus:border-gold-400 focus:bg-black/50 focus:outline-none transition backdrop-blur-md"
               />
               <button
                 type="submit"
                 disabled={!inputText.trim()}
-                className="h-9 w-9 rounded-2xl bg-gold-500 hover:bg-gold-400 disabled:opacity-40 text-obsidian-950 flex items-center justify-center transition shadow-md shrink-0"
+                className="h-9 w-9 rounded-2xl bg-gold-500 hover:bg-gold-400 disabled:opacity-40 text-obsidian-950 flex items-center justify-center transition shadow-md shrink-0 cursor-pointer"
                 aria-label="Send Message"
               >
                 <Send className="h-4 w-4" />
@@ -226,10 +226,10 @@ export function CustomerChatWidget() {
           </div>
         </div>
       ) : (
-        /* Floating Chat Trigger Button */
+        /* Floating Chat Trigger Button on Left Side */
         <button
           onClick={() => setIsOpen(true)}
-          className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-gold-600 via-gold-500 to-amber-400 text-obsidian-950 shadow-2xl hover:scale-110 transition-all duration-300 ring-4 ring-gold-500/20"
+          className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-gold-600 via-gold-500 to-amber-400 text-obsidian-950 shadow-2xl hover:scale-110 transition-all duration-300 ring-4 ring-gold-500/20 cursor-pointer"
           aria-label="Open Chat"
         >
           <MessageCircle className="h-6 w-6 group-hover:scale-110 transition-transform duration-200" />
@@ -244,8 +244,8 @@ export function CustomerChatWidget() {
             </span>
           )}
 
-          {/* Tooltip on hover */}
-          <div className="absolute right-16 top-1/2 -translate-y-1/2 hidden sm:group-hover:flex items-center space-x-1 rounded-xl bg-slate-900 text-gold-400 px-3 py-1.5 text-xs font-mono font-bold whitespace-nowrap shadow-xl border border-gold-500/30 pointer-events-none">
+          {/* Tooltip on hover (Appears on right side since button is on left) */}
+          <div className="absolute left-16 top-1/2 -translate-y-1/2 hidden sm:group-hover:flex items-center space-x-1 rounded-xl bg-stone-900/95 backdrop-blur-md text-gold-400 px-3 py-1.5 text-xs font-mono font-bold whitespace-nowrap shadow-xl border border-gold-500/30 pointer-events-none">
             <Sparkles className="h-3 w-3" />
             <span>Chat with us</span>
           </div>
