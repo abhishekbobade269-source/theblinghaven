@@ -6,6 +6,15 @@ const nextConfig = {
     domains: ['localhost', 'images.unsplash.com'],
     unoptimized: true,
   },
+  async redirects() {
+    return [
+      {
+        source: '/products',
+        destination: '/catalog',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

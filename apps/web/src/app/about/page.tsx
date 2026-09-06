@@ -233,7 +233,7 @@ export default function AboutHeritagePage() {
                 </a>
 
                 <Link
-                  href="/products"
+                  href="/catalog"
                   className="inline-flex items-center space-x-2 rounded-2xl border border-white/20 bg-white/5 px-8 py-3.5 text-xs font-bold uppercase tracking-widest text-white hover:bg-white/10 transition-all"
                 >
                   <span>Explore The Collection</span>
@@ -386,7 +386,7 @@ export default function AboutHeritagePage() {
             </p>
             <div className="pt-2">
               <Link
-                href="/products"
+                href="/catalog"
                 className="inline-flex items-center space-x-2 rounded-2xl border border-gold-500/60 bg-gradient-to-r from-gold-600 to-gold-500 px-8 py-3.5 text-xs font-bold uppercase tracking-widest text-obsidian-950 shadow-lg hover:brightness-110 transition-all"
               >
                 <span>Browse All Collections</span>
