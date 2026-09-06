@@ -244,7 +244,7 @@ export function Header() {
             </div>
             <div>
               <span
-                className={`font-serif text-base sm:text-xl font-bold tracking-[0.14em] uppercase block transition ${
+                className={`font-marcellus text-base sm:text-xl font-bold tracking-[0.18em] uppercase block transition ${
                   isDarkAtmospherePage
                     ? 'text-white group-hover:text-gold-300'
                     : 'text-slate-900 dark:text-slate-100 group-hover:text-gold-600 dark:group-hover:text-gold-400'
@@ -252,16 +252,16 @@ export function Header() {
               >
                 THE BLING HAVEN
               </span>
-              <span className="text-[7.5px] sm:text-[9px] font-sans tracking-[0.24em] text-gold-600 dark:text-gold-400 font-semibold block uppercase">
-                Luxury Fashion & Bridal Jewellery
+              <span className="text-[7.5px] sm:text-[9px] font-marcellus tracking-[0.26em] text-gold-600 dark:text-gold-400 font-semibold block uppercase">
+                Luxury Fashion &amp; Bridal Jewellery
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation Links */}
           <nav
-            className={`hidden xl:flex items-center space-x-5 2xl:space-x-7 text-[11px] 2xl:text-[12px] font-sans tracking-[0.14em] uppercase font-semibold transition-colors ${
-              isDarkAtmospherePage ? 'text-white/85' : 'text-slate-800 dark:text-slate-200'
+            className={`hidden xl:flex items-center space-x-6 2xl:space-x-8 text-[13px] 2xl:text-[14px] font-marcellus tracking-[0.18em] uppercase font-medium transition-colors ${
+              isDarkAtmospherePage ? 'text-white/90' : 'text-slate-800 dark:text-slate-200'
             }`}
           >
             {/* 1. Jewellery Collections Mega Menu */}
@@ -498,7 +498,7 @@ export function Header() {
                 onClick={() =>
                   setActiveNavDropdown(activeNavDropdown === 'help' ? null : 'help')
                 }
-                className={`flex items-center space-x-1.5 cursor-pointer transition py-1.5 focus:outline-none ${
+                className={`flex items-center space-x-1.5 cursor-pointer transition py-1.5 focus:outline-none uppercase ${
                   activeNavDropdown === 'help' || pathname === '/care-guide' || pathname === '/size-guide'
                     ? 'text-gold-500 dark:text-gold-400 font-bold'
                     : 'hover:text-gold-500 dark:hover:text-gold-400'
@@ -675,7 +675,7 @@ export function Header() {
             <div className="relative hidden sm:block">
               <button
                 onClick={() => setIsCurrencyDropdownOpen(!isCurrencyDropdownOpen)}
-                className={`flex items-center space-x-1.5 rounded-full border px-3 py-1.5 text-xs font-mono font-medium transition backdrop-blur-sm ${
+                className={`flex items-center space-x-1.5 rounded-full border px-3 py-1.5 text-xs font-marcellus tracking-wider font-medium transition backdrop-blur-sm ${
                   isDarkAtmospherePage
                     ? 'border-amber-400/30 bg-black/40 text-stone-100 hover:border-gold-400 hover:bg-gold-500/10'
                     : 'border-slate-300/80 dark:border-white/15 bg-slate-100/80 dark:bg-white/[0.06] text-slate-800 dark:text-slate-200 hover:border-gold-500'
@@ -836,14 +836,14 @@ export function Header() {
             ) : (
               <button
                 onClick={() => openAuthModal('LOGIN')}
-                className={`flex items-center space-x-1.5 rounded-full border px-3.5 py-1.5 text-xs font-mono font-medium transition backdrop-blur-sm ${
+                className={`flex items-center space-x-1.5 rounded-full border px-3.5 py-1.5 text-xs font-marcellus tracking-wider font-medium transition backdrop-blur-sm ${
                   isDarkAtmospherePage
                     ? 'border-amber-400/35 bg-black/40 text-stone-100 hover:border-gold-400 hover:bg-gold-500/20'
                     : 'border-slate-300/80 dark:border-white/15 bg-slate-100/80 dark:bg-white/[0.06] text-slate-800 dark:text-slate-200 hover:border-gold-500'
                 }`}
               >
                 <User className="h-3.5 w-3.5 text-gold-500" />
-                <span className="hidden sm:inline">Sign In</span>
+                <span className="hidden sm:inline uppercase">Sign In</span>
               </button>
             )}
 
@@ -860,7 +860,7 @@ export function Header() {
 
         {/* Mobile Slide-Over Navigation Menu */}
         {isMobileMenuOpen && (
-          <div className="xl:hidden border-t border-slate-200 dark:border-gold-500/30 bg-white dark:bg-[#0C0C10] px-6 py-6 space-y-6 animate-in slide-in-from-top duration-200 z-50 shadow-2xl font-mono text-xs">
+          <div className="xl:hidden border-t border-slate-200 dark:border-gold-500/30 bg-white dark:bg-[#0C0C10] px-6 py-6 space-y-6 animate-in slide-in-from-top duration-200 z-50 shadow-2xl font-marcellus text-xs">
             <div className="p-3 rounded-2xl bg-slate-50 dark:bg-[#14141A] border border-slate-200 dark:border-gold-500/20 flex items-center justify-between">
               {user ? (
                 <Link
@@ -870,7 +870,7 @@ export function Header() {
                 >
                   <img src={user.avatarUrl} alt={user.fullName} className="h-9 w-9 rounded-xl object-cover border border-gold-500/40" />
                   <div className="min-w-0 flex-1">
-                    <p className="font-serif font-bold text-slate-900 dark:text-slate-100 truncate">{user.fullName}</p>
+                    <p className="font-marcellus font-bold text-slate-900 dark:text-slate-100 truncate">{user.fullName}</p>
                     <span className="text-[10px] text-gold-700 dark:text-gold-400 font-bold block">View My Profile</span>
                   </div>
                 </Link>
@@ -880,7 +880,7 @@ export function Header() {
                     setIsMobileMenuOpen(false);
                     openAuthModal('LOGIN');
                   }}
-                  className="w-full flex items-center justify-center space-x-2 py-2 rounded-xl bg-gold-500 text-obsidian-950 font-bold uppercase tracking-wider"
+                  className="w-full flex items-center justify-center space-x-2 py-2.5 rounded-xl bg-gold-500 text-obsidian-950 font-bold uppercase tracking-wider font-marcellus text-xs"
                 >
                   <User className="h-4 w-4" />
                   <span>Sign In / Create Account</span>
@@ -889,7 +889,7 @@ export function Header() {
             </div>
 
             <div className="space-y-3">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-gold-700 dark:text-gold-400 block font-bold">
+              <span className="text-[10px] font-marcellus uppercase tracking-widest text-gold-700 dark:text-gold-400 block font-bold">
                 Jewellery Categories
               </span>
               <div className="grid grid-cols-1 gap-2">
@@ -898,7 +898,7 @@ export function Header() {
                     key={cat.name}
                     href={cat.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center space-x-3 p-2.5 rounded-xl bg-slate-50 dark:bg-[#14141A] text-slate-800 dark:text-slate-200 hover:text-gold-600 dark:hover:text-gold-400 font-serif text-sm border border-slate-200 dark:border-gold-500/20"
+                    className="flex items-center space-x-3 p-2.5 rounded-xl bg-slate-50 dark:bg-[#14141A] text-slate-800 dark:text-slate-200 hover:text-gold-600 dark:hover:text-gold-400 font-marcellus text-sm border border-slate-200 dark:border-gold-500/20"
                   >
                     <div className="h-2 w-2 rounded-full bg-gold-500" />
                     <span>{cat.name}</span>
@@ -911,7 +911,7 @@ export function Header() {
               <Link
                 href="/account"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center space-x-2 p-2.5 rounded-xl bg-slate-50 dark:bg-[#14141A] text-xs font-mono uppercase font-bold text-slate-800 dark:text-slate-200"
+                className="flex items-center space-x-2 p-2.5 rounded-xl bg-slate-50 dark:bg-[#14141A] text-xs font-marcellus uppercase font-bold tracking-wider text-slate-800 dark:text-slate-200"
               >
                 <User className="h-4 w-4 text-gold-500" />
                 <span>My Profile</span>
@@ -919,14 +919,15 @@ export function Header() {
               <Link
                 href="/bespoke"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center space-x-2 p-2.5 rounded-xl bg-slate-50 dark:bg-[#14141A] text-xs font-mono uppercase font-bold text-slate-800 dark:text-slate-200"
+                className="flex items-center space-x-2 p-2.5 rounded-xl bg-slate-50 dark:bg-[#14141A] text-xs font-marcellus uppercase font-bold tracking-wider text-slate-800 dark:text-slate-200"
               >
                 <Gem className="h-4 w-4 text-gold-500" />
                 <span>Custom Designs</span>
-              </Link>              <Link
+              </Link>
+              <Link
                 href="/gallery"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center space-x-2 p-2.5 rounded-xl bg-slate-50 dark:bg-[#14141A] text-xs font-mono uppercase font-bold text-slate-800 dark:text-slate-200"
+                className="flex items-center space-x-2 p-2.5 rounded-xl bg-slate-50 dark:bg-[#14141A] text-xs font-marcellus uppercase font-bold tracking-wider text-slate-800 dark:text-slate-200"
               >
                 <Maximize2 className="h-4 w-4 text-gold-500" />
                 <span>Gallery</span>
@@ -934,7 +935,7 @@ export function Header() {
               <Link
                 href="/about"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center space-x-2 p-2.5 rounded-xl bg-slate-50 dark:bg-[#14141A] text-xs font-mono uppercase font-bold text-slate-800 dark:text-slate-200"
+                className="flex items-center space-x-2 p-2.5 rounded-xl bg-slate-50 dark:bg-[#14141A] text-xs font-marcellus uppercase font-bold tracking-wider text-slate-800 dark:text-slate-200"
               >
                 <span>About Us</span>
               </Link>
