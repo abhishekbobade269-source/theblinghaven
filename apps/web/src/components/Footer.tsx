@@ -104,11 +104,11 @@ export function Footer() {
               Jewellery
             </h5>
             <ul className="space-y-2 text-xs">
-              <li><Link href="/rings" className="hover:text-gold-600 transition">Solitaire Rings</Link></li>
-              <li><Link href="/bridal-sets" className="hover:text-gold-600 transition">Kundan Bridal Sets</Link></li>
-              <li><Link href="/earrings" className="hover:text-gold-600 transition">Partywear Earrings</Link></li>
-              <li><Link href="/bangles" className="hover:text-gold-600 transition">Gold Bangles & Kadas</Link></li>
-              <li><Link href="/artisan-silver" className="hover:text-gold-600 transition">925 Silver Plated</Link></li>
+              <li><Link href="/rings" className="hover:text-gold-600 transition">Rings</Link></li>
+              <li><Link href="/bridal-sets" className="hover:text-gold-600 transition">Necklaces & Sets</Link></li>
+              <li><Link href="/earrings" className="hover:text-gold-600 transition">Earrings</Link></li>
+              <li><Link href="/bangles" className="hover:text-gold-600 transition">Bangles & Bracelets</Link></li>
+              <li><Link href="/artisan-silver" className="hover:text-gold-600 transition">Silver Jewellery</Link></li>
             </ul>
           </div>
 

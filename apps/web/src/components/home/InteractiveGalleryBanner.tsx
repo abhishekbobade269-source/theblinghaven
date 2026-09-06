@@ -7,29 +7,29 @@ import { Magnet } from '@/components/react-bits';
 
 const PREVIEW_JEWELRY = [
   {
-    name: 'Angoothi',
-    title: 'ANGOOTHI',
+    name: 'Rings',
+    title: 'RINGS',
     src: '/gallery/processed/01_ring_transparent.png',
     bg: '#0B231A',
     label: 'GALLERY 01',
   },
   {
-    name: 'Choker',
-    title: 'GULBANDH',
+    name: 'Necklaces',
+    title: 'NECKLACES',
     src: '/gallery/processed/02_necklace_transparent.png',
     bg: '#211812',
     label: 'GALLERY 02',
   },
   {
-    name: 'Chandbalis',
-    title: 'CHANDBALIS',
+    name: 'Earrings',
+    title: 'EARRINGS',
     src: '/gallery/processed/03_earrings_transparent.png',
     bg: '#0F2018',
     label: 'GALLERY 03',
   },
   {
-    name: 'Kadas',
-    title: 'KADAS',
+    name: 'Bangles',
+    title: 'BANGLES',
     src: '/gallery/processed/04_bangles_transparent.png',
     bg: '#171720',
     label: 'GALLERY 04',
@@ -52,20 +52,20 @@ export function InteractiveGalleryBanner() {
               {/* Badge */}
               <div className="inline-flex items-center space-x-2 rounded-full px-3.5 py-1.5 bg-gold-500/15 border border-gold-500/30 text-gold-800 dark:text-gold-300 text-[10px] sm:text-xs font-mono font-bold uppercase tracking-widest">
                 <Sparkles className="h-3.5 w-3.5 text-gold-600 dark:text-gold-400" />
-                <span>Interactive Jewellery Gallery Showcase</span>
+                <span>Interactive Jewellery Gallery</span>
               </div>
 
               {/* Title */}
               <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-extrabold text-stone-900 dark:text-stone-100 tracking-tight leading-[1.15]">
-                Artisanal Heirlooms &amp; <br className="hidden sm:inline" />
+                Luxury Jewellery &amp; <br className="hidden sm:inline" />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-600 via-gold-500 to-amber-600 dark:from-gold-300 dark:via-gold-400 dark:to-amber-200">
-                  Shahi Jewellery Gallery
+                  Interactive 3D Gallery
                 </span>
               </h2>
 
               {/* Description */}
               <p className="text-sm sm:text-base text-stone-600 dark:text-stone-300 leading-relaxed font-normal max-w-xl">
-                Experience our full-viewport interactive jewellery gallery. Explore royal polki angoothis, bridal gulbandh chokers, marquise jadau chandbalis, and antique kadas handcrafted with royal Indian karigari and cinematic stage lighting.
+                Experience our full-viewport interactive gallery. Explore certified rings, bridal choker necklaces, chandelier earrings, and handcrafted bangles with cinematic 3D views.
               </p>
 
               {/* Features List */}

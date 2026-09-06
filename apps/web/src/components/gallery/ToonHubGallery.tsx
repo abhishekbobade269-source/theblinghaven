@@ -107,69 +107,69 @@ export const TOONHUB_ITEMS: GalleryItem[] = [
   },
 ];
 
-// Luxury Haute Joaillerie edition for The Bling Haven gallery integration (Indian English theme)
+// Luxury Haute Joaillerie edition for The Bling Haven gallery integration
 export const JEWELRY_GALLERY_ITEMS: GalleryItem[] = [
   {
     id: 'jewel-1',
-    name: 'ANGOOTHI',
-    title: 'ANGOOTHI',
+    name: 'RINGS',
+    title: 'RINGS',
     src: '/gallery/processed/01_ring_transparent.png',
     bg: '#0B231A',
     panel: '#153C2D',
-    headline: 'ANGOOTHI (RINGS)',
+    headline: 'RINGS & SOLITAIRES',
     description:
-      'Handcrafted 22K royal yellow gold filigree setting adorned with uncut polki diamonds, crowned by a breathtaking octagonal-cut Zambian emerald centerpiece.',
-    tag: 'Collection 01 • Angoothi',
+      'Handcrafted 22K royal yellow gold setting adorned with brilliant stones, crowned by a breathtaking emerald centerpiece.',
+    tag: 'Collection 01 • Rings',
     link: '/catalog?category=rings',
   },
   {
     id: 'jewel-2',
-    name: 'CHOKER',
-    title: 'CHOKER',
+    name: 'NECKLACES',
+    title: 'NECKLACES',
     src: '/gallery/processed/02_necklace_transparent.png',
     bg: '#211812',
     panel: '#36281E',
-    headline: 'GULBANDH (CHOKER)',
+    headline: 'NECKLACES & SETS',
     description:
-      'Opulent handcrafted crescent Kundan choker accompanied by matching chandbalis, strung with lustrous natural freshwater pearl drops and vibrant emerald cabochons.',
-    tag: 'Collection 02 • Bridal Choker',
+      'Opulent handcrafted Kundan choker and necklace accompanied by matching earrings, strung with lustrous natural freshwater pearl drops.',
+    tag: 'Collection 02 • Necklaces',
     link: '/catalog?category=bridal',
   },
   {
     id: 'jewel-3',
-    name: 'CHANDBALIS',
-    title: 'CHANDBALIS',
+    name: 'EARRINGS',
+    title: 'EARRINGS',
     src: '/gallery/processed/03_earrings_transparent.png',
     bg: '#0F2018',
     panel: '#193629',
-    headline: 'CHANDBALIS (EARRINGS)',
+    headline: 'EARRINGS',
     description:
-      '18K white gold architectural chandelier chandbalis featuring cascading marquise-cut diamonds crowned with twin luminous pear-cut emerald teardrops.',
-    tag: 'Collection 03 • Chandbalis',
+      '18K white gold chandelier earrings featuring cascading marquise-cut stones crowned with luminous pear-cut emerald teardrops.',
+    tag: 'Collection 03 • Earrings',
     link: '/catalog?category=earrings',
   },
   {
     id: 'jewel-4',
-    name: 'KADAS',
-    title: 'KADAS',
+    name: 'BANGLES',
+    title: 'BANGLES',
     src: '/gallery/processed/04_bangles_transparent.png',
     bg: '#171720',
     panel: '#282736',
-    headline: 'KADAS (BANGLES)',
+    headline: 'BANGLES & BRACELETS',
     description:
-      'Intricate openwork lattice royal kadas encrusted with handset micro-pavé diamonds and bezel-set brilliant accent solitaires with concealed safety locks.',
-    tag: 'Collection 04 • Royal Kadas',
+      'Intricate openwork lattice bangles encrusted with handset micro-pavé stones and bezel-set solitaires with concealed safety locks.',
+    tag: 'Collection 04 • Bangles',
     link: '/catalog?category=bangles',
   },
 ];
 
-// Interactive radar pinpoints on the royal model image (Indian English theme)
+// Interactive radar pinpoints on the royal model image
 export const ROYAL_LOOK_PINPOINTS: PinpointItem[] = [
   {
     id: 'pin-ring',
     galleryIndex: 0,
-    title: 'Imperial Emerald Angoothi',
-    category: 'Solitaire Statement Angoothi',
+    title: 'Emerald Statement Ring',
+    category: 'Solitaire Ring',
     price: '$1,250',
     craftsmanship: '22K Gold Filigree • Uncut Polki Diamonds • Hand-set Zambian Emerald',
     top: '48.5%',
@@ -181,8 +181,8 @@ export const ROYAL_LOOK_PINPOINTS: PinpointItem[] = [
   {
     id: 'pin-necklace',
     galleryIndex: 1,
-    title: 'Shahi Polki Emerald Choker',
-    category: 'Bridal Gulbandh Choker Set',
+    title: 'Emerald Choker Necklace',
+    category: 'Bridal Choker Necklace',
     price: '$2,450',
     craftsmanship: 'Handcrafted Kundan Karigari • Colombian Pear-Cut Centerpiece • Natural Pearl Fringe',
     top: '63.2%',
@@ -194,8 +194,8 @@ export const ROYAL_LOOK_PINPOINTS: PinpointItem[] = [
   {
     id: 'pin-earrings',
     galleryIndex: 2,
-    title: 'Cascading Emerald Chandbalis',
-    category: 'Shahi Chandbali Jhumkas',
+    title: 'Emerald Chandelier Earrings',
+    category: 'Chandelier Earrings',
     price: '$1,890',
     craftsmanship: '18K White Gold Finish • Marquise Jadau Arches • Handcrafted Emerald Drops',
     top: '36.5%',
@@ -207,8 +207,8 @@ export const ROYAL_LOOK_PINPOINTS: PinpointItem[] = [
   {
     id: 'pin-bangles',
     galleryIndex: 3,
-    title: 'Heritage Micro-Pavé Kadas',
-    category: 'Openwork Diamond Kadas',
+    title: 'Micro-Pavé Bangles',
+    category: 'Diamond Bangles',
     price: '$2,100',
     craftsmanship: 'Handset Micro-Pavé Solitaires • Anti-Tarnish Polish • Concealed Safety Lock',
     top: '87.5%',
@@ -684,7 +684,7 @@ export function ToonHubGallery({
           {/* Ensemble Bar */}
           <div className="w-full p-1.5 sm:p-2 rounded-2xl bg-black/70 backdrop-blur-xl border border-amber-400/25 shadow-2xl flex items-center justify-between gap-1.5 sm:gap-2">
             <span className="hidden md:inline-block text-[10px] lg:text-[11px] font-mono font-bold text-amber-400 tracking-widest uppercase pl-3 shrink-0">
-              SHAHI TROUSSEAU:
+              FEATURED PIECES:
             </span>
             <div className="flex items-center gap-1.5 sm:gap-2 w-full justify-around overflow-x-auto py-0.5">
               {ROYAL_LOOK_PINPOINTS.map((pin) => {
@@ -763,10 +763,10 @@ export function ToonHubGallery({
               type="button"
               onClick={() => scrollToLookbook()}
               className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-black/40 hover:bg-black/60 text-white/90 hover:text-white backdrop-blur-md border border-white/25 text-xs font-mono font-bold transition-all shadow-sm"
-              title="Return up to Shahi Lookbook"
+              title="Return up to Model View"
             >
               <ChevronUp className="w-3.5 h-3.5" />
-              <span>SHAHI LOOK</span>
+              <span>MODEL VIEW</span>
             </button>
             <span className="text-xs sm:text-sm font-semibold uppercase tracking-[0.18em] text-white/90">
               ROYAL JEWELLERY GALLERY

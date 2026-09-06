@@ -14,13 +14,13 @@ export function CategoryBento() {
       <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 space-y-3">
         <div className="inline-flex items-center space-x-2 rounded-full border border-gold-500/30 bg-gold-500/10 px-3.5 py-1 text-xs font-mono font-bold uppercase tracking-widest text-gold-600 dark:text-gold-400">
           <Crown className="h-3.5 w-3.5" />
-          <ShinyText text="Curated Maison Parures" color="#ca8a04" shineColor="#fef08a" speed={2.5} />
+          <ShinyText text="Curated Collections" color="#ca8a04" shineColor="#fef08a" speed={2.5} />
         </div>
         <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-          Explore by Jewellery Category
+          Shop by Category
         </h2>
         <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 font-light">
-          Each heirloom is cast in Toronto using recycled precious metals, verified conflict-free gemstones, and stamped with authentic purity hallmarks.
+          Explore handcrafted rings, necklace sets, statement earrings, bangles, and silver jewellery.
         </p>
       </div>
 
@@ -35,23 +35,23 @@ export function CategoryBento() {
           <Link href="/bridal-sets" className="block h-full w-full relative">
             <img
               src="/uploads/sets_5621e16b_1s6a9422.jpg"
-              alt="Royal Bridal Sets"
+              alt="Necklaces & Sets"
               className="absolute inset-0 h-full w-full object-cover object-center filter brightness-[0.80] transition-transform duration-700 ease-out group-hover:scale-108"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
             <DiamondGlint />
             <div className="relative z-10 h-full flex flex-col justify-end p-6 sm:p-10 space-y-2.5">
               <span className="text-xs font-mono font-bold uppercase tracking-widest text-gold-400">
-                Bridal & Solitaire Symphony
+                Bridal & Statement
               </span>
               <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white">
-                Royal Kundan & Polki Sets
+                Necklaces & Sets
               </h3>
               <p className="text-xs sm:text-sm text-slate-300 font-light max-w-md">
-                Heirloom bridal parures designed for sacred vows and regal grandeur.
+                Handcrafted chokers, bridal sets, and statement necklaces.
               </p>
               <div className="pt-2 flex items-center space-x-1.5 text-xs font-mono font-bold text-gold-400 group-hover:text-gold-300">
-                <span>View 70+ Parures</span>
+                <span>View Necklace Sets</span>
                 <ArrowUpRight className="h-4 w-4 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </div>
             </div>
@@ -67,23 +67,23 @@ export function CategoryBento() {
           <Link href="/rings" className="block h-full w-full relative">
             <img
               src="/uploads/rings_15ca97c8_1s6a0175.jpg"
-              alt="Solitaire Rings"
+              alt="Rings"
               className="absolute inset-0 h-full w-full object-cover object-center filter brightness-[0.80] transition-transform duration-700 ease-out group-hover:scale-108"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
             <DiamondGlint />
             <div className="relative z-10 h-full flex flex-col justify-end p-6 sm:p-10 space-y-2.5">
               <span className="text-xs font-mono font-bold uppercase tracking-widest text-gold-400">
-                18K Gold & Platinum
+                Solitaires & Bands
               </span>
               <h3 className="font-serif text-2xl sm:text-3xl font-extrabold text-white">
-                Solitaire & Band Rings
+                Rings
               </h3>
               <p className="text-xs sm:text-sm text-slate-300 font-light">
-                Cushion, oval, and emerald solitaires in micro-pavé bands.
+                Solitaires, cocktail rings, and stackable bands.
               </p>
               <div className="pt-2 flex items-center space-x-1.5 text-xs font-mono font-bold text-gold-400 group-hover:text-gold-300">
-                <span>View Solitaires</span>
+                <span>View Rings</span>
                 <ArrowUpRight className="h-4 w-4 transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
               </div>
             </div>
@@ -99,20 +99,20 @@ export function CategoryBento() {
           <Link href="/earrings" className="block h-full w-full relative">
             <img
               src="/uploads/earrings_01462b03_1s6a0431.jpg"
-              alt="Fine Earrings"
+              alt="Earrings"
               className="absolute inset-0 h-full w-full object-cover object-center filter brightness-[0.80] transition-transform duration-700 ease-out group-hover:scale-108"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
             <DiamondGlint />
             <div className="relative z-10 h-full flex flex-col justify-end p-6 space-y-1.5">
               <span className="text-xs font-mono font-bold uppercase tracking-widest text-gold-400">
-                Chandbali & Drops
+                Drops & Chandeliers
               </span>
               <h3 className="font-serif text-xl sm:text-2xl font-bold text-white">
-                Statement Earrings
+                Earrings
               </h3>
               <div className="pt-1 flex items-center space-x-1 text-xs font-mono font-bold text-gold-400">
-                <span>Explore Drops</span>
+                <span>View Earrings</span>
                 <ArrowUpRight className="h-3.5 w-3.5 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </div>
             </div>
@@ -128,17 +128,17 @@ export function CategoryBento() {
           <Link href="/bangles" className="block h-full w-full relative">
             <img
               src="/uploads/bangles_0deb44c0_1s6a9953.jpg"
-              alt="Heritage Bangles"
+              alt="Bangles & Bracelets"
               className="absolute inset-0 h-full w-full object-cover object-center filter brightness-[0.80] transition-transform duration-700 ease-out group-hover:scale-108"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
             <DiamondGlint />
             <div className="relative z-10 h-full flex flex-col justify-end p-6 space-y-1.5">
               <span className="text-xs font-mono font-bold uppercase tracking-widest text-gold-400">
-                22K Gold Micro-Plating
+                22K Gold Plated
               </span>
               <h3 className="font-serif text-xl sm:text-2xl font-bold text-white">
-                Bangles & Kadas
+                Bangles & Bracelets
               </h3>
               <div className="pt-1 flex items-center space-x-1 text-xs font-mono font-bold text-gold-400">
                 <span>View Bangles</span>
@@ -157,7 +157,7 @@ export function CategoryBento() {
           <Link href="/artisan-silver" className="block h-full w-full relative">
             <img
               src="/uploads/artisan_473a2ce6_1s6a0279.jpg"
-              alt="Artisan Silver"
+              alt="Silver Jewellery"
               className="absolute inset-0 h-full w-full object-cover object-center filter brightness-[0.80] transition-transform duration-700 ease-out group-hover:scale-108"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
@@ -167,10 +167,10 @@ export function CategoryBento() {
                 925 Sterling Silver
               </span>
               <h3 className="font-serif text-xl sm:text-2xl font-bold text-white">
-                Artisan Silver
+                Silver Jewellery
               </h3>
               <div className="pt-1 flex items-center space-x-1 text-xs font-mono font-bold text-gold-400">
-                <span>Explore Silver</span>
+                <span>View Silver</span>
                 <ArrowUpRight className="h-3.5 w-3.5 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </div>
             </div>

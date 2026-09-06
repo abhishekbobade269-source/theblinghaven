@@ -36,36 +36,36 @@ import {
 
 const CATEGORIES = [
   {
-    name: 'AAA+ CZ Solitaires & Rings',
-    subtitle: 'Anti-tarnish 18K gold & rhodium plated designer rings',
+    name: 'Rings',
+    subtitle: 'Solitaires, cocktail rings & eternity bands',
     href: '/rings',
     icon: Gem,
     thumbnail: '/uploads/rings_03526cf9_1s6a0179.jpg',
   },
   {
-    name: 'Royal Kundan & Polki Bridal Sets',
-    subtitle: 'Handcrafted Meenakari Jadau chokers, necklaces & earrings',
+    name: 'Necklaces & Sets',
+    subtitle: 'Chokers, bridal sets & statement necklaces',
     href: '/bridal-sets',
     icon: Crown,
     thumbnail: '/uploads/sets_00c2f42a_1s6a9390.jpg',
   },
   {
-    name: 'Austrian Crystal Earrings',
-    subtitle: 'Lightweight partywear chandeliers & jhumkas',
+    name: 'Earrings',
+    subtitle: 'Studs, jhumkas, drops & chandeliers',
     href: '/earrings',
     icon: Sparkles,
     thumbnail: '/uploads/earrings_d696144e_1s6a9783.jpg',
   },
   {
-    name: '22K Gold Plated Bangles & Kadas',
-    subtitle: 'Premium openable kadas with ruby & emerald stone work',
+    name: 'Bangles & Bracelets',
+    subtitle: 'Traditional kadas, bangles & tennis bracelets',
     href: '/bangles',
     icon: Award,
     thumbnail: '/uploads/bangles_8897c8d9_1s6a0166.jpg',
   },
   {
-    name: 'Pure 925 Silver Plated Jewellery',
-    subtitle: 'Daily wear waterproof chains, pendants & bracelets',
+    name: 'Silver Jewellery',
+    subtitle: '925 sterling silver chains, pendants & daily wear',
     href: '/artisan-silver',
     icon: CircleDot,
     thumbnail: '/uploads/handmade_59b489a2_1s6a0201.jpg',
@@ -424,13 +424,13 @@ export function Header() {
                           isDarkAtmospherePage ? 'text-white' : 'text-slate-900 dark:text-slate-100'
                         }`}
                       >
-                        Maharani Royal Kundan Bridal Set
+                        Royal Kundan Bridal Set
                       </h4>
                       <p className="font-mono text-xs font-bold text-gold-500 dark:text-gold-400">
                         ₹ 14,999 / CAD $249
                       </p>
                       <p className="text-[10px] text-slate-400 normal-case">
-                        Handcrafted in 22K micro gold plating with hydro emerald beads.
+                        Handcrafted in 22K gold plating with emerald beads.
                       </p>
                     </div>
 
@@ -439,7 +439,7 @@ export function Header() {
                       onClick={handleImmediateClose}
                       className="mt-3 flex items-center justify-center space-x-2 rounded-xl bg-gold-500 hover:bg-gold-400 py-2.5 text-[10px] font-bold uppercase tracking-wider text-obsidian-950 transition shadow-md"
                     >
-                      <span>Explore All Pieces</span>
+                      <span>Shop All Jewellery</span>
                       <ArrowRight className="h-3 w-3" />
                     </Link>
                   </div>
