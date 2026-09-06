@@ -87,16 +87,31 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <div className="h-10 w-10 overflow-hidden rounded-xl border border-gold-500/40 bg-white p-1">
-                <img src="/images/logo.png" alt="Logo" className="h-full w-full object-contain" />
+              <div className="h-11 w-11 overflow-hidden rounded-full border border-gold-500/50 bg-white p-0.5 shadow-[0_0_12px_rgba(212,175,55,0.25)]">
+                <img src="/images/logo_circle.png" alt="The Bling Haven Logo" className="h-full w-full object-cover rounded-full" />
               </div>
-              <span className="font-serif text-lg font-bold text-slate-900 dark:text-slate-100">
-                THE BLING HAVEN
-              </span>
+              <div>
+                <span className="font-serif text-lg font-bold text-slate-900 dark:text-slate-100 block">
+                  THE BLING HAVEN
+                </span>
+                <span className="text-[9px] font-mono text-gold-600 dark:text-gold-400 tracking-wider uppercase block">
+                  Curated by Neha Singh
+                </span>
+              </div>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
               Your destination for luxury fashion and bridal jewellery. Handcrafted Kundan sets, AAA+ CZ solitaires, and 22K micro gold plated heirlooms.
             </p>
+            <div className="pt-1">
+              <a
+                href="https://www.instagram.com/the_bling_haven?stkn=dG54bGY1ZGgyMzJr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center space-x-2 text-xs font-mono font-bold text-gold-600 dark:text-gold-400 hover:text-gold-500 transition"
+              >
+                <span>Follow @the_bling_haven on Instagram ↗</span>
+              </a>
+            </div>
           </div>
 
           <div className="space-y-3">

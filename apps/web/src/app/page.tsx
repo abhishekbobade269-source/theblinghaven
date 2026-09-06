@@ -11,6 +11,7 @@ import { CuratedCollectionRail } from '@/components/home/CuratedCollectionRail';
 import { InteractiveGalleryBanner } from '@/components/home/InteractiveGalleryBanner';
 import { AtelierCaseStudies } from '@/components/home/AtelierCaseStudies';
 import { InstagramReelsRail } from '@/components/home/InstagramReelsRail';
+import { FounderSpotlight } from '@/components/home/FounderSpotlight';
 import { MaisonHeritage } from '@/components/home/MaisonHeritage';
 
 export default function HomePage() {
@@ -48,7 +49,10 @@ export default function HomePage() {
         {/* 6. Real Instagram Reels Showcase */}
         <InstagramReelsRail posts={instagramPosts} />
 
-        {/* 7. Maison Heritage & Hallmark Purity Guarantee */}
+        {/* 7. Meet Founder Neha Singh & Brand Curation */}
+        <FounderSpotlight />
+
+        {/* 8. Maison Heritage & Hallmark Purity Guarantee */}
         <MaisonHeritage />
       </div>
     </PageStatusGuard>

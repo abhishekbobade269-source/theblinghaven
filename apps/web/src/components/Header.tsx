@@ -230,16 +230,16 @@ export function Header() {
           {/* Brand Identity */}
           <Link href="/" className="flex items-center space-x-2.5 sm:space-x-4 group shrink-0">
             <div
-              className={`relative h-10 w-10 sm:h-12 sm:w-12 overflow-hidden rounded-2xl border p-1 sm:p-1.5 shadow-md group-hover:scale-105 transition-all duration-300 ${
+              className={`relative h-10 w-10 sm:h-12 sm:w-12 overflow-hidden rounded-full border p-0.5 shadow-md group-hover:scale-108 transition-all duration-300 ${
                 isDarkAtmospherePage
-                  ? 'border-gold-500/40 bg-black/40'
-                  : 'border-gold-500/40 bg-white dark:bg-black/40'
+                  ? 'border-gold-400/60 bg-black/50 shadow-[0_0_15px_rgba(212,175,55,0.3)]'
+                  : 'border-gold-500/50 bg-white dark:bg-black/50 shadow-[0_0_15px_rgba(212,175,55,0.25)]'
               }`}
             >
               <img
-                src="/images/logo.png"
+                src="/images/logo_circle.png"
                 alt="The Bling Haven Logo"
-                className="h-full w-full object-contain"
+                className="h-full w-full object-cover rounded-full"
               />
             </div>
             <div>
